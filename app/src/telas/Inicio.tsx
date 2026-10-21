@@ -52,7 +52,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         {!comExtrato && (
           <section>
             <h2>Comece pelo extrato</h2>
-            <p>Importe o PDF que o Nubank PJ manda por e-mail. Ele é lido aqui e não sai do celular.</p>
+            <p>Importe o extrato do Nubank PJ em OFX, CSV ou PDF. Ele é lido aqui e não sai do celular.</p>
             <button className="principal" onClick={() => ir('importar')}>Importar extrato</button>
           </section>
         )}

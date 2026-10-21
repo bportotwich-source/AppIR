@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { importar } from '../core/banco'
-import { lerExtrato } from '../core/parser'
+import { lerArquivo } from '../core/arquivos'
 import { exportarBackup, lerBackup } from '../core/store'
 
 type Resultado =
@@ -17,8 +17,8 @@ export default function Importar({ banco, mudar, ir }: TelaProps) {
     setLendo(true)
     setResultado(null)
     try {
-      const movs = await lerExtrato(await arquivo.arrayBuffer())
-      if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse PDF é o extrato do Nubank PJ?')
+      const movs = await lerArquivo(arquivo)
+      if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse arquivo é o extrato do Nubank PJ?')
       const r = importar(banco, movs, arquivo.name)
       mudar(r.banco)
       const ids = new Set(banco.movimentacoes.map((m) => m.id))
@@ -52,11 +52,11 @@ export default function Importar({ banco, mudar, ir }: TelaProps) {
   return (
     <main className="conteudo topo">
       <h1>Importar extrato</h1>
-      <p className="apoio">Use o PDF que o Nubank PJ manda por e-mail. Ele é lido aqui e não sai do celular.</p>
+      <p className="apoio">Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular.</p>
 
       <label className="envio">
-        <input type="file" accept="application/pdf" disabled={lendo} onChange={(e) => aoEscolher(e.target.files?.[0])} />
-        <b>{lendo ? 'Lendo o extrato…' : 'Escolher PDF do extrato'}</b>
+        <input type="file" accept=".ofx,.csv,.pdf,application/pdf,text/csv,application/x-ofx" disabled={lendo} onChange={(e) => aoEscolher(e.target.files?.[0])} />
+        <b>{lendo ? 'Lendo o extrato…' : 'Escolher arquivo do extrato'}</b>
         <span>Toque para abrir os arquivos</span>
       </label>
 

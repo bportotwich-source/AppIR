@@ -4,6 +4,7 @@
 // esse objeto no navegador, e o backup é o mesmo objeto em JSON.
 
 import type { Movimentacao } from './parser'
+import { pagador } from './formato'
 
 export type Categoria = 'servicos' | 'comercio'
 
@@ -30,13 +31,18 @@ export function bancoVazio(): Banco {
   return { versao: 1, movimentacoes: [], regras: {} }
 }
 
-/** Normaliza a descrição para casar movimentações parecidas.
+// Sufixos de razão social que o banco às vezes corta ("Ltda" vira "Ltd").
+const SUFIXOS = new Set(['ltda', 'ltd', 'me', 'mei', 'epp', 'eireli', 'sa', 's', 'a'])
+
+/** Chave do pagador para lembrar marcações.
  *
- * Remove acentos, números, CPF/CNPJ mascarados e pontuação, mantendo
- * o tipo de operação e a contraparte.
+ * Usa só o tipo de operação e o nome de quem pagou, sem acentos, números,
+ * CPF/CNPJ e sufixos de empresa. Assim o mesmo pagador casa no PDF, no CSV
+ * e no OFX, que escrevem a descrição de jeitos diferentes.
  */
 export function chaveDescricao(descricao: string): string {
-  return descricao
+  const { nome, operacao } = pagador(descricao)
+  const palavras = `${operacao} ${nome}`
     .normalize('NFKD')
     .replace(/\p{M}/gu, '')
     .toLowerCase()
@@ -44,17 +50,20 @@ export function chaveDescricao(descricao: string): string {
     .replace(/[^a-z ]+/g, ' ')
     .split(/\s+/)
     .filter(Boolean)
-    .join(' ')
+  while (palavras.length > 1 && SUFIXOS.has(palavras[palavras.length - 1])) palavras.pop()
+  return palavras.join(' ')
 }
 
+// A descrição fica de fora: PDF, CSV e OFX escrevem a mesma movimentação de
+// jeitos diferentes, e importar o mesmo mês em dois formatos não pode duplicar.
 function identificador(m: Movimentacao, ocorrencia: number): string {
-  return `${m.data}|${m.descricao}|${m.valor.toFixed(2)}|${m.tipo}|${ocorrencia}`
+  return `${m.data}|${m.valor.toFixed(2)}|${m.tipo}|${ocorrencia}`
 }
 
 /** Grava as movimentações, ignorando as já importadas.
  *
- * Movimentações idênticas no mesmo dia são diferenciadas pela ordem em que
- * aparecem no extrato.
+ * Movimentações do mesmo dia, valor e tipo são diferenciadas pela ordem em
+ * que aparecem no extrato.
  */
 export function importar(
   banco: Banco,

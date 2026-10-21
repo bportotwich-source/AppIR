@@ -23,10 +23,13 @@ const RE_DATA = /^(\d{2})\s+(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\s+
 const RE_VALOR_FINAL = /^(.*?)\s*([+-])?\s*(?:R\$\s*)?(\d{1,3}(?:\.\d{3})*,\d{2})$/
 const RE_TOTAL_ENTRADAS = /total de entradas/i
 const RE_TOTAL_SAIDAS = /total de sa[ií]das/i
-// Cabeçalho/rodapé que não é movimentação.
+// Cabeçalho, resumo e rodapé que não são movimentação. Também zeram o texto
+// pendente, para o rodapé de uma página não grudar na descrição seguinte.
 const RE_IGNORAR = new RegExp(
-  'saldo (inicial|final|do dia|anterior)|rendimento l[ií]quido|movimenta[çc][õo]es|' +
-    'extrato gerado|ouvidoria|p[áa]gina \\d+|cnpj|ag[êe]ncia|conta\\b|valores em r\\$',
+  'saldo (inicial|final|do dia|anterior|l[ií]quido)|rendimento l[ií]quido|movimenta[çc][õo]es|' +
+    'extrato gerado|ouvidoria|p[áa]gina \\d+|cnpj|ag[êe]ncia|conta\\b|valores em r\\$|' +
+    'tem alguma d[úu]vida|metropolitanas|caso a solu[çc][ãa]o|nu financeira|nu pagamentos|' +
+    'n[ãa]o nos responsabilizamos|asseguramos a autenticidade',
   'i',
 )
 const PALAVRAS_ENTRADA = /recebid|dep[óo]sito|estorno|reembolso/i
@@ -65,7 +68,11 @@ export function parseLinhas(linhas: string[]): Movimentacao[] {
       pendente = []
       continue
     }
-    if (dataAtual === null || RE_IGNORAR.test(linha)) continue
+    if (RE_IGNORAR.test(linha)) {
+      pendente = []
+      continue
+    }
+    if (dataAtual === null) continue
 
     const mv = RE_VALOR_FINAL.exec(linha)
     if (!mv) {
