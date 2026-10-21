@@ -1,0 +1,39 @@
+/* Meu MEI: animações e formas compartilhadas pelos componentes */
+.mm-num {
+  font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@keyframes mm-spin { to { transform: rotate(360deg); } }
+.mm-spin { transform-box: fill-box; transform-origin: center; animation: mm-spin 16s linear infinite; }
+
+@keyframes mm-pulse { 0% { opacity: .55; transform: scale(1); } 100% { opacity: 0; transform: scale(2.4); } }
+.mm-pulse { transform-box: fill-box; transform-origin: center; animation: mm-pulse 1.8s ease-out infinite; }
+
+@keyframes mm-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.mm-grow { transform-box: fill-box; transform-origin: 50% 100%; animation: mm-grow .7s cubic-bezier(.2,.8,.2,1) both; }
+
+@keyframes mm-scan { from { transform: translateY(0); } to { transform: translateY(84px); } }
+.mm-scan { animation: mm-scan 1.1s ease-in-out infinite alternate; }
+
+@keyframes mm-draw { from { stroke-dashoffset: var(--mm-len, 100); } to { stroke-dashoffset: 0; } }
+.mm-draw { stroke-dasharray: var(--mm-len, 100); animation: mm-draw .6s ease-out both; }
+.mm-draw-slow { animation: mm-draw 2.4s cubic-bezier(.4,0,.2,1) both; }
+
+@keyframes mm-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.mm-rise { animation: mm-rise .5s cubic-bezier(.2,.8,.2,1) both; }
+
+/* Ticket: dois recortes laterais na altura da linha tracejada */
+.mm-ticket {
+  -webkit-mask:
+    radial-gradient(circle 14px at 0 72%, transparent 13.5px, #000 14px) left / 51% 100% no-repeat,
+    radial-gradient(circle 14px at 100% 72%, transparent 13.5px, #000 14px) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 14px at 0 72%, transparent 13.5px, #000 14px) left / 51% 100% no-repeat,
+    radial-gradient(circle 14px at 100% 72%, transparent 13.5px, #000 14px) right / 51% 100% no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-spin, .mm-pulse, .mm-grow, .mm-scan, .mm-draw, .mm-draw-slow, .mm-rise { animation: none !important; }
+}

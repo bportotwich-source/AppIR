@@ -1,0 +1,11 @@
+<!-- @dsCard group="Indicadores" height=300 subtitle="Faturamento contra o limite de R$ 81.000" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"></head>
+<body style="margin:0;background:#0c2a27;font-family:'Instrument Sans',system-ui,sans-serif">
+<div id="root" style="display:flex;justify-content:center;padding:24px 16px"></div>
+<script>
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(MeuMEI.LimitGauge, { value: 59940, limit: 81000, tone: 'dark', size: 300 }));
+</script>
+</body>
+</html>

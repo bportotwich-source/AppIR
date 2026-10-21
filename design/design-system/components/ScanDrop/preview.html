@@ -1,0 +1,11 @@
+<!-- @dsCard group="Importação" height=360 subtitle="Toque para simular a leitura" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"></head>
+<body style="margin:0;background:#f6f7f6;font-family:'Instrument Sans',system-ui,sans-serif;color:#15201d">
+<div id="root" style="max-width:360px;padding:16px"></div>
+<script>
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(MeuMEI.ScanDrop, { fileName: 'extrato-outubro-2026.pdf', doneText: '23 movimentações lidas', size: 240 }));
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-21T22:16:00Z"},
+  "title": "Meu MEI · Telas",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 1440, "title": "Início", "is_interactive": true, "radius": 36},
+    "Importar.dc.html": {"x": 470, "y": 0, "w": 390, "h": 1400, "title": "Importar extrato", "is_interactive": true, "radius": 36},
+    "Revisar.dc.html": {"x": 940, "y": 0, "w": 390, "h": 1000, "title": "Revisar entradas", "is_interactive": true, "radius": 36},
+    "Declaracao.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 1360, "title": "Declaração anual", "is_interactive": true, "radius": 36}
+  },
+  "order": ["Main.dc.html", "Importar.dc.html", "Revisar.dc.html", "Declaracao.dc.html"],
+  "notes": {
+    "titulo": {"x": 0, "y": -300, "text": "Meu MEI · celular", "kind": "title1", "maxW": 1800}
+  },
+  "designSystems": [
+    {"title": "Meu MEI", "namespace": "meumei", "artifact": "https://claude.ai/artifact/EtzfWesDUBjBEkwrsYJhhW", "version": "1792622005-3b06", "copiedAt": "2026-10-21T22:50:00Z"}
+  ]
+}

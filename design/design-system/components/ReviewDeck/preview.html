@@ -1,0 +1,15 @@
+<!-- @dsCard group="Revisão" height=500 subtitle="Decida uma entrada por vez" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"></head>
+<body style="margin:0;background:#f4f6f5;font-family:'Instrument Sans',system-ui,sans-serif;color:#15201d">
+<div id="root" style="max-width:350px;padding:20px"></div>
+<script>
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(MeuMEI.ReviewDeck, { entries: [
+  { id: 6, date: '18 out', value: 350, payer: 'MARIA SOUZA', description: 'Pix recebido' },
+  { id: 7, date: '21 out', value: 980, payer: 'DELTA EVENTOS', description: 'Pix recebido' },
+  { id: 8, date: '24 out', value: 3000, payer: 'Empréstimo PJ', description: 'Crédito de empréstimo' }
+] }));
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Revisar entradas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/meumei/components/bundle.css">
+<script src="ds/meumei/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 1000px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+
+<div style="padding: 16px 20px 120px; display: flex; flex-direction: column; gap: 22px">
+
+<header style="display: flex; align-items: center; gap: 14px">
+<a href="Main.dc.html" aria-label="Voltar para o início" style="flex: none; width: 44px; height: 44px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; align-items: center; justify-content: center; color: #15201d"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+<div style="display: flex; flex-direction: column">
+<h1 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.01em">Revisar entradas</h1>
+<p style="margin: 0; font-size: 13px; line-height: 18px; color: #5b6763">Pix de pagadores que o app ainda não conhece</p>
+</div>
+</header>
+
+<section aria-label="Faturamento de outubro" style="position: relative; overflow: hidden; border-radius: 24px; background: #0c2a27; color: #ecf1ef; padding: 18px 20px">
+<svg aria-hidden="true" width="200" height="120" viewBox="0 0 200 120" style="position: absolute; right: -40px; top: -30px"><circle cx="120" cy="60" r="56" fill="none" stroke="#2dd4bf" stroke-opacity="0.12" stroke-width="10"/><circle cx="120" cy="60" r="86" fill="none" stroke="#2dd4bf" stroke-opacity="0.07" stroke-width="10"/></svg>
+<span style="position: relative; display: block; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #a3b5b0">Faturamento de outubro</span>
+<x-import component-from-global-scope="MeuMEI.AnimatedNumber" value="{{total}}" duration="{{600}}" style="position: relative; display: block; margin-top: 4px; font-size: 32px; line-height: 38px; font-weight: 500; color: #ecf1ef"></x-import>
+<div style="position: relative; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; line-height: 18px; color: #c9d6d2">
+<span style="display: flex; align-items: center; gap: 6px"><i aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #2dd4bf"></i>Serviços <b class="mm-num" style="font-weight: 500; color: #ecf1ef">{{servTxt}}</b></span>
+<span style="display: flex; align-items: center; gap: 6px"><i aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #a5b4fc"></i>Comércio <b class="mm-num" style="font-weight: 500; color: #ecf1ef">{{comTxt}}</b></span>
+</div>
+</section>
+
+<x-import component-from-global-scope="MeuMEI.ReviewDeck" entries="{{entradas}}" on-decide="{{decidir}}" on-undo="{{desfazer}}" done-title="Outubro revisado" done-text="Os próximos Pix desses pagadores entram marcados sozinhos."></x-import>
+
+<button type="button" role="switch" aria-checked="{{lembrarAria}}" onClick="{{alternarLembrar}}" style="display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 0 16px; border: none; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; font: inherit; color: #15201d; text-align: left; cursor: pointer">
+<span style="flex: 1 1 auto; display: flex; flex-direction: column">
+<span style="font-weight: 600">Lembrar para o mesmo pagador</span>
+<span style="font-size: 13px; line-height: 18px; color: #5b6763">Próximos Pix dele já entram classificados</span>
+</span>
+<span aria-hidden="true" style="flex: none; width: 48px; height: 28px; box-sizing: border-box; padding: 3px; border-radius: 999px; display: flex; justify-content: {{lembrarLado}}; background: {{lembrarCor}}; transition: background .2s"><span style="width: 22px; height: 22px; border-radius: 999px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.2)"></span></span>
+</button>
+
+</div>
+
+<nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,0.95); box-shadow: 0 12px 32px rgba(12,42,39,0.18), 0 0 0 1px rgba(12,42,39,0.06)">
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
+<a href="Revisar.dc.html" aria-current="page" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #0f766e; font-size: 11px; line-height: 14px; font-weight: 700"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<sc-if value="{{temPendentes}}" hint-placeholder-val="{{ true }}"><span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">{{pendentes}}</span></sc-if></a>
+<a href="Importar.dc.html" aria-label="Importar extrato" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0f766e; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(15,118,110,0.4), 0 0 0 6px #f4f6f5"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M5 19h14"/></svg></a>
+<a href="Declaracao.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
+<a href="Importar.dc.html#historico" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Extratos</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { serv: 4540, com: 2000, feitas: 0, lembrar: true };
+    this.entradas = [
+      { id: 6, date: '18 out', value: 350, payer: 'MARIA SOUZA', description: 'Pix recebido' },
+      { id: 7, date: '21 out', value: 980, payer: 'DELTA EVENTOS', description: 'Pix recebido' },
+      { id: 8, date: '24 out', value: 3000, payer: 'Empréstimo PJ', description: 'Crédito de empréstimo' },
+      { id: 9, date: '28 out', value: 420, payer: 'JOÃO LIMA', description: 'Pix recebido' }
+    ];
+  }
+  aplicar(d, sinal) {
+    var v = d.entry.value * sinal;
+    this.setState({
+      serv: this.state.serv + (d.choice === 'servicos' ? v : 0),
+      com: this.state.com + (d.choice === 'comercio' ? v : 0),
+      feitas: this.state.feitas + sinal
+    });
+  }
+  renderVals() {
+    var self = this;
+    var brl = function (v) { return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    var pend = this.entradas.length - this.state.feitas;
+    var on = this.state.lembrar;
+    return {
+      total: this.state.serv + this.state.com,
+      servTxt: brl(this.state.serv),
+      comTxt: brl(this.state.com),
+      entradas: this.entradas,
+      decidir: function (d) { self.aplicar(d, 1); },
+      desfazer: function (d) { self.aplicar(d, -1); },
+      pendentes: pend,
+      temPendentes: pend > 0,
+      lembrarAria: on ? 'true' : 'false',
+      lembrarLado: on ? 'flex-end' : 'flex-start',
+      lembrarCor: on ? '#0f766e' : '#7b8783',
+      alternarLembrar: function () { self.setState({ lembrar: !self.state.lembrar }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

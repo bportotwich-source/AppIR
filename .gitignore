@@ -1,0 +1,16 @@
+# Dados pessoais: extratos e banco local nunca vão para o repositório
+dados/
+*.db
+*.sqlite
+*.sqlite3
+*.pdf
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Sistema
+.DS_Store
+Thumbs.db

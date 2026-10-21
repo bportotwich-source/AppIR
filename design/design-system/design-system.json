@@ -1,0 +1,28 @@
+{
+  "v": 3,
+  "assetGroups": {},
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-21T22:09:23Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [],
+  "lastChange": {
+    "at": "2026-10-21T22:48:00Z",
+    "by": "Bruno Porto",
+    "note": "Biblioteca de componentes animados para celular e regras de movimento.",
+    "via": "Claude Code"
+  },
+  "layout": "files",
+  "libraries": [
+    {"name": "react", "version": "18"},
+    {"name": "react-dom", "version": "18"}
+  ],
+  "namespace": "MeuMEI",
+  "sections": {},
+  "title": "Meu MEI"
+}

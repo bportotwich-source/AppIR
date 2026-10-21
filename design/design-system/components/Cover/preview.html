@@ -1,0 +1,61 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+  html, body { margin: 0; background: var(--surface, #f6f7f6); }
+  .cover { position: relative; width: 960px; height: 288px; overflow: hidden; background: var(--surface, #f6f7f6); }
+  svg { position: absolute; inset: 0; }
+  .brand { fill: var(--brand, #0f766e); }
+  .ink { fill: var(--ink, #15201d); }
+  .comercio { fill: var(--comercio, #6366f1); }
+  .warning { fill: var(--warning, #92400e); }
+  .tint { fill: var(--brand-tint, #e6f4f1); }
+  .bar { fill: var(--surface, #f6f7f6); }
+  .limit { stroke: var(--warning, #92400e); stroke-width: 2; stroke-dasharray: 6 5; fill: none; }
+  .tile { rx: var(--radius-lg, 12px); }
+  .chip { rx: var(--radius-sm, 4px); }
+  .text { position: absolute; left: 40px; bottom: 40px; width: 440px; }
+  .name { margin: 0; font-family: var(--font-sans, "Instrument Sans", "Segoe UI", system-ui, sans-serif); font-weight: 600; font-size: 104px; line-height: .92; letter-spacing: -0.02em; color: var(--ink, #15201d); }
+  .tag { margin: 16px 0 0; font-family: var(--font-sans, "Instrument Sans", "Segoe UI", system-ui, sans-serif); font-size: 14px; line-height: 20px; color: var(--ink-muted, #5b6763); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+    <!--
+      blocks: ink 224x288 (space-8 x7, full height), brand 192x192 (space-8 x6), comercio 128x112, brand-tint 96x64, warning 32x32 (space-8)
+      arrangement: one tall ink slab bleeding off top, right and bottom, with satellites to its left and one overlapping its foot
+      pattern: literal motif, twelve monthly bars cut out of the ink slab in surface, crossed by the dashed annual limit in warning; the product is a year of monthly totals against one limit
+      steps and radii: bar width space-2, gap space-2, offsets space-4 and space-8; radius-lg on brand, comercio and tint tiles, radius-sm on bar tops and the warning chip
+    -->
+    <rect class="tint tile" x="512" y="24" width="96" height="64"/>
+    <rect class="brand tile" x="528" y="112" width="192" height="192"/>
+    <rect class="warning chip" x="672" y="48" width="32" height="32"/>
+    <rect class="ink" x="736" y="0" width="224" height="288"/>
+    <g>
+      <rect class="bar chip" x="752" y="114" width="8" height="66"/>
+      <rect class="bar chip" x="768" y="100" width="8" height="80"/>
+      <rect class="bar chip" x="784" y="68" width="8" height="112"/>
+      <rect class="bar chip" x="800" y="89" width="8" height="91"/>
+      <rect class="bar chip" x="816" y="77" width="8" height="103"/>
+      <rect class="bar chip" x="832" y="84" width="8" height="96"/>
+      <rect class="bar chip" x="848" y="65" width="8" height="115"/>
+      <rect class="bar chip" x="864" y="70" width="8" height="110"/>
+      <rect class="bar chip" x="880" y="98" width="8" height="82"/>
+      <rect class="bar chip" x="896" y="75" width="8" height="105"/>
+      <rect class="bar chip" x="912" y="172" width="8" height="8"/>
+      <rect class="bar chip" x="928" y="172" width="8" height="8"/>
+    </g>
+    <line class="limit" x1="744" y1="56" x2="960" y2="56"/>
+    <rect class="comercio tile" x="784" y="208" width="128" height="112"/>
+  </svg>
+  <div class="text">
+    <p class="name">Meu MEI</p>
+    <p class="tag">Faturamento do MEI, contado mês a mês contra o limite do ano.</p>
+  </div>
+</div>
+</body>
+</html>
