@@ -3,7 +3,7 @@ import { parseLinhas, valorBr } from './parser'
 import { bancoVazio, chaveDescricao, entradas, importar, marcar } from './banco'
 import { dataCurta, pagador } from './formato'
 import { parseCsv, parseOfx } from './arquivos'
-import { alerta, limiteProporcional, pendentes, totaisAno, totaisPorMes } from './relatorio'
+import { alerta, limiteProporcional, pendentes, projecaoAno, totaisAno, totaisPorMes } from './relatorio'
 
 // Mesmo layout de um extrato real do Nubank PJ (out/2026, texto como o pdf.js
 // extrai), com nomes e valores trocados.
@@ -136,6 +136,13 @@ describe('relatório', () => {
     expect(alerta(81_000).nivel).toBe('perigo')
     expect(alerta(90_000).nivel).toBe('estourou')
     expect(alerta(100_000).nivel).toBe('critico')
+  })
+
+  it('projeta o ano pela média de janeiro até o último mês com extrato', () => {
+    let { banco } = importar(bancoVazio(), parseLinhas(EXTRATO))
+    for (const r of entradas(banco, 2026)) banco = marcar(banco, r.id, true, 'servicos', false)
+    expect(projecaoAno(banco, 2026)).toBeCloseTo((2550 / 10) * 12)
+    expect(projecaoAno(banco, 2025)).toBeNull()
   })
 
   it('limite proporcional no ano de abertura', () => {

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { LIMITE_ANUAL, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
 import { MESES } from '../core/formato'
@@ -7,18 +8,45 @@ const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString(
 
 const CURTO = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 
+// Três formas do limite no topo, uma por vez; a escolha fica no aparelho.
+const VISOES = [
+  { id: 'arco', nome: 'Arco' },
+  { id: 'curva', nome: 'Curva' },
+  { id: 'barra', nome: 'Barra' },
+] as const
+type Visao = (typeof VISOES)[number]['id']
+
+function visaoSalva(): Visao {
+  try {
+    const v = localStorage.getItem('meu-mei:visao')
+    return VISOES.some((x) => x.id === v) ? (v as Visao) : 'arco'
+  } catch {
+    return 'arco'
+  }
+}
+
 interface Props extends TelaProps {
   anos: number[]
   mudarAno: (ano: number) => void
 }
 
 export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
-  const { LimitGauge, SplitBar, MonthBars } = window.MeuMEI
+  const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthBars } = window.MeuMEI
+  const [visao, setVisao] = useState<Visao>(visaoSalva)
+  const escolher = (v: Visao) => {
+    setVisao(v)
+    try {
+      localStorage.setItem('meu-mei:visao', v)
+    } catch {
+      // sem armazenamento: a escolha vale só nesta sessão
+    }
+  }
   const t = totaisAno(banco, ano)
   const meses = totaisPorMes(banco, ano)
   const comExtrato = banco.movimentacoes.some((r) => r.data.startsWith(`${ano}-`))
   const ultimoMes = Math.max(0, ...banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => Number(r.data.slice(5, 7))))
   const projecao = projecaoAno(banco, ano)
+  const dadosMeses = meses.map((m, i) => ({ m: CURTO[i], s: m.servicos, c: m.comercio }))
   const nPendentes = pendentes(banco, ano)
 
   return (
@@ -35,10 +63,20 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
         </p>
         <h1>Seu ano até aqui</h1>
-        <div className="medidor">
-          <LimitGauge value={total(t)} limit={LIMITE_ANUAL} tone="dark" size={280} />
+        <div className="visoes" role="radiogroup" aria-label="Forma do limite">
+          {VISOES.map((v) => (
+            <button key={v.id} role="radio" aria-checked={visao === v.id} onClick={() => escolher(v.id)}>
+              {v.nome}
+            </button>
+          ))}
         </div>
-        {projecao !== null && (
+        <div className="medidor">
+          {visao === 'arco' && <LimitGauge value={total(t)} limit={LIMITE_ANUAL} tone="dark" size={280} />}
+          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
+          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
+        </div>
+        {/* Curva e Barra já mostram a projeção. */}
+        {visao === 'arco' && projecao !== null && (
           <p className="projecao">
             No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
             {projecao <= LIMITE_ANUAL
@@ -77,7 +115,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         {comExtrato && (
           <section>
             <h2>Mês a mês</h2>
-            <MonthBars data={meses.map((m, i) => ({ m: CURTO[i], s: m.servicos, c: m.comercio }))} />
+            <MonthBars data={dadosMeses} />
           </section>
         )}
       </div>

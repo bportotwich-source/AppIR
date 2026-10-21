@@ -4,7 +4,7 @@
 import * as React from 'react'
 import type { ComponentType } from 'react'
 import type {
-  AnimatedNumberProps, CountdownRingProps, LimitGaugeProps, MonthBarsProps, ReviewDeckProps, SplitBarProps,
+  AccumulatedChartProps, AnimatedNumberProps, CountdownRingProps, LimitTrackProps, LimitGaugeProps, MonthBarsProps, ReviewDeckProps, SplitBarProps,
 } from '../../design/design-system/components/index'
 
 declare global {
@@ -12,6 +12,8 @@ declare global {
     React: typeof React
     MeuMEI: {
       LimitGauge: ComponentType<LimitGaugeProps>
+      AccumulatedChart: ComponentType<AccumulatedChartProps>
+      LimitTrack: ComponentType<LimitTrackProps>
       AnimatedNumber: ComponentType<AnimatedNumberProps>
       MonthBars: ComponentType<MonthBarsProps>
       SplitBar: ComponentType<SplitBarProps>

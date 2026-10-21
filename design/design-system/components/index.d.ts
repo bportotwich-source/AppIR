@@ -83,3 +83,22 @@ export interface ScanDropProps {
   size?: number;
   onDone?: (r: { fileName?: string }) => void;
 }
+
+/** Curva do faturamento acumulado no ano, com limite, faixa de atenção e projeção até dezembro. */
+export interface AccumulatedChartProps {
+  data: MonthDatum[];
+  /** Padrão 81000. */
+  limit?: number;
+  tone?: "light" | "dark";
+  /** Rótulo acima do valor. Padrão "Faturado no ano". */
+  label?: string;
+}
+
+/** O limite anual como barra de orçamento: um pedaço por mês, projeção listrada e folga. */
+export interface LimitTrackProps {
+  data: MonthDatum[];
+  /** Padrão 81000. */
+  limit?: number;
+  tone?: "light" | "dark";
+  label?: string;
+}

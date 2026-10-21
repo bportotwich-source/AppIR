@@ -12,9 +12,9 @@
   },
   "groups": [],
   "lastChange": {
-    "at": "2026-10-21T22:48:00Z",
+    "at": "2026-10-21T23:20:00Z",
     "by": "Bruno Porto",
-    "note": "Biblioteca de componentes animados para celular e regras de movimento.",
+    "note": "Alternativas ao medidor: AccumulatedChart e LimitTrack.",
     "via": "Claude Code"
   },
   "layout": "files",

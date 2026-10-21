@@ -81,11 +81,12 @@ export function limiteProporcional(mesAbertura: number): number {
   return 6_750 * (13 - mesAbertura)
 }
 
-/** Projeção do ano pela média dos meses com extrato importado. */
+/** Projeção do ano no ritmo atual: média de janeiro até o último mês com
+ * extrato, estendida até dezembro. É a mesma conta dos componentes
+ * AccumulatedChart e LimitTrack, para os números baterem na tela.
+ */
 export function projecaoAno(banco: Banco, ano: number): number | null {
-  const meses = new Set(
-    banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => r.data.slice(5, 7)),
-  )
-  if (meses.size === 0) return null
-  return (total(totaisAno(banco, ano)) / meses.size) * 12
+  const meses = banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => Number(r.data.slice(5, 7)))
+  if (meses.length === 0) return null
+  return (total(totaisAno(banco, ano)) / Math.max(...meses)) * 12
 }

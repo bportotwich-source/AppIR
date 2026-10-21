@@ -28,6 +28,10 @@ h2 { margin: 0 0 14px; font-size: 20px; line-height: 26px; font-weight: 600; }
 .faixa select { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(236,241,239,.24); background: rgba(236,241,239,.08); color: #ecf1ef; font-weight: 600; }
 .faixa select option { color: var(--ink); }
 .faixa-nota { margin: 18px 0 2px; font-size: 13px; color: #a3b5b0; }
+.visoes { display: flex; gap: 4px; margin-top: 14px; padding: 4px; border-radius: 999px; background: rgba(236,241,239,.08); width: fit-content; }
+.visoes button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: #a3b5b0; font-size: 13px; font-weight: 600; cursor: pointer; }
+.visoes button[aria-checked="true"] { background: #2dd4bf; color: #0b1f1c; }
+.medidor > * { width: 100%; }
 .medidor { display: flex; justify-content: center; margin-top: 14px; }
 .projecao { margin: 8px 0 0; padding: 12px 14px; border-radius: 18px; background: rgba(251,191,36,.10); border: 1px solid rgba(251,191,36,.32); color: #fde68a; font-size: 14px; line-height: 20px; }
 
