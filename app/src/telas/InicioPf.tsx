@@ -96,6 +96,24 @@ export default function InicioPf({ banco, ir, perfil, mudarPerfil, oculto, alter
           </section>
         )}
 
+        {r.porBanco.length > 1 && (
+          <section aria-labelledby="bancos-t">
+            <div className="titulo-linha">
+              <h2 id="bancos-t">Por banco</h2>
+              <span>{mesLongo(mes)}</span>
+            </div>
+            <ul className="por-banco">
+              {r.porBanco.map((b) => (
+                <li key={b.id}>
+                  <span><i aria-hidden="true" style={{ background: b.cor }} />{b.nome}</span>
+                  <b className="mm-num">{brl(b.gastos)}</b>
+                </li>
+              ))}
+            </ul>
+            {r.entreContas > 0 && <p className="apoio"><span className="sensivel">{brl(r.entreContas)}</span> passaram de uma conta sua para a outra. Não contam como gasto nem como entrada.</p>}
+          </section>
+        )}
+
         {grupos.length > 0 && (
           <button className="ticket" onClick={() => ir('revisar-pf')} aria-label={`${grupos.length} destinos sem categoria, ${brl(valorSem)}. Abrir revisão.`}>
             <span className="ticket-rostos ticket-etiqueta" aria-hidden="true">

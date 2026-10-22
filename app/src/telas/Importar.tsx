@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { TelaProps } from '../App'
 import { importar } from '../core/banco'
-import { lerArquivo } from '../core/arquivos'
+import { bancoDoArquivo, lerArquivo } from '../core/arquivos'
 import { extratosDoAno } from '../core/agenda'
 import { brl } from '../core/relatorio'
 import { MESES } from '../core/formato'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
 import { Alternar, SeletorPerfil } from '../componentes/Perfil'
-import { carteiraPf, importarPf, nomesPerfis, separarRetiradasDoTitular, titularDo, type ContaPf } from '../core/pf'
+import { BANCOS_PF, bancoDe, carteiraPf, importarPf, nomeBanco, nomesPerfis, separarRetiradasDoTitular, titularDo, type BancoPf, type ContaPf } from '../core/pf'
 
 type Conta = 'pj' | 'conta' | 'cartao'
 
@@ -38,6 +38,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil, mud
   const refHistorico = useRef<HTMLElement>(null)
   const meses = extratosDoAno(banco, ano)
   const [contaPf, setContaPf] = useState<ContaPf>('conta')
+  const [bancoPf, setBancoPf] = useState<BancoPf>('nubank')
   const conta: Conta = perfil === 'pj' ? 'pj' : contaPf
   const nomes = nomesPerfis(titularDo(banco))
 
@@ -52,17 +53,26 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil, mud
     setErro('')
     try {
       const movs = await lerArquivo(arquivo)
-      if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse arquivo é um extrato do Nubank?')
+      if (movs.length === 0) throw new Error(perfil === 'pf' && bancoPf === 'santander'
+        ? 'Nenhuma movimentação encontrada. Do Santander, use o extrato em OFX.'
+        : 'Nenhuma movimentação encontrada. Esse arquivo é um extrato do Nubank?')
+      // O banco vem do próprio arquivo quando dá para saber; o Santander é sempre da PF.
+      const doArquivo = await bancoDoArquivo(arquivo)
+      const bancoUsado = doArquivo ?? bancoPf
+      if (doArquivo) setBancoPf(doArquivo)
       // A fatura do cartão em CSV tem a coluna "amount": vai para o cartão da PF.
-      const destino: Conta = arquivo.name.toLowerCase().endsWith('.csv') && /amount/i.test((await arquivo.text()).split('\n')[0]) ? 'cartao' : conta
+      const cartaoCsv = arquivo.name.toLowerCase().endsWith('.csv') && /amount/i.test((await arquivo.text()).split('\n')[0])
+      const destino: Conta = cartaoCsv ? 'cartao' : conta === 'pj' && doArquivo === 'santander' ? 'conta' : conta
       if (destino !== 'pj') setContaPf(destino)
       const base = { arquivo: arquivo.name, quando: new Date(), mes: mesDoExtrato(movs.map((m) => m.data)), lidas: movs.length }
       if (destino !== 'pj') {
-        const r = importarPf(banco, movs, destino, arquivo.name)
+        const r = importarPf(banco, movs, destino, arquivo.name, { banco: bancoUsado })
         mudar(r.banco)
         setLeitura({
           ...base, novas: r.novas, repetidas: r.repetidas, saidas: 0, sozinhas: 0, aRevisar: r.semCategoria, pf: true,
-          aviso: perfil === 'pj' ? `É a fatura do cartão: foi para ${nomes.pf}.` : undefined,
+          aviso: perfil === 'pj'
+            ? `${cartaoCsv ? 'É a fatura do cartão' : 'É do Santander'}: foi para ${nomes.pf}.`
+            : `${nomeBanco(bancoUsado)} · ${destino === 'cartao' ? 'cartão de crédito' : 'conta'}`,
         })
       } else {
         const r = importar(banco, movs, arquivo.name)
@@ -87,13 +97,17 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil, mud
 
   return (
     <main className="conteudo topo">
-      <Cabecalho titulo="Importar extrato" sub="Use o extrato do Nubank em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular." voltar={() => ir('inicio')} empilhado />
+      <Cabecalho titulo="Importar extrato" sub={perfil === 'pj' ? 'Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular.' : 'Extrato em OFX de qualquer banco (o mais confiável), ou CSV e PDF do Nubank. Ele é lido aqui e não sai do celular.'} voltar={() => ir('inicio')} empilhado />
       <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
       {perfil === 'pf' && (
-        <Alternar rotulo="De onde é o extrato" valor={contaPf} mudar={setContaPf} opcoes={[
-          { id: 'conta', nome: 'Conta' },
-          { id: 'cartao', nome: 'Cartão de crédito' },
-        ]} />
+        <>
+          <Alternar rotulo="De qual banco é o extrato" valor={bancoPf} mudar={setBancoPf} opcoes={BANCOS_PF.map((b) => ({ id: b.id, nome: b.nome }))} />
+          <Alternar rotulo="De onde é o extrato" valor={contaPf} mudar={setContaPf} opcoes={[
+            { id: 'conta', nome: 'Conta' },
+            { id: 'cartao', nome: 'Cartão de crédito' },
+          ]} />
+          {bancoPf === 'santander' && <p className="apoio">No app ou no site do Santander, salve o extrato em OFX. O app reconhece o banco pelo arquivo.</p>}
+        </>
       )}
 
       <label className="scan">
@@ -175,10 +189,10 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil, mud
 
 /** Arquivos da PF já importados, do mais recente para o mais antigo. */
 function HistoricoPf({ banco }: Pick<TelaProps, 'banco'>) {
-  const arquivos = new Map<string, { arquivo: string; conta: ContaPf; importadoEm: string; n: number; gastos: number }>()
+  const arquivos = new Map<string, { arquivo: string; conta: ContaPf; banco: BancoPf; importadoEm: string; n: number; gastos: number }>()
   for (const r of carteiraPf(banco).movimentacoes) {
-    const k = `${r.conta}|${r.arquivo}`
-    const a = arquivos.get(k) ?? { arquivo: r.arquivo, conta: r.conta, importadoEm: r.importadoEm, n: 0, gastos: 0 }
+    const k = `${bancoDe(r)}|${r.conta}|${r.arquivo}`
+    const a = arquivos.get(k) ?? { arquivo: r.arquivo, conta: r.conta, banco: bancoDe(r), importadoEm: r.importadoEm, n: 0, gastos: 0 }
     a.n++
     if (r.tipo === 'saida') a.gastos += r.valor
     if (r.importadoEm > a.importadoEm) a.importadoEm = r.importadoEm
@@ -193,10 +207,10 @@ function HistoricoPf({ banco }: Pick<TelaProps, 'banco'>) {
       ) : (
         <ol className="linha-tempo">
           {lista.map((a, i) => (
-            <li key={`${a.conta}${a.arquivo}`} data-atual={i === 0}>
+            <li key={`${a.banco}${a.conta}${a.arquivo}`} data-atual={i === 0}>
               <span className="ponto" aria-hidden="true" />
               <div>
-                <b>{a.conta === 'cartao' ? 'Fatura do cartão' : 'Conta'}</b>
+                <b>{nomeBanco(a.banco)} · {a.conta === 'cartao' ? 'fatura do cartão' : 'conta'}</b>
                 <span>Importado em {dataCurtaBr(a.importadoEm)} · {a.n} {a.n === 1 ? 'movimentação' : 'movimentações'}</span>
               </div>
               <div className="valor">

@@ -41,7 +41,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 <span style="padding: 2px 8px; border-radius: 999px; background: {{c.tagFundo}}; color: {{c.tagCor}}; font-size: 12px; font-weight: 700">{{c.tag}}</span>
 </label>
 </sc-for>
-<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">No Bruno PJ não tem escolha: o extrato vai para a empresa. A fatura do cartão em CSV vai sempre para o Bruno PF.</p>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O app reconhece o banco pelo OFX e já deixa marcado. Pix entre o Nubank e o Santander não conta como gasto.</p>
 </fieldset>
 
 <x-import component-from-global-scope="MeuMEI.ScanDrop" file-name="extrato-novembro-2026.pdf" done-text="31 movimentações lidas" size="{{tamanhoScan}}"></x-import>
@@ -112,8 +112,9 @@ class Component extends DCLogic {
   renderVals() {
     var self = this;
     var contas = [
-      ['Conta', 'Conta Nubank PF em OFX, CSV ou PDF', 'PF', '#eef0ff', '#4338ca'],
-      ['Cartão de crédito', 'Fatura do cartão em CSV', 'PF', '#eef0ff', '#4338ca']
+      ['Nubank · conta', 'Extrato em OFX, CSV ou PDF', 'NU', '#f3e8ff', '#820ad1'],
+      ['Nubank · cartão de crédito', 'Fatura do cartão em CSV', 'NU', '#f3e8ff', '#820ad1'],
+      ['Santander · conta', 'Extrato em OFX', 'ST', '#fee2e2', '#b91c1c']
     ].map(function (c, i) {
       var on = self.state.conta === i;
       return { nome: c[0], desc: c[1], tag: c[2], tagFundo: c[3], tagCor: c[4], on: on, anel: on ? '0 0 0 2px #0f766e' : '0 0 0 1px #e3e7e5', pick: function () { self.setState({ conta: i }); } };
