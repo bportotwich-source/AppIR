@@ -5,6 +5,8 @@
 
 import type { Movimentacao } from './parser'
 import { pagador } from './formato'
+import type { CarteiraPf } from './pf'
+import type { Comprovante } from './comprovantes'
 
 export type Categoria = 'servicos' | 'comercio'
 
@@ -48,6 +50,12 @@ export interface Banco {
   limiteAnual?: number
   // Por "AAAA-MM": quanto do faturamento do mês teve nota fiscal emitida.
   notasFiscais?: Record<string, { servicos?: number; comercio?: number }>
+  // Perfil Bruno PF (pf.ts) e comprovantes de compra (comprovantes.ts).
+  pf?: CarteiraPf
+  comprovantes?: Comprovante[]
+  // Nome do titular: Pix da PJ para ele vira retirada e entra na PF.
+  titular?: string
+  privacidade?: { abrirOculto?: boolean; esconderDocs?: boolean }
   ultimoBackup?: string // ISO
   alteradoEm?: string // ISO; última mudança em movimentações ou marcações
 }

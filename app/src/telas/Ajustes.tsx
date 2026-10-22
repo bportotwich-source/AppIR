@@ -7,6 +7,7 @@ import { instalado } from '../core/armazenamento'
 import { dataCurta, lerValor } from '../core/formato'
 import { cadastrarDigital, desligarCofre, digitalDisponivel, ler as lerTrava, ligarCofre, prepararDigitalNoCofre, removerDigital, removerTrava } from '../core/trava'
 import FolhaCofre from '../componentes/FolhaCofre'
+import { nomesPerfis, separarRetiradasDoTitular } from '../core/pf'
 
 export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }: TelaProps) {
   const [trava, setTrava] = useState(lerTrava)
@@ -73,6 +74,26 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
         <span aria-hidden="true">←</span> Início
       </button>
       <h1>Ajustes</h1>
+
+      <section>
+        <h2>Você</h2>
+        <label className="campo">
+          <span>Seu nome completo</span>
+          <input
+            autoComplete="name"
+            defaultValue={banco.titular ?? ''}
+            placeholder="Como aparece no Pix"
+            onBlur={(e) => {
+              const titular = e.target.value.trim() || undefined
+              if (titular !== banco.titular) mudar(separarRetiradasDoTitular({ ...banco, titular }))
+            }}
+          />
+        </label>
+        <p className="apoio">Com ele, o Pix que sai de {nomesPerfis(banco.titular).pj} para você vira retirada e entra em {nomesPerfis(banco.titular).pf} sozinho.</p>
+        <div className="botoes">
+          <button onClick={() => ir('privacidade')}>Privacidade e valores escondidos</button>
+        </div>
+      </section>
 
       <section>
         <h2>Sua empresa</h2>

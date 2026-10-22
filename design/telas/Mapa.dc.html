@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Mapa do app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+.no:hover{box-shadow:0 0 0 2px #0f766e}
+</style>
+</helmet>
+<div style="width: 1840px; height: 1080px; box-sizing: border-box; padding: 48px 56px; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px; display: flex; flex-direction: column; gap: 28px">
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.12em; color: #5b6763">MAPA DO APP · PF + PJ</span>
+<h1 style="margin: 0; font-size: 40px; line-height: 46px; font-weight: 600; letter-spacing: -0.015em">Como as telas se ligam</h1>
+<p style="margin: 0; max-width: 760px; color: #5b6763">Dois perfis, Bruno PJ e Bruno PF, com a mesma trava e o mesmo backup. Um toque no seletor do Início troca de perfil. Todo Pix que sai do PJ para o seu nome ou CPF vira retirada no PJ e entrada no PF, sozinho.</p>
+</div>
+<div style="display: flex; gap: 18px; font-size: 13px; color: #5b6763">
+<span style="display: flex; align-items: center; gap: 8px"><span style="padding: 2px 8px; border-radius: 999px; background: #15201d; color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 0.04em">NOVA</span>tela nova</span>
+<span style="display: flex; align-items: center; gap: 8px"><span style="padding: 2px 8px; border-radius: 999px; background: #e3e7e5; color: #15201d; font-size: 11px; font-weight: 700; letter-spacing: 0.04em">MUDA</span>tela que já existe e muda</span>
+<span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 2px solid #5b6763; box-sizing: border-box"></span>já existe</span>
+</div>
+</header>
+
+<section aria-label="Barra de abas" style="display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 20px; background: #0c2a27; color: #ecf1ef">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.12em; color: #a3b5b0; flex: none">BARRA DE ABAS</span>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; gap: 10px; flex: 1 1 auto">
+<sc-for list="{{abas}}" as="a" hint-placeholder-count="5">
+<li style="flex: 1 1 0; padding: 10px 14px; border-radius: 14px; background: {{a.fundo}}; display: flex; flex-direction: column; gap: 2px">
+<b style="font-weight: 600; color: {{a.cor}}">{{a.nome}}</b>
+<span style="font-size: 13px; line-height: 18px; color: #a3b5b0">{{a.desc}}</span>
+</li>
+</sc-for>
+</ol>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; flex: 1 1 auto; min-height: 0">
+<sc-for list="{{faixas}}" as="f" hint-placeholder-count="5">
+<section style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 22px; background: {{f.fundo}}">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 2px 4px 6px">
+<h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600; color: {{f.cor}}">{{f.titulo}}</h2>
+<span style="font-size: 13px; line-height: 18px; color: #5b6763">{{f.sub}}</span>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{f.telas}}" as="t" hint-placeholder-count="4">
+<li><a class="no" href="{{t.href}}" style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 14px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; text-decoration: none; color: #15201d">
+<span style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><b style="font-weight: 600">{{t.nome}}</b><span style="padding: 2px 8px; border-radius: 999px; background: {{t.seloFundo}}; color: {{t.seloCor}}; font-size: 11px; font-weight: 700; letter-spacing: 0.04em">{{t.selo}}</span></span>
+<span style="font-size: 13px; line-height: 18px; color: #5b6763">{{t.desc}}</span>
+<span style="font-size: 12px; line-height: 16px; color: {{f.cor}}; font-weight: 600">{{t.vai}}</span>
+</a></li>
+</sc-for>
+</ol>
+</section>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1840,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    function t(nome, href, tipo, desc, vai) {
+      var selo = { nova: ['NOVA', '#15201d', '#ffffff'], muda: ['MUDA', '#e3e7e5', '#15201d'], ja: ['', 'transparent', '#15201d'] }[tipo];
+      return { nome: nome, href: href, desc: desc, vai: vai ? '→ ' + vai : '', selo: selo[0], seloFundo: selo[1], seloCor: selo[2] };
+    }
+    return {
+      abas: [
+        { nome: 'Início', desc: 'Bruno PJ · Bruno PF · Tudo', cor: '#2dd4bf', fundo: 'rgba(45,212,191,0.14)' },
+        { nome: 'Revisar', desc: 'entradas PJ e gastos PF', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
+        { nome: '+ Adicionar', desc: 'ler nota, importar extrato, recibo', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
+        { nome: 'Notas', desc: 'comprovantes, no lugar de Extratos', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
+        { nome: 'Declaração', desc: 'DASN do MEI e IRPF', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' }
+      ],
+      faixas: [
+        { titulo: 'Entrada e Início', sub: 'o que todo mundo vê', cor: '#0c2a27', fundo: '#e7ecea', telas: [
+          t('Desbloquear', 'Login.dc.html', 'ja', 'PIN ou digital', 'Início'),
+          t('Início · Bruno PJ', 'Main.dc.html', 'muda', 'limite do MEI, ganha o seletor Bruno PJ · Bruno PF · Tudo', 'Revisar, Saídas, DAS'),
+          t('Início · Bruno PF', 'PfInicio.dc.html', 'nova', 'gastos do mês por categoria, retirada do MEI que entrou', 'Revisar gastos, Comprovantes'),
+          t('Início · Tudo', 'TudoInicio.dc.html', 'nova', 'o mês somado, sem contar a retirada duas vezes', 'Início PF ou PJ'),
+          t('Ajustes', 'Ajustes.dc.html', 'muda', 'ganha contas PF e categorias', 'Categorias, Privacidade'),
+          t('Privacidade', 'Privacidade.dc.html', 'nova', 'olho para esconder valores, CPF/CNPJ e nomes', '')
+        ] },
+        { titulo: 'Empresa (PJ)', sub: 'o que já existe', cor: '#0f766e', fundo: '#e6f4f1', telas: [
+          t('Revisar entradas', 'Revisar.dc.html', 'ja', 'Pix que podem ser faturamento', ''),
+          t('Saídas do ano', 'Saidas.dc.html', 'muda', 'Pix para você vira entrada em Bruno PF sozinho', 'Início PF'),
+          t('Movimentações', 'Movimentacoes.dc.html', 'ja', 'corrigir qualquer marcação', ''),
+          t('Relatório mensal', 'RelatorioMensal.dc.html', 'ja', 'receitas do mês', '')
+        ] },
+        { titulo: 'Pessoa física (PF)', sub: 'novo', cor: '#4338ca', fundo: '#eef0ff', telas: [
+          t('Adicionar', 'Adicionar.dc.html', 'nova', 'folha do botão +: nota, extrato, PDF, recibo', 'Ler nota, Importar'),
+          t('Importar extrato', 'Importar.dc.html', 'muda', 'pergunta a conta: PJ, conta PF ou cartão PF', 'Revisar gastos'),
+          t('Revisar gastos', 'PfRevisar.dc.html', 'nova', 'cada destino ganha uma categoria, lembrada para as próximas', ''),
+          t('Extratos importados', 'Importar.dc.html#historico', 'muda', 'sai da barra, fica dentro de Importar', '')
+        ] },
+        { titulo: 'Comprovantes', sub: 'notas e recibos', cor: '#b45309', fundo: '#fff4e0', telas: [
+          t('Comprovantes', 'Comprovantes.dc.html', 'nova', 'por mês, ligados ou não a uma compra do extrato', 'Comprovante'),
+          t('Ler nota', 'LerNota.dc.html', 'nova', 'câmera no QR code do cupom NFC-e', 'Comprovante'),
+          t('Comprovante', 'Comprovante.dc.html', 'nova', 'loja, itens, total, compra ligada, categoria', 'Revisar gastos'),
+          t('PDF compartilhado', 'Comprovante.dc.html', 'nova', 'nota de loja online chega pelo Compartilhar', 'Comprovante')
+        ] },
+        { titulo: 'Declaração', sub: 'MEI e IRPF', cor: '#15201d', fundo: '#eceeed', telas: [
+          t('Declaração · MEI', 'Declaracao.dc.html', 'muda', 'DASN-SIMEI, ganha a aba IRPF', 'IRPF'),
+          t('IRPF', 'Irpf.dc.html', 'nova', 'lucro isento do MEI, saúde e educação dedutíveis', 'Recibo de saúde'),
+          t('Recibo de saúde', 'ReciboSaude.dc.html', 'nova', 'consulta, dentista, exame: quem atendeu e quem pagou', 'IRPF'),
+          t('DAS e IR', 'DasIr.dc.html', 'ja', 'DAS do ano e lucro isento', '')
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

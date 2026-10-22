@@ -11,6 +11,8 @@ import LinhaDas from '../componentes/LinhaDas'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
 import { avisoDasn, declaracaoDo } from '../core/declaracao'
+import { titularDo } from '../core/pf'
+import { BotaoOlho, Engrenagem, SeletorPerfil } from '../componentes/Perfil'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
@@ -80,7 +82,7 @@ interface Props extends TelaProps {
   mudarAno: (ano: number) => void
 }
 
-export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosProtegidos, instalar }: Props) {
+export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosProtegidos, instalar, perfil, mudarPerfil, oculto, alternarOlho }: Props) {
   const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthChart } = window.MeuMEI
   const [visao, setVisao] = useEscolha<Visao>('meu-mei:visao', VISOES)
   const [grafico, setGrafico] = useEscolha<Grafico>('meu-mei:grafico', GRAFICOS)
@@ -124,17 +126,14 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
           </span>
           <label className="so-leitor" htmlFor="ano">Ano</label>
           <div className="faixa-acoes">
+            <BotaoOlho oculto={oculto} alternar={alternarOlho} />
             <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
               {anos.map((a) => <option key={a}>{a}</option>)}
             </select>
-            <button className="engrenagem" aria-label="Ajustes" onClick={() => ir('ajustes')}>
-              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
+            <Engrenagem abrir={() => ir('ajustes')} />
           </div>
         </div>
+        <SeletorPerfil perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
         <p className="faixa-nota">
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
           {limite !== anual && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
@@ -150,7 +149,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
         {visao === 'arco' && projecao !== null && (
           <p className="projecao sobe">
             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 17 6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>
-            <span>No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
+            <span>No ritmo atual, {ano} fecha perto de <b className="sensivel">{reais(projecao)}</b>.{' '}
             {projecao <= limite
               ? `Fica dentro do limite, com folga de ${reais(limite - projecao)}.`
               : 'Passa do limite: vale falar com um contador.'}
@@ -191,7 +190,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             <span className="ticket-texto">
               <span className="rotulo">{nPendentes} {nPendentes === 1 ? 'pendente' : 'pendentes'}</span>
               <b>Pix esperando você</b>
-              <span>{brl(valorPendente)} ainda fora do total</span>
+              <span><span className="sensivel">{brl(valorPendente)}</span> ainda fora do total</span>
             </span>
             <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
           </button>

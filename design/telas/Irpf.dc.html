@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>IRPF</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 1500px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+<div style="padding: 24px 20px 120px; display: flex; flex-direction: column; gap: 24px">
+
+<header style="display: flex; flex-direction: column; gap: 14px">
+<div role="radiogroup" aria-label="Declaração" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #e3e7e5">
+<a href="Declaracao.dc.html" role="radio" aria-checked="false" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #5b6763; font-size: 14px; font-weight: 600; text-decoration: none">PJ · DASN</a>
+<a href="Irpf.dc.html" role="radio" aria-checked="true" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #ffffff; color: #15201d; font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 1px 3px rgba(12,42,39,0.18)">PF · IRPF</a>
+</div>
+<div><h1 style="margin: 0 0 4px; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Imposto de Renda 2027</h1>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">Ano-base 2026. O que você vai copiar para o programa da Receita, já separado por ficha.</p></div>
+</header>
+
+<section aria-labelledby="rend-t" style="display: flex; flex-direction: column; gap: 10px">
+<h2 id="rend-t" style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600">Rendimentos da empresa</h2>
+<dl style="margin: 0; padding: 6px 16px; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eef1f0"><dt style="display: flex; flex-direction: column"><span>Lucro isento do MEI</span><span style="font-size: 13px; line-height: 18px; color: #5b6763">Rendimentos Isentos · lucro do titular do Simples</span></dt><dd class="mm-num" style="margin: 0; font-weight: 600">R$ 18.749,00</dd></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 0"><dt style="display: flex; flex-direction: column"><span>Parte tributável</span><span style="font-size: 13px; line-height: 18px; color: #5b6763">Retiradas acima do lucro isento</span></dt><dd class="mm-num" style="margin: 0; font-weight: 600">R$ 0,00</dd></div>
+</dl>
+<a href="DasIr.dc.html" style="font-size: 14px; font-weight: 600">Ver a conta do lucro isento</a>
+</section>
+
+<section aria-labelledby="ded-t" style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="ded-t" style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600">Despesas que abatem</h2><span style="font-size: 13px; color: #5b6763">Ficha Pagamentos Efetuados</span></div>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5">
+<sc-for list="{{deducoes}}" as="d" hint-placeholder-count="4">
+<li style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: {{d.borda}}">
+<span style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0"><b style="font-weight: 600">{{d.nome}}</b><span style="font-size: 13px; line-height: 18px; color: #5b6763">{{d.info}}</span></span>
+<b class="mm-num" style="font-weight: 500; white-space: nowrap">{{d.valor}}</b>
+</li>
+</sc-for>
+</ul>
+<div style="display: flex; justify-content: space-between; padding: 0 4px"><span style="font-weight: 600">Total que abate</span><b class="mm-num" style="font-weight: 600">R$ 1.190,00 <span style="font-weight: 500; color: #5b6763">+ 240,00 pendente</span></b></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5">
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span>Educação</span><span class="mm-num">R$ 0,00 de R$ 3.561,50</span></div>
+<div aria-hidden="true" style="height: 8px; border-radius: 999px; background: #eef1f0"></div>
+<span style="font-size: 13px; line-height: 18px; color: #5b6763">Limite por pessoa. Saúde não tem limite.</span>
+</div>
+</section>
+
+<a href="ReciboSaude.dc.html" style="display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 18px; background: #fffbeb; color: #7c4a14; text-decoration: none; box-shadow: 0 0 0 1px #f3d27a">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+<span style="flex: 1 1 auto; display: flex; flex-direction: column"><b style="font-weight: 600; color: #92400e">1 recibo sem CPF ou CNPJ de quem atendeu</b><span style="font-size: 13px; line-height: 18px">Sem isso a Receita não aceita a despesa. Toque para completar.</span></span>
+</a>
+
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 18px; background: #eef1f0">
+<b style="font-weight: 600">Farmácia fica de fora</b>
+<span style="font-size: 14px; line-height: 20px; color: #3d4945">R$ 108,80 em remédios este ano. Remédio só abate quando vem na conta do hospital.</span>
+</div>
+
+<button type="button" style="min-height: 52px; border-radius: 16px; border: 0; background: #0f766e; color: #ffffff; font: inherit; font-weight: 600; cursor: pointer">Gerar resumo para a declaração</button>
+
+</div>
+
+<nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,0.95); box-shadow: 0 12px 32px rgba(12,42,39,0.18), 0 0 0 1px rgba(12,42,39,0.06)">
+<a href="PfInicio.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
+<a href="PfRevisar.dc.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">11</span></a>
+<a href="Adicionar.dc.html" aria-label="Adicionar" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0f766e; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(15,118,110,0.4), 0 0 0 6px #f4f6f5"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></a>
+<a href="Comprovantes.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Notas</a>
+<a href="Declaracao.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #0f766e; font-weight: 700"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var d = [
+      ['Clínica Odonto Sorriso', 'Dentista · Bruno · CNPJ 00.000.000/0001-00', 'R$ 350,00'],
+      ['Laboratório Vida', 'Exames · Bruno · CNPJ 00.000.000/0002-00', 'R$ 240,00'],
+      ['Dra. Marina Lopes', 'Psicóloga · Bruno · 4 sessões', 'R$ 600,00'],
+      ['Dr. Paulo Reis', 'Consulta · Bruno · falta o CPF', 'R$ 240,00']
+    ];
+    return { deducoes: d.map(function (x, i) { return { nome: x[0], info: x[1], valor: x[2], borda: i ? '1px solid #eef1f0' : '0' }; }) };
+  }
+}
+</script>
+</body>
+</html>

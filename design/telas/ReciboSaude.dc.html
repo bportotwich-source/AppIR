@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Recibo de saúde</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo label{font-size:14px;font-weight:600}
+.campo input,.campo select{min-height:48px;padding:0 14px;border-radius:12px;border:1px solid #d5dbd8;background:#ffffff;font:inherit;color:#15201d;box-sizing:border-box;width:100%}
+.campo small{font-size:13px;line-height:18px;color:#5b6763}
+</style>
+</helmet>
+<div style="width: 390px; height: 1240px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+<form style="padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-direction: column; gap: 14px">
+<a href="Irpf.dc.html" aria-label="Voltar para o IRPF" style="width: 44px; height: 44px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; align-items: center; justify-content: center; color: #15201d"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+<div><h1 style="margin: 0 0 4px; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Recibo de saúde</h1>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">A Receita pede quem atendeu, o CPF ou CNPJ e quem foi o paciente.</p></div>
+</header>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5">
+<div aria-hidden="true" style="flex: none; width: 56px; height: 72px; border-radius: 8px; background: #f3f1ea; box-shadow: inset 0 0 0 1px #e3e7e5; display: flex; flex-direction: column; gap: 5px; padding: 10px 8px; box-sizing: border-box"><span style="height: 4px; background: #c9c6bd; border-radius: 2px"></span><span style="height: 4px; width: 70%; background: #c9c6bd; border-radius: 2px"></span><span style="height: 4px; background: #c9c6bd; border-radius: 2px"></span><span style="height: 4px; width: 50%; background: #c9c6bd; border-radius: 2px"></span></div>
+<span style="flex: 1 1 auto; display: flex; flex-direction: column"><b style="font-weight: 600">Foto do recibo</b><span style="font-size: 13px; line-height: 18px; color: #5b6763">Nome, data e valor lidos. Confira abaixo.</span></span>
+<button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 10px; border: 0; background: #eef1f0; font: inherit; font-size: 14px; font-weight: 600; color: #15201d">Trocar</button>
+</div>
+
+<div class="campo"><label for="tipo">Tipo</label>
+<select id="tipo"><option>Consulta médica</option><option>Dentista</option><option>Psicólogo</option><option>Fisioterapia</option><option>Exames</option><option>Hospital</option><option>Plano de saúde</option></select></div>
+
+<div class="campo"><label for="prof">Quem atendeu</label><input id="prof" value="Dr. Paulo Reis"></div>
+
+<div class="campo"><label for="doc">CPF ou CNPJ de quem atendeu</label><input id="doc" inputmode="numeric" placeholder="000.000.000-00" style="border-color: #b45309; box-shadow: 0 0 0 1px #b45309"><small style="color: #92400e">Falta este dado. Costuma estar no rodapé do recibo.</small></div>
+
+<div class="campo"><label for="pac">Paciente</label><select id="pac"><option>Você (Bruno)</option><option>Adicionar dependente…</option></select></div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+<div class="campo"><label for="data">Data</label><input id="data" value="02/10/2026"></div>
+<div class="campo"><label for="valor">Valor</label><input id="valor" class="mm-num" value="R$ 240,00"></div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #e6f4f1; color: #134e48">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+<span style="font-size: 14px; line-height: 20px">Ligado ao Pix de R$ 240,00 em 02/10, conta pessoal.</span>
+</div>
+
+<button type="submit" style="min-height: 52px; border-radius: 16px; border: 0; background: #0f766e; color: #ffffff; font: inherit; font-weight: 600; cursor: pointer">Salvar recibo</button>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763; text-align: center">Guarde o papel por 5 anos. A foto fica no celular e no backup.</p>
+</form>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
