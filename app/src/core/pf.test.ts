@@ -128,6 +128,33 @@ describe('mais de um banco na PF', () => {
     expect(r.entreContas).toBe(400)
   })
 
+  it('o OFX corrige a descrição do que veio do PDF no mesmo mês', () => {
+    const pix = { data: '2026-01-02', valor: 80, tipo: 'saida' as const }
+    let b = importarPf(pj(), [{ ...pix, descricao: '22662874-3' }], 'conta', 'nubank.pdf').banco
+    const r = importarPf(b, [{ ...pix, descricao: 'Transferência enviada pelo Pix - Thiago Klisman Barbosa Vasconcelos - •••.475.023-•• - NU PAGAMENTOS - IP (0260) Agência: 1 Conta: 22662874-3' }], 'conta', 'nubank.ofx')
+    b = r.banco
+    expect(r.novas).toBe(0)
+    expect(b.pf!.movimentacoes).toHaveLength(1)
+    expect(maioresGastos(b, 2026, 1)[0].nome).toBe('Thiago Klisman Barbosa Vasconcelos')
+    // e um PDF depois não estraga o que veio do OFX
+    b = importarPf(b, [{ ...pix, descricao: '22662874-3' }], 'conta', 'nubank.pdf').banco
+    expect(maioresGastos(b, 2026, 1)[0].nome).toBe('Thiago Klisman Barbosa Vasconcelos')
+  })
+
+  it('Pix para conta no Nubank é gasto; boleto do cartão Nubank pago no Santander não', () => {
+    const b = importarPf(pj(), [
+      { data: '2026-01-06', valor: 100, tipo: 'saida', descricao: 'Transferência enviada pelo Pix - Thiago Klisman - •••.475.023-•• - NU PAGAMENTOS - IP (0260)' },
+      { data: '2026-01-10', valor: 450, tipo: 'saida', descricao: 'PAGAMENTO DE BOLETO NU PAGAMENTOS SA' },
+    ], 'conta', 's.ofx', { banco: 'santander' }).banco
+    expect(resumoPf(b, 2026, 1).gastos).toBe(100)
+  })
+
+  it('junta o nome cortado do Santander com o nome inteiro do Nubank', () => {
+    let b = importarPf(pj(), [{ data: '2026-01-06', valor: 100, tipo: 'saida', descricao: 'Transferência enviada pelo Pix - Thiago Klisman Barbosa Vasconcelos - •••.475.023-••' }], 'conta', 'n.ofx').banco
+    b = importarPf(b, [{ data: '2026-01-16', valor: 105, tipo: 'saida', descricao: 'PIX ENVIADO Thiago Klisman Barbosa Va' }], 'conta', 's.pdf', { banco: 'santander' }).banco
+    expect(maioresGastos(b, 2026, 1)).toMatchObject([{ nome: 'Thiago Klisman Barbosa Vasconcelos', quantas: 2, valor: 205 }])
+  })
+
   it('sem o nome do titular, Pix para outra pessoa no outro banco não vira transferência', () => {
     let b = importarPf(pj(), [{ ...nubankPix, descricao: 'Transferência enviada pelo Pix MARIA LIMA' }], 'conta').banco
     b = importarPf(b, [{ data: '2026-10-12', descricao: 'PIX RECEBIDO JOSE ALVES', valor: 400, tipo: 'entrada' }], 'conta', '', { banco: 'santander' }).banco
