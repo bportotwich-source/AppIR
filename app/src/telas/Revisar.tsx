@@ -4,10 +4,8 @@ import { entradas, marcar, type Banco } from '../core/banco'
 import { dataCurta, MESES, pagador } from '../core/formato'
 import { brl, totaisPorMes } from '../core/relatorio'
 import { Cabecalho } from '../componentes/Pecas'
-import { SeletorPerfil } from '../componentes/Perfil'
-import { titularDo } from '../core/pf'
 
-export default function Revisar({ banco, ano, mudar, ir, perfil, mudarPerfil }: TelaProps) {
+export default function Revisar({ banco, ano, mudar, ir }: TelaProps) {
   const { ReviewDeck, AnimatedNumber } = window.MeuMEI
   const [lembrar, setLembrar] = useState(true)
   // A pilha fica fixa enquanto a pessoa decide; marcar não tira cartas do meio.
@@ -24,7 +22,6 @@ export default function Revisar({ banco, ano, mudar, ir, perfil, mudarPerfil }: 
   return (
     <main className="conteudo topo revisar">
       <Cabecalho titulo="Revisar entradas" sub="Pix de pagadores que o app ainda não conhece" voltar={() => ir('inicio')} />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section className="cartao-mes" aria-label={`Faturamento de ${MESES[mes - 1]}`}>
         <svg aria-hidden="true" width="200" height="120" viewBox="0 0 200 120"><circle cx="120" cy="60" r="56" fill="none" stroke="#2dd4bf" strokeOpacity="0.12" strokeWidth="10" /><circle cx="120" cy="60" r="86" fill="none" stroke="#2dd4bf" strokeOpacity="0.07" strokeWidth="10" /></svg>

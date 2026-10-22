@@ -5,8 +5,6 @@ import { MESES } from '../core/formato'
 import { comprovantes, type Comprovante } from '../core/comprovantes'
 import { Cabecalho } from '../componentes/Pecas'
 import { rotuloComprovante } from './mes'
-import { SeletorPerfil } from '../componentes/Perfil'
-import { titularDo } from '../core/pf'
 
 type Filtro = 'todos' | 'saude' | 'soltos'
 const FILTROS: { id: Filtro; nome: string; passa: (c: Comprovante) => boolean }[] = [
@@ -17,7 +15,7 @@ const FILTROS: { id: Filtro; nome: string; passa: (c: Comprovante) => boolean }[
 
 const mesDe = (c: Comprovante) => (c.data || c.mes || c.criadoEm).slice(0, 7)
 
-export default function Comprovantes({ banco, ir, perfil, mudarPerfil }: TelaProps) {
+export default function Comprovantes({ banco, ir, perfil }: TelaProps) {
   const [filtro, setFiltro] = useState<Filtro>('todos')
   const doPerfil = comprovantes(banco).filter((c) => c.perfil === perfil)
   const lista = doPerfil.filter(FILTROS.find((f) => f.id === filtro)!.passa)
@@ -26,7 +24,6 @@ export default function Comprovantes({ banco, ir, perfil, mudarPerfil }: TelaPro
   return (
     <main className="conteudo topo">
       <Cabecalho titulo="Comprovantes" sub={perfil === 'pj' ? 'Notas das compras da empresa, ligadas às saídas do extrato.' : 'Notas e recibos seus, ligados às compras da conta e do cartão.'} voltar={() => ir('inicio')} empilhado />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       {doPerfil.length > 0 && (
       <div className="chips" role="group" aria-label="Mostrar">

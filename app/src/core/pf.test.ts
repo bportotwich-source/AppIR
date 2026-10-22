@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { bancoVazio, importar, type Banco } from './banco'
-import { parseCsv } from './arquivos'
+import { bancoDoArquivo, parseCsv } from './arquivos'
 import { marcarSaida, irpfDoAno } from './saidas'
 import { totaisAno } from './relatorio'
-import { categorizarPf, ehDoTitular, gruposSemCategoria, importarPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
+import { categorizarPf, ehDoTitular, transferenciasProprias, gruposSemCategoria, importarPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
 import { comprasPossiveis, guardarComprovante, lerChave, lerDanfe, lerQrNfce, mascararDoc, type Comprovante } from './comprovantes'
 import { irpfPfDoAno, reciboCompleto } from './irpfPf'
 import { chaveDescricao } from './banco'
@@ -86,6 +86,49 @@ describe('perfil PF', () => {
     let b = separarRetiradasDoTitular({ ...pj(), titular: 'Bruno Porto' })
     b = marcarSaida(b, chaveDescricao('Transferência enviada pelo Pix BRUNO SILVA PORTO'), true)
     expect(resumoPf(b, 2026, 10).retiradas).toBe(0)
+  })
+})
+
+describe('mais de um banco na PF', () => {
+  const santander = [
+    { data: '2026-10-19', descricao: 'COMPRA CARTAO DEBITO PADARIA REAL', valor: 312.48, tipo: 'saida' as const },
+    { data: '2026-10-12', descricao: 'PIX RECEBIDO BRUNO SILVA PORTO', valor: 400, tipo: 'entrada' as const },
+    { data: '2026-10-25', descricao: 'PIX ENVIADO CARLOS SOUZA', valor: 150, tipo: 'saida' as const },
+  ]
+  const nubankPix = { data: '2026-10-11', descricao: 'Transferência enviada pelo Pix BRUNO SILVA PORTO - •••.123.456-•• - BCO SANTANDER', valor: 400, tipo: 'saida' as const }
+
+  it('o mesmo valor no mesmo dia em outro banco não é repetido', () => {
+    const b = importarPf(importarPf(pj(), contaPf, 'conta').banco, santander, 'conta', 's.ofx', { banco: 'santander' }).banco
+    expect(b.pf!.movimentacoes.filter((m) => m.valor === 312.48)).toHaveLength(2)
+    // importar o Santander de novo não duplica
+    const deNovo = importarPf(b, santander, 'conta', 's.ofx', { banco: 'santander' })
+    expect(deNovo.novas).toBe(0)
+  })
+
+  it('Pix entre as contas do titular não é gasto nem entrada', () => {
+    let b: Banco = { ...pj(), titular: 'Bruno Silva Porto' }
+    b = importarPf(b, [nubankPix], 'conta', 'n.ofx').banco
+    b = importarPf(b, santander, 'conta', 's.ofx', { banco: 'santander' }).banco
+    expect(transferenciasProprias(b).size).toBe(2)
+    const r = resumoPf(b, 2026, 10)
+    expect(r.entreContas).toBe(400)
+    expect(r.outrasEntradas).toBe(0)
+    expect(r.gastos).toBeCloseTo(312.48 + 150)
+    expect(r.porBanco.map((x) => [x.id, x.gastos])).toEqual([['nubank', 0], ['santander', 462.48]])
+  })
+
+  it('sem o nome do titular, Pix para outra pessoa no outro banco não vira transferência', () => {
+    let b = importarPf(pj(), [{ ...nubankPix, descricao: 'Transferência enviada pelo Pix MARIA LIMA' }], 'conta').banco
+    b = importarPf(b, [{ data: '2026-10-12', descricao: 'PIX RECEBIDO JOSE ALVES', valor: 400, tipo: 'entrada' }], 'conta', '', { banco: 'santander' }).banco
+    expect(transferenciasProprias(b).size).toBe(0)
+  })
+
+  it('reconhece o banco pelo OFX', async () => {
+    const ofx = (id: string) => new File([`OFXHEADER:100\n<OFX><BANKACCTFROM><BANKID>${id}</BANKID></BANKACCTFROM></OFX>`], 'extrato.ofx')
+    expect(await bancoDoArquivo(ofx('033'))).toBe('santander')
+    expect(await bancoDoArquivo(ofx('0260'))).toBe('nubank')
+    expect(await bancoDoArquivo(ofx('341'))).toBeNull()
+    expect(await bancoDoArquivo(new File(['date,title,amount\n'], 'fatura.csv'))).toBe('nubank')
   })
 })
 

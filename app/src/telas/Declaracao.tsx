@@ -6,8 +6,6 @@ import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
 import { dasDoAno, irpfDoAno, irpfPorMes, PRESUNCAO } from '../core/saidas'
 import { declaracaoDo, desfazerEntrega, entregar, hojeIso, mudarDeclaracao } from '../core/declaracao'
 import Folha from '../componentes/Folha'
-import { SeletorPerfil } from '../componentes/Perfil'
-import { titularDo } from '../core/pf'
 
 const DIA_MS = 86_400_000
 
@@ -25,7 +23,7 @@ function Passo({ ok, titulo, children }: { ok: boolean; titulo: string; children
   )
 }
 
-export default function Declaracao({ banco, ano, mudar, ir, perfil, mudarPerfil }: TelaProps) {
+export default function Declaracao({ banco, ano, mudar, ir }: TelaProps) {
   const { CountdownRing, AnimatedNumber } = window.MeuMEI
   const decl = declaracaoDo(banco, ano)
   const empregado = decl.empregado ?? false
@@ -72,7 +70,6 @@ export default function Declaracao({ banco, ano, mudar, ir, perfil, mudarPerfil 
   return (
     <main className="conteudo topo declaracao">
       <Cabecalho titulo="Declaração anual" voltar={() => ir('inicio')} />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section aria-label="Prazo" className="prazo-dasn">
         <CountdownRing value={dias} max={365} label="dias" sub={`até ${prazo.toLocaleDateString('pt-BR')}`} size={124} />

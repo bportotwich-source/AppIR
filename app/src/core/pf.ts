@@ -4,6 +4,9 @@
 // faturamento, do DAS ou da DASN muda quando a PF é usada. O Pix que sai da PJ
 // para o titular (saída marcada como retirada) entra na PF sozinho; se o
 // extrato da PF também trouxer esse Pix, os dois viram um par e contam uma vez.
+//
+// A PF pode ter conta em mais de um banco (Nubank e Santander). Pix entre as
+// contas do próprio titular não é gasto nem entrada: só muda o dinheiro de lugar.
 
 import type { Movimentacao } from './parser'
 import { chaveDescricao, type Banco, type Registro } from './banco'
@@ -12,6 +15,13 @@ import { pagador } from './formato'
 
 export type Perfil = 'pj' | 'pf'
 export type ContaPf = 'conta' | 'cartao'
+
+export const BANCOS_PF = [
+  { id: 'nubank', nome: 'Nubank', cor: '#820ad1' },
+  { id: 'santander', nome: 'Santander', cor: '#ec0000' },
+] as const
+export type BancoPf = (typeof BANCOS_PF)[number]['id']
+export const nomeBanco = (id: BancoPf) => BANCOS_PF.find((b) => b.id === id)!.nome
 
 export const CATEGORIAS_PF = [
   { id: 'mercado', nome: 'Mercado', cor: '#0f766e' },
@@ -32,6 +42,7 @@ export const nomeCategoria = (id: string | null | undefined) => CATEGORIAS_PF.fi
 export interface RegistroPf extends Movimentacao {
   id: string
   conta: ContaPf
+  banco?: BancoPf // sem banco = Nubank (importado antes de haver outros)
   categoria: CategoriaPf | null // só saídas; null = ainda não separada
   arquivo: string
   importadoEm: string
@@ -43,6 +54,7 @@ export interface CarteiraPf {
 }
 
 export const carteiraPf = (banco: Banco): CarteiraPf => banco.pf ?? { movimentacoes: [], regras: {} }
+export const bancoDe = (r: RegistroPf): BancoPf => r.banco ?? 'nubank'
 
 // Palavras que já dizem a categoria, para a primeira importação não vir toda vazia.
 const SUGESTOES: [RegExp, CategoriaPf][] = [
@@ -70,21 +82,22 @@ export function importarPf(
   movs: Movimentacao[],
   conta: ContaPf,
   arquivo = '',
-  agora = new Date().toISOString(),
+  { banco: bancoPf = 'nubank', agora = new Date().toISOString() }: { banco?: BancoPf; agora?: string } = {},
 ): { banco: Banco; novas: number; repetidas: number; semCategoria: number } {
   const pf = carteiraPf(banco)
   const existentes = new Set(pf.movimentacoes.map((r) => r.id))
   const vistos = new Map<string, number>()
   const novos: RegistroPf[] = []
   for (const m of movs) {
-    const base = `pf|${conta}|${m.data}|${m.valor.toFixed(2)}|${m.tipo}`
+    // O Nubank fica sem o nome do banco no id, como antes de haver outros bancos.
+    const base = `pf|${bancoPf === 'nubank' ? '' : bancoPf + '|'}${conta}|${m.data}|${m.valor.toFixed(2)}|${m.tipo}`
     const n = (vistos.get(base) ?? 0) + 1
     vistos.set(base, n)
     const id = `${base}|${n}`
     if (existentes.has(id)) continue
     existentes.add(id)
     const categoria = m.tipo === 'saida' ? pf.regras[chaveDescricao(m.descricao)] ?? sugerirCategoria(m.descricao) : null
-    novos.push({ ...m, id, conta, categoria, arquivo, importadoEm: agora })
+    novos.push({ ...m, id, conta, banco: bancoPf, categoria, arquivo, importadoEm: agora })
   }
   return {
     banco: { ...banco, pf: { ...pf, movimentacoes: [...pf.movimentacoes, ...novos] } },
@@ -142,6 +155,28 @@ export function paresPjPf(banco: Banco): Map<string, string> {
   return pares
 }
 
+const TRANSF_PROPRIA = /mesma titularidade|transf\w*\.? (entre contas|propria)|conta propria/i
+
+/** Pix entre contas do titular em bancos diferentes: a saída de um e a entrada do
+ * outro, mesmo valor, até 2 dias. Devolve os ids das duas pontas. */
+export function transferenciasProprias(banco: Banco): Set<string> {
+  const titular = titularDo(banco)
+  const pares = paresPjPf(banco)
+  const movs = carteiraPf(banco).movimentacoes.filter((r) => r.conta === 'conta')
+  const doTitular = (r: RegistroPf) => ehDoTitular(r.descricao, titular) || TRANSF_PROPRIA.test(semAcento(r.descricao))
+  const internas = new Set<string>()
+  for (const s of movs) {
+    if (s.tipo !== 'saida' || internas.has(s.id)) continue
+    const e = movs.find((x) => x.tipo === 'entrada' && !internas.has(x.id) && !pares.has(x.id) && bancoDe(x) !== bancoDe(s)
+      && Math.abs(x.valor - s.valor) < 0.005 && dias(x.data, s.data) <= 2 && (doTitular(s) || doTitular(x)))
+    if (e) {
+      internas.add(s.id)
+      internas.add(e.id)
+    }
+  }
+  return internas
+}
+
 export interface ResumoPf {
   retiradas: number // da PJ para o titular
   outrasEntradas: number
@@ -150,13 +185,17 @@ export interface ResumoPf {
   sobra: number
   porCategoria: { id: CategoriaPf | 'sem'; nome: string; cor: string; valor: number }[]
   semCategoria: { quantas: number; valor: number }
+  porBanco: { id: BancoPf; nome: string; cor: string; gastos: number }[]
+  entreContas: number // Pix entre as contas do titular, fora das contas
 }
 
 /** Entradas e gastos da PF no mês (ou no ano, sem `mes`). O pagamento da fatura
  * na conta não é gasto: o gasto são as compras do cartão. */
 export function resumoPf(banco: Banco, ano: number, mes?: number): ResumoPf {
   const pares = paresPjPf(banco)
-  const movs = carteiraPf(banco).movimentacoes.filter((r) => doPeriodo(r.data, ano, mes))
+  const internas = transferenciasProprias(banco)
+  const todas = carteiraPf(banco).movimentacoes.filter((r) => doPeriodo(r.data, ano, mes))
+  const movs = todas.filter((r) => !internas.has(r.id))
   const retiradas = retiradasPj(banco, ano, mes).reduce((s, r) => s + r.valor, 0)
   const outrasEntradas = movs.filter((r) => r.tipo === 'entrada' && r.conta === 'conta' && !pares.has(r.id)).reduce((s, r) => s + r.valor, 0)
   const gastosMovs = movs.filter((r) => r.tipo === 'saida' && !ehPagamentoFatura(r))
@@ -172,12 +211,15 @@ export function resumoPf(banco: Banco, ano: number, mes?: number): ResumoPf {
   return {
     retiradas, outrasEntradas, entradas, gastos, sobra: entradas - gastos, porCategoria,
     semCategoria: { quantas: sem.length, valor: sem.reduce((s, r) => s + r.valor, 0) },
+    porBanco: BANCOS_PF.map((b) => ({ id: b.id, nome: b.nome, cor: b.cor, gastos: gastosMovs.filter((r) => bancoDe(r) === b.id).reduce((s, r) => s + r.valor, 0) }))
+      .filter((b) => todas.some((r) => bancoDe(r) === b.id)),
+    entreContas: todas.filter((r) => internas.has(r.id) && r.tipo === 'saida').reduce((s, r) => s + r.valor, 0),
   }
 }
 
 /** Pagar a fatura na conta só move dinheiro para o cartão; o gasto já está nas compras. */
 export const ehPagamentoFatura = (r: RegistroPf) =>
-  r.conta === 'conta' && r.tipo === 'saida' && /pagamento de fatura|fatura (do )?cart[aã]o|nu pagamentos/i.test(r.descricao)
+  r.conta === 'conta' && r.tipo === 'saida' && /pagamento de fatura|pagto\.? (de )?fatura|fatura (do )?cart[aã]o|pagamento (de )?cart[aã]o|nu pagamentos/i.test(r.descricao)
 
 export interface GrupoPf {
   chave: string
@@ -191,8 +233,9 @@ export interface GrupoPf {
 /** Gastos sem categoria agrupados por destino, maiores primeiro. */
 export function gruposSemCategoria(banco: Banco, ano: number): GrupoPf[] {
   const grupos = new Map<string, GrupoPf>()
+  const internas = transferenciasProprias(banco)
   for (const r of carteiraPf(banco).movimentacoes) {
-    if (r.tipo !== 'saida' || r.categoria !== null || ehPagamentoFatura(r) || !r.data.startsWith(`${ano}-`)) continue
+    if (r.tipo !== 'saida' || r.categoria !== null || ehPagamentoFatura(r) || internas.has(r.id) || !r.data.startsWith(`${ano}-`)) continue
     const chave = chaveDescricao(r.descricao)
     const g = grupos.get(chave)
     if (g) {
