@@ -24,6 +24,12 @@ export interface Regra {
   categoria: Categoria | null
 }
 
+export interface Declaracao {
+  empregado?: boolean
+  entregueEm?: string // AAAA-MM-DD
+  recibo?: string
+}
+
 export interface Banco {
   versao: 1
   movimentacoes: Registro[]
@@ -35,6 +41,11 @@ export interface Banco {
   // Mês de abertura do MEI ("AAAA-MM"). null = aberto antes do ano atual;
   // ausente = a pessoa ainda não respondeu.
   abertura?: string | null
+  // Por ano-calendário ("2026"): o que a DASN-SIMEI precisa e se já foi entregue.
+  declaracoes?: Record<string, Declaracao>
+  empresa?: { nome?: string; cnpj?: string }
+  // Por "AAAA-MM": quanto do faturamento do mês teve nota fiscal emitida.
+  notasFiscais?: Record<string, { servicos?: number; comercio?: number }>
   ultimoBackup?: string // ISO
   alteradoEm?: string // ISO; última mudança em movimentações ou marcações
 }

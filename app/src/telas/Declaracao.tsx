@@ -4,6 +4,8 @@ import { MESES } from '../core/formato'
 import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
 import { dasDoAno, irpfDoAno, irpfPorMes, PRESUNCAO } from '../core/saidas'
+import { declaracaoDo, desfazerEntrega, entregar, hojeIso, mudarDeclaracao } from '../core/declaracao'
+import Folha from '../componentes/Folha'
 
 const DIA_MS = 86_400_000
 
@@ -21,9 +23,13 @@ function Passo({ ok, titulo, children }: { ok: boolean; titulo: string; children
   )
 }
 
-export default function Declaracao({ banco, ano, ir }: TelaProps) {
+export default function Declaracao({ banco, ano, mudar, ir }: TelaProps) {
   const { CountdownRing, AnimatedNumber } = window.MeuMEI
-  const [empregado, setEmpregado] = useState(false)
+  const decl = declaracaoDo(banco, ano)
+  const empregado = decl.empregado ?? false
+  const setEmpregado = (v: boolean) => mudar(mudarDeclaracao(banco, ano, { empregado: v }))
+  const [entregando, setEntregando] = useState(false)
+  const dataBr = (iso: string) => iso.split('-').reverse().join('/')
   const [copiado, setCopiado] = useState(false)
   const t = totaisAno(banco, ano)
   const nPendentes = pendentes(banco, ano)
@@ -70,7 +76,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
         <div>
           <span className="rotulo">Prazo da DASN-SIMEI</span>
           <strong>31 de maio de {ano + 1}</strong>
-          <span>A entrega abre em 1º de janeiro. É obrigatória mesmo sem faturamento.</span>
+          <span>{decl.entregueEm ? `Entregue em ${dataBr(decl.entregueEm)}.` : 'A entrega abre em 1º de janeiro. É obrigatória mesmo sem faturamento.'}</span>
         </div>
       </section>
 
@@ -122,6 +128,22 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
         </div>
       </Recibo>
 
+      <section aria-labelledby="entrega-t" className="entrega">
+        <h2 id="entrega-t" className="so-leitor">Entrega</h2>
+        {decl.entregueEm ? (
+          <div className="entrega-ok">
+            <span className="passo-marca" data-ok="true" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-10" /></svg></span>
+            <div>
+              <b>DASN-SIMEI {ano} entregue</b>
+              <span>Em {dataBr(decl.entregueEm)}{decl.recibo ? ` · recibo ${decl.recibo}` : ''}</span>
+            </div>
+            <button className="link" onClick={() => mudar(desfazerEntrega(banco, ano))}>Desfazer</button>
+          </div>
+        ) : (
+          <button className="principal" onClick={() => setEntregando(true)}>Já entreguei a DASN de {ano}</button>
+        )}
+      </section>
+
       <section aria-labelledby="check-t" className="checagem-dasn">
         <h2 id="check-t">Antes de entregar</h2>
         <ol>
@@ -139,6 +161,15 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
           </Passo>
         </ol>
         <p className="nota-ir">A DASN-SIMEI não substitui o seu Imposto de Renda de pessoa física. O app só prepara os números; a entrega é sua.</p>
+      </section>
+
+      <section aria-labelledby="rel-t" className="relatorio-chamada">
+        <h2 id="rel-t">Relatório mensal das receitas</h2>
+        <p className="apoio">O MEI preenche todo mês e guarda por 5 anos com as notas fiscais. O app já tem os números.</p>
+        <button className="principal com-seta" onClick={() => ir('relatorio')}>
+          Abrir relatório
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+        </button>
       </section>
 
       <section aria-labelledby="irpf-t" className="irpf">
@@ -196,6 +227,29 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
           A parte isenta vai em Rendimentos Isentos, como lucro de titular de microempresa do Simples Nacional. A tributável vai em Rendimentos Tributáveis Recebidos de PJ, com o CNPJ do MEI. É uma estimativa: confira com um contador antes de declarar.
         </p>
       </section>
+      {entregando && <FolhaEntrega ano={ano} fechar={() => setEntregando(false)} salvar={(data, recibo) => { mudar(entregar(banco, ano, data, recibo)); setEntregando(false) }} />}
     </main>
+  )
+}
+
+function FolhaEntrega({ ano, fechar, salvar }: { ano: number; fechar: () => void; salvar: (data: string, recibo: string) => void }) {
+  const [data, setData] = useState(hojeIso())
+  const [recibo, setRecibo] = useState('')
+  return (
+    <Folha etiqueta={`DASN-SIMEI · ${ano}`} titulo="Marcar como entregue" fechar={fechar} enviar={() => data && salvar(data, recibo)}>
+      {(fecharFolha) => (
+        <>
+          <p className="folha-texto">O app para de lembrar do prazo. O número do recibo fica guardado aqui e no backup.</p>
+          <div className="folha-campos">
+            <label className="campo">Data da entrega<input type="date" required value={data} max={hojeIso()} onChange={(e) => setData(e.target.value)} /></label>
+            <label className="campo"><span>Número do recibo <span className="opcional">opcional</span></span><input inputMode="numeric" autoComplete="off" value={recibo} onChange={(e) => setRecibo(e.target.value)} /></label>
+          </div>
+          <div className="folha-acoes">
+            <button type="submit" className="principal">Marcar como entregue</button>
+            <button type="button" className="folha-cancelar" onClick={fecharFolha}>Cancelar</button>
+          </div>
+        </>
+      )}
+    </Folha>
   )
 }

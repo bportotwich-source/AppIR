@@ -10,6 +10,7 @@ import Icone from '../componentes/Icone'
 import LinhaDas from '../componentes/LinhaDas'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
+import { avisoDasn, declaracaoDo } from '../core/declaracao'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
@@ -96,6 +97,8 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const valorPendente = filaPendente.reduce((soma, r) => soma + r.valor, 0)
   const pagadores = [...new Set(filaPendente.map((r) => iniciais(pagador(r.descricao).nome)))].slice(0, 4)
   const prazos = proximosPrazos()
+  const dasn = avisoDasn(banco)
+  const dasnEntregue = (p: { titulo: string; data: string }) => p.titulo.startsWith('DASN') && !!declaracaoDo(banco, Number(p.data.slice(0, 4)) - 1).entregueEm
   const [backupFalhou, setBackupFalhou] = useState(false)
 
   async function fazerBackup() {
@@ -195,6 +198,20 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
 
         {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />}
 
+        {dasn && (
+          <section className="lembrete" data-tom={dasn.dias < 0 ? 'perigo' : undefined} aria-labelledby="dasn-titulo">
+            <b id="dasn-titulo">
+              {dasn.dias < 0 ? `A DASN-SIMEI ${dasn.ano} está atrasada` : `Entregue a DASN-SIMEI ${dasn.ano} ${quando(dasn.dias)}`}
+            </b>
+            <span>
+              {dasn.dias < 0
+                ? 'Entregue o quanto antes: a multa é de 2% ao mês sobre os impostos do ano, com mínimo de R$ 50.'
+                : 'O prazo é 31 de maio. A declaração do app já tem os valores para copiar.'}
+            </span>
+            <button className="principal" onClick={() => { mudarAno(dasn.ano); ir('declaracao') }}>Abrir a declaração de {dasn.ano}</button>
+          </section>
+        )}
+
         {diasBackup !== null && (
           <section className="lembrete" aria-labelledby="backup-titulo">
             <b id="backup-titulo">{diasBackup === Infinity ? 'Você ainda não fez backup' : `Último backup há ${diasBackup} dias`}</b>
@@ -246,7 +263,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
               <li key={p.titulo}>
                 <span className="marco" aria-hidden="true" />
                 <b className="mm-num">{dataCurta(p.data)}</b>
-                <span>{p.titulo}, {quando(p.dias)}</span>
+                <span>{p.titulo}, {dasnEntregue(p) ? 'entregue' : quando(p.dias)}</span>
               </li>
             ))}
           </ol>

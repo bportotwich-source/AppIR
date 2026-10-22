@@ -374,3 +374,51 @@ button.principal.perigo { background: var(--danger); }
 .folha-opcoes label > span { display: flex; flex-direction: column; }
 .folha-opcoes label > span span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
 .folha form { max-height: 92vh; overflow-y: auto; }
+
+/* DASN entregue, aviso de prazo e relatório mensal. */
+.lembrete[data-tom="perigo"] { border-color: #fecaca; background: #fef2f2; }
+.lembrete[data-tom="perigo"] > b { color: #991b1b; }
+.entrega > .principal { width: 100%; }
+.entrega-ok { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #f0fdf4; box-shadow: 0 0 0 1px #bbf7d0; }
+.entrega-ok > div { flex: 1; display: flex; flex-direction: column; }
+.entrega-ok > div span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.entrega-ok .link { min-height: 44px; font-weight: 600; text-decoration: none; }
+.folha-campos { display: flex; flex-direction: column; gap: 14px; }
+.folha-campos .campo input { font-size: 16px; }
+.opcional { font-weight: 400; font-size: 13px; color: var(--ink-muted); }
+.relatorio-chamada .principal { margin-top: 12px; }
+.rel-controles { display: flex; flex-direction: column; gap: 12px; }
+.rel-controles .graficos { margin: 0; }
+.rel-dados { border-radius: 16px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); padding: 0 16px; }
+.rel-dados summary { min-height: 52px; display: flex; align-items: center; font-weight: 600; color: var(--brand); cursor: pointer; list-style: none; }
+.rel-dados summary::-webkit-details-marker { display: none; }
+.rel-dados[open] { padding-bottom: 16px; }
+.rel-papel { background: #ffffff; color: #15201d; border-radius: 4px; box-shadow: 0 1px 2px rgba(12,42,39,.08), 0 8px 24px rgba(12,42,39,.08); padding: 22px 18px; font-size: 13px; line-height: 18px; }
+.rel-papel h2 { margin: 0 0 12px; font-size: 15px; line-height: 20px; text-transform: uppercase; letter-spacing: .04em; text-align: center; }
+.rel-cabecalho { margin: 0 0 14px; display: flex; flex-direction: column; gap: 6px; }
+.rel-cabecalho div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e3e7e5; padding-bottom: 4px; }
+.rel-cabecalho dt { color: #5b6763; }
+.rel-cabecalho dd { margin: 0; font-weight: 600; text-align: right; }
+.rel-bloco { margin-top: 14px; }
+.rel-bloco h3 { margin: 0 0 6px; font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; color: #0f766e; }
+.rel-bloco dl { margin: 0; border: 1px solid #c9d0cd; }
+.rel-bloco dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 6px 8px; }
+.rel-bloco dl > div + div { border-top: 1px solid #e3e7e5; }
+.rel-bloco dt b { display: inline-block; min-width: 30px; }
+.rel-bloco dd { margin: 0; white-space: nowrap; }
+.rel-total { background: #f4f6f5; font-weight: 600; }
+.rel-geral { margin-top: 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 10px 8px; border: 2px solid #15201d; font-weight: 600; }
+.rel-geral b.mm-num { white-space: nowrap; font-size: 15px; }
+.rel-assinatura { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.rel-assinatura div { border-top: 1px solid #15201d; padding-top: 4px; font-size: 11px; color: #5b6763; }
+.rel-anexos { margin: 18px 0 0; font-size: 11px; line-height: 15px; color: #5b6763; }
+.relatorio > .principal { width: 100%; }
+
+@media print {
+  @page { size: A4; margin: 18mm; }
+  body { background: #ffffff; }
+  .app { padding: 0; min-height: 0; }
+  .relatorio > *:not(.rel-papel) { display: none !important; }
+  .rel-papel { box-shadow: none; padding: 0; font-size: 12pt; line-height: 1.4; }
+  .rel-papel h2 { font-size: 14pt; }
+}
