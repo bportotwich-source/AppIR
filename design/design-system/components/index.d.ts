@@ -83,3 +83,34 @@ export interface ScanDropProps {
   size?: number;
   onDone?: (r: { fileName?: string }) => void;
 }
+
+/** Curva do faturamento acumulado no ano, com limite, faixa de atenção e projeção até dezembro. */
+export interface AccumulatedChartProps {
+  data: MonthDatum[];
+  /** Padrão 81000. */
+  limit?: number;
+  tone?: "light" | "dark";
+  /** Rótulo acima do valor. Padrão "Faturado no ano". */
+  label?: string;
+}
+
+/** O limite anual como barra de orçamento: um pedaço por mês, projeção listrada e folga. */
+export interface LimitTrackProps {
+  data: MonthDatum[];
+  /** Padrão 81000. */
+  limit?: number;
+  tone?: "light" | "dark";
+  label?: string;
+}
+
+/** O mês a mês em cinco formas: cápsulas, desvio da média, linha, faixa de calor e relógio do ano. */
+export interface MonthChartProps {
+  data: MonthDatum[];
+  variant: "capsulas" | "desvio" | "linha" | "calor" | "relogio";
+  /** Topo da escala. Padrão 9000. */
+  max?: number;
+  /** Média permitida por mês. Padrão 6750. */
+  avg?: number;
+  /** Índice do mês aberto (0 = janeiro). Padrão: último mês com dados. */
+  selected?: number;
+}

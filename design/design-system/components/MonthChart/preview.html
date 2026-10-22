@@ -1,0 +1,12 @@
+<!-- @dsCard group="Gráficos" height=360 subtitle="variant: desvio, linha, calor, relogio, capsulas" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap"></head>
+<body style="margin:0;background:#f4f6f5;font-family:'Instrument Sans',system-ui,sans-serif;color:#15201d">
+<div id="root" style="max-width:360px;padding:20px"></div>
+<script>
+var dados = [[4200,0],[5100,0],[6300,800],[5800,0],[4900,1200],[6100,0],[5400,1500],[4800,2100],[5200,0],[4540,2000],[0,0],[0,0]].map(function (d) { return { s: d[0], c: d[1] }; });
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(MeuMEI.MonthChart, { data: dados, variant: 'desvio' }));
+</script>
+</body>
+</html>

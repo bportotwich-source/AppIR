@@ -4,6 +4,7 @@ dados/
 *.sqlite
 *.sqlite3
 *.pdf
+meu-mei-backup-*.json
 
 # Python
 .venv/
