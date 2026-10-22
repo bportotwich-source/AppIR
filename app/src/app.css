@@ -13,6 +13,9 @@
 body { margin: 0; background: var(--surface); color: var(--ink); font: 15px/22px var(--sans); }
 button, select, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+/* Tocar num gráfico não deve desenhar o anel de foco do navegador; ele fica só para o teclado. */
+:focus:not(:focus-visible) { outline: none; }
+svg, svg * { -webkit-tap-highlight-color: transparent; }
 .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .app { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 110px; }
