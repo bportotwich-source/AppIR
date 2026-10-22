@@ -2,7 +2,8 @@
 // OFX e CSV são estruturados e não dependem de layout; o PDF é a reserva.
 
 import type { BancoPf } from './pf'
-import { lerExtrato, type Movimentacao } from './parser'
+import { extrairTexto, parseLinhas, type Movimentacao } from './parser'
+import { ehExtratoSantander, parseSantander } from './santander'
 
 const mov = (data: string, valor: number, descricao: string): Movimentacao => ({
   data,
@@ -92,14 +93,16 @@ export async function lerArquivo(arquivo: File): Promise<Movimentacao[]> {
     return parseOfx(new TextDecoder(charset).decode(bytes))
   }
   if (nome.endsWith('.csv')) return parseCsv(await arquivo.text())
-  return lerExtrato(await arquivo.arrayBuffer())
+  const linhas = await extrairTexto(await arquivo.arrayBuffer())
+  return ehExtratoSantander(linhas) ? parseSantander(linhas) : parseLinhas(linhas)
 }
 
 /** Banco do extrato da PF pelo conteúdo: no OFX, o código do banco (033
- * Santander, 260 Nubank); no CSV, as colunas do Nubank. null quando não dá
- * para saber (PDF, ou OFX sem o código). */
+ * Santander, 260 Nubank); no CSV, as colunas do Nubank; no PDF, o extrato
+ * do Santander. null quando não dá para saber. */
 export async function bancoDoArquivo(arquivo: File): Promise<BancoPf | null> {
   const nome = arquivo.name.toLowerCase()
+  if (nome.endsWith('.pdf')) return ehExtratoSantander(await extrairTexto(await arquivo.arrayBuffer())) ? 'santander' : null
   if (!nome.endsWith('.ofx') && !nome.endsWith('.csv')) return null
   const texto = new TextDecoder('latin1').decode(await arquivo.arrayBuffer())
   if (/<BANKID>\s*0*33\b|<ORG>\s*(BANCO )?SANTANDER/i.test(texto)) return 'santander'

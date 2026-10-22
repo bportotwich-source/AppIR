@@ -54,7 +54,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
     try {
       const movs = await lerArquivo(arquivo)
       if (movs.length === 0) throw new Error(perfil === 'pf' && bancoPf === 'santander'
-        ? 'Nenhuma movimentação encontrada. Do Santander, use o extrato em OFX.'
+        ? 'Nenhuma movimentação encontrada. Do Santander, use o extrato mensal em PDF ou o OFX.'
         : 'Nenhuma movimentação encontrada. Esse arquivo é um extrato do Nubank?')
       // O banco vem do próprio arquivo quando dá para saber; o Santander é sempre da PF.
       const doArquivo = await bancoDoArquivo(arquivo)
@@ -97,7 +97,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
 
   return (
     <main className="conteudo topo">
-      <Cabecalho titulo="Importar extrato" sub={perfil === 'pj' ? 'Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular.' : 'Extrato em OFX de qualquer banco (o mais confiável), ou CSV e PDF do Nubank. Ele é lido aqui e não sai do celular.'} voltar={() => ir('inicio')} empilhado />
+      <Cabecalho titulo="Importar extrato" sub={perfil === 'pj' ? 'Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular.' : 'Extrato em OFX de qualquer banco (o mais confiável), CSV do Nubank ou PDF do Nubank e do Santander. Ele é lido aqui e não sai do celular.'} voltar={() => ir('inicio')} empilhado />
       {perfil === 'pf' && (
         <>
           <Alternar rotulo="De qual banco é o extrato" valor={bancoPf} mudar={setBancoPf} opcoes={BANCOS_PF.map((b) => ({ id: b.id, nome: b.nome }))} />
@@ -105,7 +105,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
             { id: 'conta', nome: 'Conta' },
             { id: 'cartao', nome: 'Cartão de crédito' },
           ]} />
-          {bancoPf === 'santander' && <p className="apoio">No app ou no site do Santander, salve o extrato em OFX. O app reconhece o banco pelo arquivo.</p>}
+          {bancoPf === 'santander' && <p className="apoio">Serve o extrato mensal em PDF (Extrato Consolidado) ou o OFX. O app reconhece o banco pelo arquivo.</p>}
         </>
       )}
 
