@@ -550,3 +550,33 @@ a.link { color: var(--brand); font-weight: 600; }
 .por-banco li + li { border-top: 1px solid var(--line); }
 .por-banco span { display: flex; align-items: center; gap: 10px; font-weight: 600; }
 .por-banco i { width: 10px; height: 10px; border-radius: 999px; }
+/* Topo dos Inícios: perfil, olho e ajustes; o período fica junto do título. */
+.faixa-topo .perfis { margin-top: 0; }
+.faixa-linha { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 22px; }
+.faixa-linha h1, .faixa-linha .faixa-nota { margin: 0; }
+.faixa-linha + .faixa-nota { margin-top: 4px; }
+.faixa-linha select { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.faixa-compara { display: flex; gap: 8px; align-items: center; margin: 12px 0 0; padding: 8px 12px; border-radius: 12px; background: rgba(236,241,239,.08); font-size: 13px; color: #c9d6d2; width: fit-content; }
+.faixa-compara b { color: #ecf1ef; font-weight: 600; }
+.faixa-compara[data-subiu="true"] > span:first-child { color: #fca5a5; }
+.faixa-compara[data-subiu="false"] > span:first-child { color: #5eead4; }
+.maiores { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
+.maiores li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.maiores li + li { border-top: 1px solid var(--line); }
+.maiores .movs-nome { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.maiores .movs-nome b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.maiores .movs-nome span { font-size: 13px; color: var(--ink-muted); }
+.legenda-pf { display: flex; align-items: center; gap: 6px; }
+.legenda-pf i, .meses-pf i { display: inline-block; border-radius: 3px; }
+.legenda-pf i { width: 10px; height: 10px; }
+.legenda-pf i + * { margin-right: 4px; }
+[data-s="entrou"] { background: #a5b4fc; }
+[data-s="gastou"] { background: var(--faixa); }
+.meses-pf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 14px 10px 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
+.meses-pf button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 0; border: 0; border-radius: 10px; background: none; font: inherit; font-size: 12px; color: var(--ink-muted); cursor: pointer; }
+.meses-pf button[aria-pressed="true"] { background: #eef2ff; color: var(--ink); font-weight: 600; }
+.meses-pf button:disabled { cursor: default; opacity: .5; }
+.meses-pf .barras { display: flex; align-items: flex-end; gap: 3px; height: 96px; }
+.meses-pf .barras i { width: 10px; min-height: 2px; }
+.passagem[data-de="ir"] { background: var(--surface-raised); border-color: var(--line); }
+.passagem[data-de="ir"] .passagem-icone { background: #4338ca; }
