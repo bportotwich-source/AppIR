@@ -52,6 +52,17 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
       </section>
 
       <section>
+        <h2>Marcações</h2>
+        <p className="apoio">
+          {Object.keys(banco.regras).length + Object.keys(banco.regrasSaida ?? {}).length} pagadores e destinos lembrados. Veja, corrija ou esqueça.
+        </p>
+        <div className="botoes">
+          <button onClick={() => ir('pagadores')}>Pagadores lembrados</button>
+          <button onClick={() => ir('movimentacoes')}>Todas as movimentações</button>
+        </div>
+      </section>
+
+      <section>
         <h2>Segurança</h2>
         <p className="apoio">
           {trava
