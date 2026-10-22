@@ -3,7 +3,7 @@ import { bancoVazio, importar, type Banco } from './banco'
 import { parseCsv } from './arquivos'
 import { marcarSaida, irpfDoAno } from './saidas'
 import { totaisAno } from './relatorio'
-import { categorizarPf, ehDoTitular, gruposSemCategoria, importarPf, paresPjPf, resumoPf, resumoTudo, separarRetiradasDoTitular } from './pf'
+import { categorizarPf, ehDoTitular, gruposSemCategoria, importarPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
 import { comprasPossiveis, guardarComprovante, lerChave, lerDanfe, lerQrNfce, mascararDoc, type Comprovante } from './comprovantes'
 import { irpfPfDoAno, reciboCompleto } from './irpfPf'
 import { chaveDescricao } from './banco'
@@ -71,16 +71,6 @@ describe('perfil PF', () => {
     expect(r.outrasEntradas).toBe(200)
     expect(r.gastos).toBeCloseTo(412.48) // pagamento de fatura não é gasto
     expect(r.sobra).toBeCloseTo(2787.52)
-  })
-
-  it('soma os dois perfis sem contar a passagem duas vezes', () => {
-    const b = importarPf(separarRetiradasDoTitular({ ...pj(), titular: 'Bruno Porto' }), contaPf, 'conta').banco
-    const t = resumoTudo(b, 2026, 10)
-    expect(t.pj.entradas).toBe(3500)
-    expect(t.pj.retiradas).toBe(3000)
-    expect(t.pj.despesas).toBeCloseTo(200.9)
-    // dinheiro que sobrou nas duas contas = entradas externas - gastos externos
-    expect(t.sobra).toBeCloseTo(3500 + 200 - 200.9 - 412.48)
   })
 
   it('categoria escolhida vale para o mesmo destino e para as próximas', () => {

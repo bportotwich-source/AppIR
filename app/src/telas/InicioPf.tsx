@@ -77,11 +77,11 @@ export default function InicioPf({ banco, ir, perfil, mudarPerfil, oculto, alter
         )}
 
         {r.retiradas > 0 && (
-          <button className="passagem" onClick={() => ir('saidas')}>
+          <button className="passagem" data-de="pj" onClick={() => mudarPerfil('pj')}>
             <span className="passagem-icone" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h14" /><path d="m13 6 6 6-6 6" /></svg></span>
             <span>
               <b><span className="sensivel">{brl(r.retiradas)}</span> vindos de {nomes.pj}</b>
-              <span>{retiradas.length === 1 ? `Pix de ${dataCurta(retiradas[0].data)}` : `${retiradas.length} Pix no mês`}. Entrou aqui sozinho, sem contar duas vezes.</span>
+              <span>{retiradas.length === 1 ? `Pix de ${dataCurta(retiradas[0].data)}` : `${retiradas.length} Pix no mês`}. Entrou aqui sozinho, sem contar duas vezes. Toque para abrir {nomes.pj}.</span>
             </span>
           </button>
         )}

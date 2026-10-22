@@ -481,25 +481,6 @@ button.principal.perigo { background: var(--danger); }
 .adicionar-icone[data-tom="pf"] { background: #ede9fe; color: #6d28d9; }
 .adicionar-icone[data-tom="rosa"] { background: #fce7f3; color: #be185d; }
 
-/* Tudo */
-.fluxo { display: flex; flex-direction: column; gap: 0; }
-.fluxo-perfil { display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-raised); text-align: left; cursor: pointer; border-left: 5px solid var(--brand); }
-.fluxo-perfil[data-perfil="pf"] { border-left-color: #6366f1; }
-.fluxo-perfil dl { margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.fluxo-perfil dl div { display: flex; justify-content: space-between; font-size: 14px; }
-.fluxo-perfil dt { color: var(--ink-muted); }
-.fluxo-perfil dd { margin: 0; font-weight: 600; }
-.fluxo-passagem { display: flex; align-items: center; gap: 10px; margin: 0 16px; padding: 10px 14px; border-left: 2px dashed var(--brand); font-size: 13px; color: var(--ink-muted); }
-.fluxo-passagem > span:nth-child(2) { flex: 1; }
-.fluxo-passagem b { white-space: nowrap; color: var(--brand); }
-.sobra-meses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.sobra-meses li { display: grid; grid-template-columns: 72px 1fr auto; gap: 10px; align-items: center; font-size: 14px; }
-.sobra-barra { display: flex; height: 12px; gap: 2px; }
-.sobra-barra i, .sobra-legenda i { display: block; height: 100%; border-radius: 4px; background: var(--brand); }
-.sobra-barra i[data-perfil="pf"], .sobra-legenda i[data-perfil="pf"] { background: #6366f1; }
-.sobra-legenda { display: flex; gap: 16px; margin: 10px 0 0; font-size: 12px; color: var(--ink-muted); }
-.sobra-legenda span { display: flex; align-items: center; gap: 6px; }
-.sobra-legenda i { width: 10px; height: 10px; }
 
 /* Comprovante */
 .cupom { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-raised); display: flex; flex-direction: column; gap: 10px; }
@@ -547,3 +528,12 @@ button.lembrete { text-align: left; cursor: pointer; width: 100%; font: inherit;
 .exemplo-privacidade div span { color: #a3b5b0; }
 .exemplo-privacidade .link { color: #2dd4bf; align-self: flex-start; }
 a.link { color: var(--brand); font-weight: 600; }
+
+/* Cada perfil com a sua cor: PJ verde-azulado, PF índigo. */
+.app[data-perfil="pf"] { --faixa: #1e1b4b; }
+.app[data-perfil="pf"] .perfis button[aria-checked="true"] { background: #a5b4fc; color: #1e1b4b; }
+.perfis.claro { margin: 0; background: #eef1f0; }
+.perfis.claro button { color: var(--ink-muted); }
+.perfis.claro button[aria-checked="true"] { background: var(--faixa); color: #ecf1ef; }
+.app[data-perfil="pf"] .perfis.claro button[aria-checked="true"] { background: var(--faixa); color: #e0e7ff; }
+.botoes button.principal { background: var(--brand); color: var(--on-brand); border-color: var(--brand); }

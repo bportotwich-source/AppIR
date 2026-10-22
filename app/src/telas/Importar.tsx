@@ -6,8 +6,8 @@ import { extratosDoAno } from '../core/agenda'
 import { brl } from '../core/relatorio'
 import { MESES } from '../core/formato'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { Alternar } from '../componentes/Perfil'
-import { importarPf, nomesPerfis, separarRetiradasDoTitular, titularDo } from '../core/pf'
+import { Alternar, SeletorPerfil } from '../componentes/Perfil'
+import { carteiraPf, importarPf, nomesPerfis, separarRetiradasDoTitular, titularDo, type ContaPf } from '../core/pf'
 
 type Conta = 'pj' | 'conta' | 'cartao'
 
@@ -18,6 +18,7 @@ type Leitura = {
   arquivo: string; quando: Date; mes: string
   lidas: number; novas: number; repetidas: number; saidas: number; sozinhas: number; aRevisar: number
   pf?: boolean
+  aviso?: string
 }
 type Estado = 'idle' | 'reading' | 'done'
 
@@ -29,14 +30,15 @@ function mesDoExtrato(datas: string[]): string {
   return ym ? `${maiuscula(MESES[Number(ym.slice(5, 7)) - 1])} de ${ym.slice(0, 4)}` : ''
 }
 
-export default function Importar({ banco, ano, mudar, ir, historico, perfil }: TelaProps & { historico?: boolean }) {
+export default function Importar({ banco, ano, mudar, ir, historico, perfil, mudarPerfil }: TelaProps & { historico?: boolean }) {
   const { ScanDrop } = window.MeuMEI
   const [estado, setEstado] = useState<Estado>('idle')
   const [leitura, setLeitura] = useState<Leitura | null>(null)
   const [erro, setErro] = useState('')
   const refHistorico = useRef<HTMLElement>(null)
   const meses = extratosDoAno(banco, ano)
-  const [conta, setConta] = useState<Conta>(perfil === 'pf' ? 'conta' : 'pj')
+  const [contaPf, setContaPf] = useState<ContaPf>('conta')
+  const conta: Conta = perfil === 'pj' ? 'pj' : contaPf
   const nomes = nomesPerfis(titularDo(banco))
 
   useEffect(() => {
@@ -53,12 +55,15 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
       if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse arquivo é um extrato do Nubank?')
       // A fatura do cartão em CSV tem a coluna "amount": vai para o cartão da PF.
       const destino: Conta = arquivo.name.toLowerCase().endsWith('.csv') && /amount/i.test((await arquivo.text()).split('\n')[0]) ? 'cartao' : conta
-      if (destino !== conta) setConta(destino)
+      if (destino !== 'pj') setContaPf(destino)
       const base = { arquivo: arquivo.name, quando: new Date(), mes: mesDoExtrato(movs.map((m) => m.data)), lidas: movs.length }
       if (destino !== 'pj') {
         const r = importarPf(banco, movs, destino, arquivo.name)
         mudar(r.banco)
-        setLeitura({ ...base, novas: r.novas, repetidas: r.repetidas, saidas: 0, sozinhas: 0, aRevisar: r.semCategoria, pf: true })
+        setLeitura({
+          ...base, novas: r.novas, repetidas: r.repetidas, saidas: 0, sozinhas: 0, aRevisar: r.semCategoria, pf: true,
+          aviso: perfil === 'pj' ? `É a fatura do cartão: foi para ${nomes.pf}.` : undefined,
+        })
       } else {
         const r = importar(banco, movs, arquivo.name)
         mudar(separarRetiradasDoTitular(r.banco))
@@ -83,11 +88,13 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
   return (
     <main className="conteudo topo">
       <Cabecalho titulo="Importar extrato" sub="Use o extrato do Nubank em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular." voltar={() => ir('inicio')} empilhado />
-      <Alternar rotulo="De qual conta é o extrato" valor={conta} mudar={setConta} opcoes={[
-        { id: 'pj', nome: nomes.pj },
-        { id: 'conta', nome: 'Conta PF' },
-        { id: 'cartao', nome: 'Cartão PF' },
-      ]} />
+      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
+      {perfil === 'pf' && (
+        <Alternar rotulo="De onde é o extrato" valor={contaPf} mudar={setContaPf} opcoes={[
+          { id: 'conta', nome: 'Conta' },
+          { id: 'cartao', nome: 'Cartão de crédito' },
+        ]} />
+      )}
 
       <label className="scan">
         <input
@@ -112,6 +119,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
             </div>
             <h2>{leitura.mes}</h2>
             <p className="nota">{leitura.arquivo}</p>
+            {leitura.aviso && <p className="nota" style={{ color: 'var(--brand)', fontWeight: 600 }}>{leitura.aviso}</p>}
             <div className="tracejado" aria-hidden="true" />
             <dl>
               <Pontilhado rotulo="Movimentações lidas" valor={leitura.lidas} />
@@ -134,6 +142,7 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
         </Recibo>
       )}
 
+      {perfil === 'pf' ? <HistoricoPf banco={banco} /> : (
       <section id="historico" ref={refHistorico} aria-labelledby="hist-t" className="historico">
         <div className="titulo-linha">
           <h2 id="hist-t">Extratos importados</h2>
@@ -159,6 +168,45 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil }: T
           </ol>
         )}
       </section>
+      )}
     </main>
+  )
+}
+
+/** Arquivos da PF já importados, do mais recente para o mais antigo. */
+function HistoricoPf({ banco }: Pick<TelaProps, 'banco'>) {
+  const arquivos = new Map<string, { arquivo: string; conta: ContaPf; importadoEm: string; n: number; gastos: number }>()
+  for (const r of carteiraPf(banco).movimentacoes) {
+    const k = `${r.conta}|${r.arquivo}`
+    const a = arquivos.get(k) ?? { arquivo: r.arquivo, conta: r.conta, importadoEm: r.importadoEm, n: 0, gastos: 0 }
+    a.n++
+    if (r.tipo === 'saida') a.gastos += r.valor
+    if (r.importadoEm > a.importadoEm) a.importadoEm = r.importadoEm
+    arquivos.set(k, a)
+  }
+  const lista = [...arquivos.values()].sort((a, b) => b.importadoEm.localeCompare(a.importadoEm))
+  return (
+    <section aria-labelledby="hist-t" className="historico">
+      <h2 id="hist-t">Extratos importados</h2>
+      {lista.length === 0 ? (
+        <p className="apoio">Nenhum extrato pessoal ainda.</p>
+      ) : (
+        <ol className="linha-tempo">
+          {lista.map((a, i) => (
+            <li key={`${a.conta}${a.arquivo}`} data-atual={i === 0}>
+              <span className="ponto" aria-hidden="true" />
+              <div>
+                <b>{a.conta === 'cartao' ? 'Fatura do cartão' : 'Conta'}</b>
+                <span>Importado em {dataCurtaBr(a.importadoEm)} · {a.n} {a.n === 1 ? 'movimentação' : 'movimentações'}</span>
+              </div>
+              <div className="valor">
+                <b className="mm-num">{brl(a.gastos)}</b>
+                <span>saídas</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   )
 }

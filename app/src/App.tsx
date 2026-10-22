@@ -15,7 +15,6 @@ import Movimentacoes from './telas/Movimentacoes'
 import Relatorio from './telas/Relatorio'
 import Icone from './componentes/Icone'
 import InicioPf from './telas/InicioPf'
-import InicioTudo from './telas/InicioTudo'
 import RevisarPf from './telas/RevisarPf'
 import Comprovantes from './telas/Comprovantes'
 import ComprovanteTela from './telas/Comprovante'
@@ -64,7 +63,7 @@ export default function App() {
   const [perfil, setPerfil] = useState<Perfil>(() => {
     try {
       const p = localStorage.getItem('meu-mei:perfil')
-      return p === 'pf' || p === 'tudo' ? p : 'pj'
+      return p === 'pf' ? p : 'pj'
     } catch {
       return 'pj'
     }
@@ -152,8 +151,11 @@ export default function App() {
   }
   const anos = [...new Set([new Date().getFullYear(), ...anosDisponiveis(banco)])].sort((a, b) => b - a)
   const ir = (nova: Aba, p?: string) => { setAba(nova); setParam(p); setAdicionando(false); window.scrollTo(0, 0) }
+  // Trocar de perfil numa aba leva para a mesma aba do outro perfil.
+  const IRMAS: Partial<Record<Aba, Aba>> = { revisar: 'revisar-pf', 'revisar-pf': 'revisar', declaracao: 'irpf', irpf: 'declaracao' }
   const mudarPerfil = (p: Perfil) => {
     setPerfil(p)
+    if (p !== perfil && IRMAS[aba]) setAba(IRMAS[aba]!)
     try { localStorage.setItem('meu-mei:perfil', p) } catch { /* só nesta sessão */ }
   }
   const props: TelaProps = {
@@ -161,15 +163,14 @@ export default function App() {
     instalar: pedido ? () => void pedido.prompt().then(() => setPedido(null)) : null,
     perfil, mudarPerfil, oculto, alternarOlho: () => setOculto(!oculto),
   }
-  const nPendentes = pendentes(banco, ano) + gruposSemCategoria(banco, ano).length
+  const nPendentes = perfil === 'pf' ? gruposSemCategoria(banco, ano).length : pendentes(banco, ano)
   const abaRevisar: Aba = perfil === 'pf' ? 'revisar-pf' : 'revisar'
   const abaDeclaracao: Aba = perfil === 'pf' ? 'irpf' : 'declaracao'
 
   return (
-    <div className={'app' + (oculto ? ' oculto' : '')}>
+    <div className={'app' + (oculto ? ' oculto' : '')} data-perfil={perfil}>
       {aba === 'inicio' && perfil === 'pj' && <Inicio {...props} anos={anos} mudarAno={setAno} />}
       {aba === 'inicio' && perfil === 'pf' && <InicioPf {...props} />}
-      {aba === 'inicio' && perfil === 'tudo' && <InicioTudo {...props} />}
       {aba === 'revisar-pf' && <RevisarPf {...props} />}
       {aba === 'comprovantes' && <Comprovantes {...props} />}
       {aba === 'comprovante' && <ComprovanteTela key={param} {...props} />}
@@ -177,7 +178,7 @@ export default function App() {
       {aba === 'recibo' && <ReciboSaude key={param} {...props} />}
       {aba === 'irpf' && <Irpf {...props} />}
       {aba === 'privacidade' && <Privacidade {...props} />}
-      {adicionando && <Adicionar ir={ir} fechar={() => setAdicionando(false)} />}
+      {adicionando && <Adicionar ir={ir} perfil={perfil} fechar={() => setAdicionando(false)} />}
       {aba === 'revisar' && <Revisar {...props} />}
       {aba === 'importar' && <Importar {...props} />}
       {aba === 'declaracao' && <Declaracao {...props} />}
