@@ -55,43 +55,45 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
           </span>
         )}
       </div>
-      <ol className="das-meses">
-        {meses.map((m) => (
-          <li key={m.mes}>
-            <button
-              type="button"
-              data-estado={m.estado}
-              aria-label={descrever(m)}
-              aria-disabled={m.estado === 'antes' || m.estado === 'a-vencer'}
-              onClick={() => alternar(m)}
-            >
-              <span className="das-marca" aria-hidden="true">
-                {m.estado === 'pago' && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-10" /></svg>}
-                {m.estado === 'atrasado' && '!'}
-                {m.estado === 'sem-extrato' && '?'}
-              </span>
-              <span aria-hidden="true">{LETRA[m.mes - 1]}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-      <ul className="das-legenda" aria-hidden="true">
-        {LEGENDA.filter(([e]) => meses.some((m) => m.estado === e)).map(([e, marca, texto]) => (
-          <li key={e} data-estado={e}><span className="das-marca">{marca}</span>{texto}</li>
-        ))}
-      </ul>
-      {abertos.length > 0 ? (
-        <p className="das-nota" data-tom="perigo">
-          DAS de {juntar(abertos)} sem pagamento no extrato. Pague com juros no{' '}
-          <a href={PGMEI} target="_blank" rel="noreferrer">PGMEI</a>, ou toque no mês se pagou por outra conta.
-        </p>
-      ) : (
-        <p className="das-nota">
-          {pagos.length === devidos.length && devidos.length > 0 ? 'Tudo pago até agora. ' : ''}
-          {semExtrato > 0 ? 'Para conferir um mês com ?, importe o extrato do mês seguinte. ' : ''}
-          O DAS vence todo dia 20 e é achado sozinho no extrato.
-        </p>
-      )}
+      <div className="cartao cartao-pad">
+        <ol className="das-meses">
+          {meses.map((m) => (
+            <li key={m.mes}>
+              <button
+                type="button"
+                data-estado={m.estado}
+                aria-label={descrever(m)}
+                aria-disabled={m.estado === 'antes' || m.estado === 'a-vencer'}
+                onClick={() => alternar(m)}
+              >
+                <span className="das-marca" aria-hidden="true">
+                  {m.estado === 'pago' && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-10" /></svg>}
+                  {m.estado === 'atrasado' && '!'}
+                  {m.estado === 'sem-extrato' && '?'}
+                </span>
+                <span aria-hidden="true">{LETRA[m.mes - 1]}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <ul className="das-legenda" aria-hidden="true">
+          {LEGENDA.filter(([e]) => meses.some((m) => m.estado === e)).map(([e, marca, texto]) => (
+            <li key={e} data-estado={e}><span className="das-marca">{marca}</span>{texto}</li>
+          ))}
+        </ul>
+        {abertos.length > 0 ? (
+          <p className="das-nota" data-tom="perigo">
+            DAS de {juntar(abertos)} sem pagamento no extrato. Pague com juros no{' '}
+            <a href={PGMEI} target="_blank" rel="noreferrer">PGMEI</a>, ou toque no mês se pagou por outra conta.
+          </p>
+        ) : (
+          <p className="das-nota">
+            {pagos.length === devidos.length && devidos.length > 0 ? 'Tudo pago até agora. ' : ''}
+            {semExtrato > 0 ? 'Para conferir um mês com ?, importe o extrato do mês seguinte. ' : ''}
+            O DAS vence todo dia 20 e é achado sozinho no extrato.
+          </p>
+        )}
+      </div>
       {aberto && (
         <FolhaDas
           mes={aberto}

@@ -79,3 +79,13 @@ export function TopoInicio(p: { perfil: Perfil; mudarPerfil: (p: Perfil) => void
     </div>
   )
 }
+
+/** Anéis de enfeite no canto do cartão escuro dos Inícios. */
+export function CirculosResumo() {
+  return (
+    <svg className="resumo-circulos" aria-hidden="true" width="200" height="140" viewBox="0 0 200 140">
+      <circle cx="120" cy="64" r="58" fill="none" strokeOpacity="0.13" strokeWidth="16" />
+      <circle cx="120" cy="64" r="94" fill="none" strokeOpacity="0.07" strokeWidth="16" />
+    </svg>
+  )
+}

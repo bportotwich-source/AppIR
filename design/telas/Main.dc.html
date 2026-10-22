@@ -4,609 +4,162 @@
 <meta charset="utf-8">
 <title>Início · Bruno PJ</title>
 <script src="./support.js"></script>
-<link rel="stylesheet" href="ds/meumei/components/bundle.css">
-<script src="ds/meumei/components/bundle.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
 <style>
-:root {
-  --surface: #f6f7f6; --surface-raised: #ffffff; --line: #e3e7e5;
-  --ink: #15201d; --ink-muted: #5b6763;
-  --brand: #0f766e; --on-brand: #ffffff; --brand-tint: #e6f4f1;
-  --servicos: #0d9488; --comercio: #6366f1;
-  --warning: #92400e; --warning-surface: #fffbeb; --danger: #b91c1c; --success: #15803d;
-  --faixa: #0c2a27;
-  --sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-  color-scheme: light;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--surface); color: var(--ink); font: 15px/22px var(--sans); }
-button, select, input { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-/* Tocar num gráfico não deve desenhar o anel de foco do navegador; ele fica só para o teclado. */
-:focus:not(:focus-visible) { outline: none; }
-svg, svg * { -webkit-tap-highlight-color: transparent; }
-.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-.app { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 110px; }
-h1 { margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; }
-h2 { margin: 0 0 14px; font-size: 20px; line-height: 26px; font-weight: 600; }
-.apoio { margin: 6px 0 0; color: var(--ink-muted); font-size: 14px; line-height: 21px; }
-.conteudo { padding: 8px 20px 0; display: flex; flex-direction: column; gap: 28px; }
-.conteudo.topo { padding-top: 24px; }
-
-.faixa { position: relative; overflow: hidden; background: var(--faixa); color: #ecf1ef; padding: 16px 20px 80px; }
-.faixa > * { position: relative; }
-.faixa > .faixa-circulos { position: absolute; left: 50%; top: 0; transform: translateX(-50%); }
-.faixa > .faixa-onda { position: absolute; left: 0; bottom: -1px; width: 100%; height: 56px; display: block; fill: var(--surface); }
-.faixa-topo { display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
-.marca { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; }
-.faixa select { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(236,241,239,.24); background: rgba(236,241,239,.08); color: #ecf1ef; font-weight: 600; }
-.faixa select option { color: var(--ink); }
-.faixa-nota { margin: 18px 0 2px; font-size: 13px; color: #a3b5b0; }
-.visoes { display: flex; gap: 4px; margin-top: 14px; padding: 4px; border-radius: 999px; background: rgba(236,241,239,.08); width: fit-content; }
-.visoes button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: #a3b5b0; font-size: 13px; font-weight: 600; cursor: pointer; }
-.visoes button[aria-checked="true"] { background: #2dd4bf; color: #0b1f1c; }
-.medidor > * { width: 100%; }
-.medidor { display: flex; justify-content: center; margin-top: 14px; }
-.projecao { display: flex; gap: 10px; align-items: flex-start; animation-delay: .9s; margin: 8px 0 0; padding: 12px 14px; border-radius: 18px; background: rgba(251,191,36,.10); border: 1px solid rgba(251,191,36,.32); color: #fde68a; font-size: 14px; line-height: 20px; }
-
-button.principal { min-height: 48px; padding: 0 20px; border: 0; border-radius: 8px; background: var(--brand); color: var(--on-brand); font-weight: 600; cursor: pointer; }
-.botoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.botoes button, .botao { min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; }
-button.link { background: none; border: 0; padding: 0; color: var(--brand); text-decoration: underline; cursor: pointer; }
-
-
-
-.rotulo { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .02em; text-transform: uppercase; color: var(--ink-muted); }
-.arquivo { margin: 0; font-weight: 600; }
-
-.segmentado { display: flex; gap: 8px; align-items: center; }
-.segmentado > span { margin-right: auto; }
-.segmentado label { min-height: 40px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; display: inline-flex; align-items: center; cursor: pointer; }
-.segmentado label:has(input:checked) { background: var(--brand-tint); border-color: var(--brand); color: var(--brand); font-weight: 600; }
-.segmentado label { position: relative; }
-.segmentado input { position: absolute; opacity: 0; }
-
-.checagem { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.checagem li { padding: 12px 14px; border-radius: 12px; background: var(--surface-raised); border: 1px solid var(--line); }
-.checagem li[data-ok="false"] { background: var(--warning-surface); color: var(--warning); border-color: transparent; }
-
-
-.aviso { padding: 12px 14px; border-radius: 12px; }
-.aviso.perigo { color: var(--danger); background: #fef2f2; }
-
-.abas { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); width: min(440px, calc(100% - 32px)); box-sizing: border-box; height: 68px; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; padding-bottom: env(safe-area-inset-bottom); border-radius: 26px; background: rgba(255,255,255,.95); box-shadow: 0 12px 32px rgba(12,42,39,.18), 0 0 0 1px rgba(12,42,39,.06); }
-.abas button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; padding: 0; border: 0; background: none; font-size: 11px; line-height: 14px; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
-.abas button[aria-current="true"] { color: var(--brand); font-weight: 700; }
-.abas .importar { width: 60px; min-width: 60px; height: 60px; min-height: 60px; margin-top: -34px; border-radius: 999px; background: var(--brand); color: var(--on-brand); box-shadow: 0 10px 20px rgba(15,118,110,.4), 0 0 0 6px var(--surface); }
-.abas .importar[aria-current="true"] { background: var(--faixa); color: #2dd4bf; box-shadow: 0 10px 20px rgba(12,42,39,.35), 0 0 0 6px var(--surface), 0 0 0 8px var(--brand); }
-.contador { position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center; }
-.graficos { display: flex; gap: 6px; overflow-x: auto; margin: -4px 0 14px; padding-bottom: 2px; scrollbar-width: none; }
-/* Esmaece a borda direita para mostrar que a fileira rola. */
-.graficos { mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); padding-right: 24px; }
-.graficos button { flex: none; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-raised); color: var(--ink-muted); font-size: 13px; font-weight: 600; cursor: pointer; }
-.graficos button[aria-checked="true"] { background: var(--brand-tint); border-color: var(--brand); color: var(--brand); }
-.rastro-topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 12px; }
-.rastro-topo > div:first-child { flex: none; display: flex; flex-direction: column; gap: 2px; }
-.rastro-mes { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; text-align: right; font-size: 13px; line-height: 18px; }
-.rastro-mes span { color: var(--brand); }
-.rastro-mes span[data-acima="true"] { color: var(--warning); }
-.rastro svg:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: 8px; }
-.rastro-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-muted); }
-.rastro-legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
-.rastro-legenda i.tracejado { width: 14px; height: 0; border-radius: 0; border-top: 2px dashed var(--ink-muted); background: none; vertical-align: 3px; }
-.trava { position: fixed; inset: 0; overflow: auto; background: #0c2a27; color: #ecf1ef; z-index: 10; }
-.trava-aneis { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-@keyframes trava-gira { to { transform: rotate(360deg); } }
-.trava-aneis circle:first-child { transform-origin: 195px 170px; animation: trava-gira 60s linear infinite; }
-.trava-conteudo { position: relative; min-height: 100%; box-sizing: border-box; max-width: 390px; margin: 0 auto; padding: 72px 32px 24px; display: flex; flex-direction: column; align-items: center; }
-.trava-marca { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-.trava-marca h1 { font-size: 28px; }
-.trava-marca p { margin: -10px 0 0; color: #a3b5b0; }
-.trava-pontos { margin-top: 30px; height: 40px; display: flex; align-items: center; }
-.trava-pontos > div { display: flex; gap: 18px; }
-.trava-pontos span { width: 14px; height: 14px; box-sizing: border-box; border-radius: 999px; border: 2px solid rgba(236,241,239,.45); transition: transform .15s, background .15s; }
-.trava-pontos span[data-cheio="true"] { background: #2dd4bf; border-color: #2dd4bf; transform: scale(1.15); }
-.trava-pontos span[data-erro="true"] { border-color: #f87171; }
-@keyframes treme { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-10px) } 40% { transform: translateX(9px) } 60% { transform: translateX(-6px) } 80% { transform: translateX(4px) } }
-.treme { animation: treme .42s ease; }
-.trava-mensagem { margin: 10px 0 0; min-height: 22px; font-size: 14px; color: #fca5a5; text-align: center; }
-.teclado { margin-top: 22px; display: grid; grid-template-columns: repeat(3, 72px); gap: 14px 30px; }
-.tecla { width: 72px; height: 72px; border-radius: 999px; border: none; background: rgba(236,241,239,.08); color: #ecf1ef; font-size: 30px; line-height: 1; font-weight: 500; cursor: pointer; transition: transform .12s ease, background .12s ease; }
-.tecla:active { transform: scale(.9); background: rgba(45,212,191,.28); }
-.tecla:disabled { opacity: .35; }
-.tecla-icone, .tecla-texto { background: transparent; display: flex; align-items: center; justify-content: center; }
-.tecla-icone[aria-label="Entrar com a digital"] { color: #2dd4bf; }
-.tecla-texto { font-size: 14px; font-weight: 600; color: #a3b5b0; }
-.trava :focus-visible { outline: 2px solid #2dd4bf; outline-offset: 3px; }
-.trava-link { margin-top: 20px; min-height: 44px; padding: 0 14px; border: none; background: transparent; color: #2dd4bf; font-weight: 600; cursor: pointer; }
-.trava-link.perigo { margin-top: 4px; color: #fca5a5; }
-.trava-ajuda { max-width: 300px; text-align: center; font-size: 13px; line-height: 19px; color: #c9d6d2; }
-.trava-ajuda p { margin: 0; }
-.trava-rodape { margin: auto 0 0; padding-top: 24px; display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; color: #a3b5b0; }
-@media (prefers-reduced-motion: reduce) { .treme, .trava-aneis circle:first-child { animation: none; } }
-
-.lembrete { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 18px 20px; border-radius: 22px; background: var(--surface-raised); border: 1px solid var(--line); }
-.lembrete > span { color: var(--ink-muted); font-size: 14px; line-height: 21px; }
-.lembrete > span[role="alert"] { color: var(--danger); }
-.lembrete-linha { display: flex; gap: 8px; width: 100%; margin-top: 4px; }
-.lembrete-linha input, .campo input { flex: 1; min-width: 0; min-height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-button.principal:disabled { opacity: .45; cursor: default; }
-.campo { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-
-.faixa-acoes { display: flex; gap: 8px; align-items: center; }
-.engrenagem { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; border: 1px solid rgba(236,241,239,.24); background: rgba(236,241,239,.08); color: #ecf1ef; cursor: pointer; }
-.voltar { align-self: flex-start; min-height: 44px; margin: -12px 0 -16px; padding: 0; border: 0; background: none; color: var(--brand); font-weight: 600; cursor: pointer; }
-
-.linha-tempo { position: relative; list-style: none; margin: 0; padding: 0; }
-.linha-tempo::before { content: ""; position: absolute; left: 7px; top: 18px; bottom: 18px; width: 2px; background: #d5dbd8; }
-.linha-tempo li { position: relative; display: flex; align-items: center; gap: 14px; padding: 10px 0; }
-.linha-tempo .ponto { flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 999px; background: var(--surface); border: 3px solid var(--ink-muted); }
-.linha-tempo li[data-atual="true"] .ponto { background: var(--brand); border-color: #ccebe6; }
-.linha-tempo li > div { display: flex; flex-direction: column; min-width: 0; }
-.linha-tempo li > div:nth-child(2) { flex: 1 1 auto; }
-.linha-tempo li span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.linha-tempo .valor { flex: none; align-items: flex-end; }
-.linha-tempo .valor b { font-weight: 500; white-space: nowrap; }
-
-.ticket { display: flex; align-items: center; min-height: 100px; padding: 0; border: 0; border-radius: 22px; background: var(--warning-surface); color: var(--ink); text-align: left; cursor: pointer; filter: drop-shadow(0 8px 18px rgba(146,64,14,.16));
-  -webkit-mask: radial-gradient(circle 11px at 97px 0, transparent 10.5px, #000 11px) top / 100% 51% no-repeat, radial-gradient(circle 11px at 97px 100%, transparent 10.5px, #000 11px) bottom / 100% 51% no-repeat;
-  mask: radial-gradient(circle 11px at 97px 0, transparent 10.5px, #000 11px) top / 100% 51% no-repeat, radial-gradient(circle 11px at 97px 100%, transparent 10.5px, #000 11px) bottom / 100% 51% no-repeat; }
-.ticket-rostos { position: relative; flex: none; width: 96px; height: 100px; }
-.ticket-rostos span { position: absolute; width: 34px; height: 34px; box-sizing: border-box; border-radius: 999px; border: 2px solid var(--warning-surface); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--ink); }
-.ticket-rostos [data-i="0"] { left: 14px; top: 18px; background: #fcd34d; }
-.ticket-rostos [data-i="1"] { left: 44px; top: 14px; background: #a7f3d0; }
-.ticket-rostos [data-i="2"] { left: 22px; top: 48px; background: #c7d2fe; }
-.ticket-rostos [data-i="3"] { left: 52px; top: 46px; background: #fecaca; }
-.ticket-corte { align-self: stretch; margin: 16px 0; border-left: 2px dashed #f3d27a; }
-.ticket-texto { flex: 1 1 auto; min-width: 0; padding: 16px 12px 16px 16px; display: flex; flex-direction: column; gap: 2px; }
-.ticket-texto .rotulo { color: var(--warning); letter-spacing: .06em; font-weight: 600; }
-.ticket-texto b { font-size: 17px; line-height: 22px; font-weight: 600; }
-.ticket-texto > span:last-child { font-size: 13px; line-height: 18px; color: #7c4a14; }
-.ticket-seta { flex: none; margin-right: 16px; width: 38px; height: 38px; border-radius: 999px; background: var(--warning); color: var(--warning-surface); display: flex; align-items: center; justify-content: center; }
-
-.prazos { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.prazos::before { content: ""; position: absolute; left: 8px; right: 8px; top: 7px; height: 2px; border-radius: 2px; background: #d5dbd8; }
-.prazos li { position: relative; display: flex; flex-direction: column; gap: 6px; }
-.prazos .marco { width: 16px; height: 16px; box-sizing: border-box; border-radius: 999px; background: var(--surface); border: 3px solid var(--ink-muted); }
-.prazos li:nth-child(2) .marco { border-color: #b45309; }
-.prazos li[data-hoje="true"] .marco { background: var(--brand); border: 4px solid #ccebe6; }
-.prazos b { font-size: 15px; font-weight: 500; }
-.prazos span:last-child { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-
-/* Peças do canvas */
-.cabecalho { display: flex; align-items: center; gap: 14px; }
-.cabecalho h1 { font-size: 24px; line-height: 30px; }
-.cabecalho.empilhado { flex-direction: column; align-items: flex-start; }
-.cabecalho.empilhado h1 { font-size: 28px; line-height: 34px; margin-bottom: 4px; }
-.cabecalho.empilhado p { font-size: 14px; line-height: 20px; }
-.cabecalho p { margin: 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.voltar-redondo { flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; }
-.recibo-serra { filter: drop-shadow(0 12px 26px rgba(12,42,39,.13)); }
-.recibo-serra > svg { display: block; width: 100%; height: 10px; fill: #ffffff; }
-.recibo-papel { position: relative; background: #ffffff; padding: 16px 22px 24px; }
-.recibo-papel .tracejado { margin: 18px -22px; border-top: 2px dashed var(--line); }
-.recibo-papel .etiqueta { font-family: var(--mono); font-size: 11px; line-height: 14px; letter-spacing: .14em; color: var(--ink-muted); }
-.recibo-papel h2 { margin: 6px 0 2px; font-size: 22px; line-height: 28px; }
-.recibo-papel .nota { margin: 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.botao input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.recibo-papel dl { margin: 0; display: flex; flex-direction: column; }
-.pontilhado { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; }
-.pontilhado > span { flex: 1 1 auto; min-width: 12px; border-bottom: 2px dotted #d5dbd8; transform: translateY(-4px); }
-.pontilhado dd { margin: 0; font-weight: 500; white-space: nowrap; }
-@keyframes sobe { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.sobe { animation: sobe .6s cubic-bezier(.2,.8,.2,1) both; }
-@media (prefers-reduced-motion: reduce) { .sobe { animation: none; } }
-
-.revisar { gap: 22px; padding-top: 16px; }
-.cartao-mes { position: relative; overflow: hidden; border-radius: 24px; background: var(--faixa); color: #ecf1ef; padding: 18px 20px; }
-.cartao-mes > svg { position: absolute; right: -40px; top: -30px; }
-.cartao-mes .rotulo { position: relative; display: block; font-weight: 600; letter-spacing: .08em; color: #a3b5b0; }
-.cartao-mes-total { position: relative; display: block; margin-top: 4px; font-size: 32px; line-height: 38px; font-weight: 500; color: #ecf1ef; }
-.cartao-mes-partes { position: relative; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; line-height: 18px; color: #c9d6d2; }
-.cartao-mes-partes span { display: flex; align-items: center; gap: 6px; }
-.cartao-mes-partes i { width: 8px; height: 8px; border-radius: 999px; }
-.cartao-mes-partes b { font-weight: 500; color: #ecf1ef; }
-.chave-lembrar { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 0 16px; border: none; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); color: var(--ink); text-align: left; cursor: pointer; }
-.chave-lembrar > span:first-child { flex: 1 1 auto; display: flex; flex-direction: column; }
-.chave-lembrar > span:first-child span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.chave-trilho { flex: none; width: 48px; height: 28px; box-sizing: border-box; padding: 3px; border-radius: 999px; display: flex; justify-content: flex-start; background: #7b8783; transition: background .2s; }
-.chave-trilho span { width: 22px; height: 22px; border-radius: 999px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-.chave-lembrar[aria-checked="true"] .chave-trilho { justify-content: flex-end; background: var(--brand); }
-
-.declaracao { gap: 28px; padding-top: 16px; }
-.prazo-dasn { display: flex; align-items: center; gap: 18px; }
-.prazo-dasn > div:last-child { display: flex; flex-direction: column; gap: 4px; }
-.prazo-dasn .rotulo { font-weight: 600; letter-spacing: .08em; }
-.prazo-dasn strong { font-size: 20px; line-height: 26px; font-weight: 600; }
-.prazo-dasn span:last-child { font-size: 14px; line-height: 20px; color: var(--ink-muted); }
-@keyframes carimbo { 0% { opacity: 0; transform: rotate(-8deg) scale(1.6); } 100% { opacity: 1; transform: rotate(-8deg) scale(1); } }
-.carimbo { position: absolute; top: 18px; right: 18px; padding: 4px 10px; border: 2px solid #b45309; border-radius: 8px; color: #b45309; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .16em; transform: rotate(-8deg); animation: carimbo .45s cubic-bezier(.3,1.4,.5,1) .7s both; }
-@media (prefers-reduced-motion: reduce) { .carimbo { animation: none; } }
-.linhas-dasn { margin: 0; display: flex; flex-direction: column; gap: 16px; }
-.linhas-dasn .pontilhado { padding: 0; flex-wrap: wrap; row-gap: 2px; }
-.linhas-dasn dt { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.linhas-dasn dt i { width: 10px; height: 10px; border-radius: 999px; }
-.linhas-dasn .sub { flex-basis: 100%; margin: 0; font-weight: 400; font-family: inherit; font-size: 12px; line-height: 16px; color: var(--ink-muted); padding-left: 18px; }
-.linha-dupla { margin: 18px 0 14px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); height: 3px; }
-.total-dasn { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; font-weight: 600; }
-.total-dasn > * { white-space: nowrap; }
-.total-dasn-valor { margin-left: auto; }
-.total-dasn-valor { font-size: 26px; line-height: 32px; font-weight: 500; color: var(--ink); }
-.empregado { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 600; }
-.empregado > div { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: #eef0ef; }
-.empregado button { min-height: 40px; min-width: 64px; padding: 0 14px; border-radius: 999px; border: none; font-weight: 600; cursor: pointer; background: transparent; color: var(--ink-muted); }
-.empregado button[aria-pressed="true"] { background: #ffffff; color: var(--ink); box-shadow: 0 1px 3px rgba(12,42,39,.18); }
-.acoes-dasn { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
-.copiar { min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 16px; background: var(--brand); color: #ffffff; font-weight: 600; cursor: pointer; transition: background .2s; }
-.copiar[data-copiado="true"] { background: var(--success); }
-.portal { min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 16px; background: #ffffff; box-shadow: inset 0 0 0 1.5px #c9d0cd; color: var(--ink); font-weight: 600; text-decoration: none; }
-.checagem-dasn { display: flex; flex-direction: column; gap: 14px; }
-.checagem-dasn h2 { margin: 0; }
-.checagem-dasn ol { position: relative; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
-.checagem-dasn ol::before { content: ""; position: absolute; left: 13px; top: 28px; bottom: 28px; width: 2px; background: #d5dbd8; }
-.checagem-dasn li { position: relative; display: flex; gap: 14px; align-items: flex-start; }
-.checagem-dasn li > div { display: flex; flex-direction: column; align-items: flex-start; }
-.passo-marca { flex: none; width: 28px; height: 28px; box-sizing: border-box; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: var(--warning-surface); border: 2px solid #b45309; color: var(--warning); font-weight: 700; font-size: 14px; }
-.passo-marca[data-ok="true"] { background: var(--success); border: 0; }
-.passo-titulo { font-weight: 600; }
-.passo-sub { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.passo-link { font-size: 13px; line-height: 18px; font-weight: 600; text-decoration: none; min-height: 24px; }
-.nota-ir { margin: 6px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--brand-tint); font-size: 13px; line-height: 19px; color: #134e48; }
-
-/* Importar */
-.scan { position: relative; display: block; border-radius: 24px; }
-.scan input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 1; }
-.scan:focus-within { outline: 2px solid var(--brand); outline-offset: 4px; }
-.recibo-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.recibo-papel .recibo-topo + h2 { margin-top: 10px; }
-button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.historico { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
-.historico h2 { margin: 0; font-size: 20px; line-height: 26px; }
-.projecao svg { flex: none; margin-top: 1px; }
-.titulo-linha { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-.titulo-linha h2 { margin: 0; }
-.titulo-linha span { font-size: 13px; color: var(--ink-muted); }
-
-/* DAS do ano */
-.das-meses { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
-.das-meses button { width: 100%; min-height: 56px; padding: 6px 0; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 6px; font: inherit; font-size: 12px; line-height: 14px; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
-.das-meses button[aria-disabled="true"] { cursor: default; }
-.das-marca { width: 22px; height: 22px; box-sizing: border-box; border-radius: 999px; border: 2px solid #c9d0cd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
-.das-legenda { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
-.das-legenda li { display: flex; align-items: center; gap: 6px; }
-.das-legenda .das-marca { width: 16px; height: 16px; font-size: 10px; border-width: 1.5px; }
-.das-legenda [data-estado="pago"] .das-marca, .das-meses [data-estado="pago"] .das-marca { background: #15803d; border-color: #15803d; color: #ffffff; }
-.das-meses [data-estado="atrasado"] { color: #b91c1c; }
-.das-legenda [data-estado="atrasado"] .das-marca, .das-meses [data-estado="atrasado"] .das-marca { background: #fef2f2; border-color: #b91c1c; color: #b91c1c; }
-.das-legenda [data-estado="sem-extrato"] .das-marca, .das-meses [data-estado="sem-extrato"] .das-marca { border-style: dashed; color: var(--ink-muted); }
-.das-meses [data-estado="antes"] { opacity: .4; }
-.das-nota { margin: 10px 0 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.das-nota[data-tom="perigo"] { color: #991b1b; }
-.das-nota a { color: inherit; font-weight: 600; }
-
-/* Saídas e Imposto de Renda */
-.saidas-resumo { margin: 0; padding: 10px 14px; border-radius: 14px; background: var(--warning-surface); color: #92400e; font-weight: 600; font-size: 14px; }
-.saidas-resumo[data-ok="true"] { background: #e6f4f1; color: var(--brand); }
-.saidas-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.saidas-lista li { padding: 14px 16px; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); display: flex; flex-direction: column; gap: 12px; }
-.saida-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.saida-topo > div { display: flex; flex-direction: column; min-width: 0; }
-.saida-topo > div b { overflow-wrap: anywhere; }
-.saida-topo span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.saida-topo .mm-num { flex: none; font-weight: 500; white-space: nowrap; }
-.saida-escolha { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 14px; background: #eef1f0; }
-.saida-escolha button { min-height: 44px; padding: 0 8px; border: 0; border-radius: 10px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
-.saida-escolha button[aria-pressed="true"] { background: #ffffff; color: var(--ink); box-shadow: 0 1px 3px rgba(12,42,39,.18); }
-.saida-escolha button:first-child[aria-pressed="true"] { color: var(--brand); }
-.saida-das { font-size: 13px; font-weight: 600; color: var(--brand); }
-.irpf { display: flex; flex-direction: column; gap: 14px; }
-.irpf h2 { margin: 0 0 4px; }
-.irpf .apoio { margin: 0; }
-.irpf-cartao { padding: 16px 18px 18px; border-radius: 20px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); display: flex; flex-direction: column; }
-.irpf-cartao dl { margin: 0; }
-.irpf-cartao .tracejado { margin: 12px -18px; border-top: 2px dashed var(--line); }
-.irpf-aviso { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 18px; color: #92400e; }
-.irpf-cartao > .link { margin-top: 8px; min-height: 44px; align-self: flex-start; }
-.irpf-meses { border-radius: 16px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); }
-.irpf-meses summary { min-height: 48px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; color: var(--brand); cursor: pointer; list-style: none; }
-.irpf-meses summary::-webkit-details-marker { display: none; }
-.irpf-meses summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; }
-.irpf-meses[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
-.irpf-meses table { width: calc(100% - 36px); margin: 0 18px; border-collapse: collapse; font-size: 14px; }
-.irpf-meses th, .irpf-meses td { padding: 8px 0; border-top: 1px solid var(--line); text-align: right; white-space: nowrap; }
-.irpf-meses th:first-child { text-align: left; }
-.irpf-meses thead th { font-size: 12px; font-weight: 600; color: var(--ink-muted); border-top: 0; }
-.irpf-meses td { color: var(--brand); }
-.irpf-meses td[data-tributavel="true"] { color: #92400e; }
-.irpf-meses td[data-tributavel="false"] { color: var(--ink-muted); }
-.irpf-meses p { margin: 6px 18px 16px; font-size: 12px; line-height: 17px; color: var(--ink-muted); }
-
-/* Folha do DAS: sobe do rodapé no lugar do prompt do navegador. */
-.folha { width: 100%; max-width: 480px; margin: auto auto 0; padding: 0; border: 0; border-radius: 20px 20px 0 0; background: var(--surface-raised); color: var(--ink); box-shadow: 0 -12px 40px rgba(12, 42, 39, .18); }
-.folha::backdrop { background: rgba(12, 42, 39, .45); }
-.folha[open] { animation: folha-sobe .22s cubic-bezier(.2, .8, .2, 1); }
-.folha[open]::backdrop { animation: folha-fundo .22s ease-out; }
-@keyframes folha-sobe { from { transform: translateY(100%); } }
-@keyframes folha-fundo { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .folha[open], .folha[open]::backdrop { animation: none; } }
-.folha form { display: flex; flex-direction: column; padding: 10px 20px calc(20px + env(safe-area-inset-bottom)); }
-.folha-alca { align-self: center; width: 40px; height: 4px; border-radius: 999px; background: var(--line); margin-bottom: 18px; }
-.folha-etiqueta { margin: 0 0 6px; font-family: var(--mono); font-size: 11px; line-height: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
-.folha h2 { margin: 0 0 6px; }
-.folha-texto { margin: 0 0 18px; color: var(--ink-muted); }
-.folha-valor { display: flex; align-items: baseline; gap: 8px; padding: 10px 16px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); font-family: var(--mono); font-size: 18px; color: var(--ink-muted); }
-.folha-valor:focus-within { border-color: var(--brand); background: var(--surface-raised); }
-.folha-valor input { flex: 1; min-width: 0; border: 0; padding: 0; background: none; font-family: var(--mono); font-size: 32px; line-height: 44px; font-weight: 600; color: var(--ink); outline: none; }
-.folha-dica { margin: 8px 0 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.folha-aviso { margin: 0 0 16px; padding: 12px 14px; border-radius: 12px; background: var(--warning-surface); color: var(--warning); font-size: 14px; line-height: 20px; }
-.folha-erro { margin: 8px 0 0; color: var(--danger); font-size: 14px; }
-.ajustes-chave { margin-top: 14px; }
-.folha-acoes { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
-.folha-acoes .principal { width: 100%; }
-button.principal.perigo { background: var(--danger); }
-.folha-cancelar { min-height: 48px; border: 0; background: none; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
-
-/* Movimentações: lista do ano com busca, filtro e correção. */
-.revisar > button.link, .titulo-linha button.link { min-height: 44px; font-weight: 600; text-decoration: none; }
-.movs { gap: 18px; }
-.movs-abas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; padding: 4px; border-radius: 14px; background: #eef1f0; }
-.movs-abas button { min-height: 44px; border: 0; border-radius: 10px; background: none; font-weight: 600; font-size: 14px; color: var(--ink-muted); cursor: pointer; }
-.movs-abas button[aria-selected="true"], .movs-abas button[aria-checked="true"] { background: #ffffff; color: var(--ink); box-shadow: 0 1px 3px rgba(12,42,39,.18); }
-.movs-filtros { display: flex; flex-direction: column; gap: 10px; }
-.movs-filtros .graficos { margin: 0; }
-.movs-busca { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 12px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); color: var(--ink-muted); }
-.movs-busca:focus-within { box-shadow: 0 0 0 2px var(--brand); }
-.movs-busca input { flex: 1; min-width: 0; min-height: 44px; border: 0; background: none; outline: none; font-size: 16px; color: var(--ink); }
-.movs-resumo { margin: 0; font-size: 13px; color: var(--ink-muted); }
-.movs-mes h2 { margin: 0 0 8px; font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
-.movs-mes ul { list-style: none; margin: 0; padding: 0; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
-.movs-mes li + li { border-top: 1px solid var(--line); }
-.movs-mes li:not(.pagador) > button { width: 100%; min-height: 64px; padding: 10px 16px; border: 0; background: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; cursor: pointer; color: var(--ink); }
-.movs-mes li:not(.pagador) > button:active { background: var(--surface); }
-.movs-nome { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.movs-nome b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.movs-nome > span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.movs-valor { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex: none; }
-.movs-valor b { font-size: 14px; }
-.movs-valor b[data-tipo="saida"] { color: var(--ink-muted); }
-.movs-marca { align-self: flex-start; padding: 2px 8px; border-radius: 999px; font-size: 12px; line-height: 16px; font-weight: 600; background: #eef1f0; color: var(--ink-muted); }
-.movs-valor .movs-marca { align-self: flex-end; }
-.movs-marca[data-marca="servicos"] { background: #e6f4f1; color: #0f766e; }
-.movs-marca[data-marca="comercio"] { background: #eef0fe; color: #4338ca; }
-.movs-marca[data-marca="revisar"], .movs-marca[data-marca="separar"] { background: #fffbeb; color: #92400e; }
-.movs-marca[data-marca="despesa"], .movs-marca[data-marca="das"] { background: #e6f4f1; color: #0f766e; }
-.movs-mes li.pagador { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 10px 8px 10px 16px; }
-.movs-mes li.pagador .movs-nome { gap: 6px; }
-.esquecer { min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--danger); font-weight: 600; cursor: pointer; flex: none; }
-.folha-opcoes { margin: 0 0 14px; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px; }
-.folha-opcoes label { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
-.folha-opcoes label[data-marcada="true"] { box-shadow: 0 0 0 2px var(--brand); background: var(--brand-tint); }
-.folha-opcoes input { width: 20px; height: 20px; margin: 0; accent-color: var(--brand); flex: none; }
-.folha-opcoes label > span { display: flex; flex-direction: column; }
-.folha-opcoes label > span span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.folha form { max-height: 92vh; overflow-y: auto; }
-
-/* DASN entregue, aviso de prazo e relatório mensal. */
-.lembrete[data-tom="perigo"] { border-color: #fecaca; background: #fef2f2; }
-.lembrete[data-tom="perigo"] > b { color: #991b1b; }
-.entrega > .principal { width: 100%; }
-.entrega-ok { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #f0fdf4; box-shadow: 0 0 0 1px #bbf7d0; }
-.entrega-ok > div { flex: 1; display: flex; flex-direction: column; }
-.entrega-ok > div span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.entrega-ok .link { min-height: 44px; font-weight: 600; text-decoration: none; }
-.folha-campos { display: flex; flex-direction: column; gap: 14px; }
-.folha-campos .campo input { font-size: 16px; }
-.opcional { font-weight: 400; font-size: 13px; color: var(--ink-muted); }
-.relatorio-chamada .principal { margin-top: 12px; }
-.rel-controles { display: flex; flex-direction: column; gap: 12px; }
-.rel-controles .graficos { margin: 0; }
-.rel-dados { border-radius: 16px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); padding: 0 16px; }
-.rel-dados summary { min-height: 52px; display: flex; align-items: center; font-weight: 600; color: var(--brand); cursor: pointer; list-style: none; }
-.rel-dados summary::-webkit-details-marker { display: none; }
-.rel-dados[open] { padding-bottom: 16px; }
-.rel-papel { background: #ffffff; color: #15201d; border-radius: 4px; box-shadow: 0 1px 2px rgba(12,42,39,.08), 0 8px 24px rgba(12,42,39,.08); padding: 22px 18px; font-size: 13px; line-height: 18px; }
-.rel-papel h2 { margin: 0 0 12px; font-size: 15px; line-height: 20px; text-transform: uppercase; letter-spacing: .04em; text-align: center; }
-.rel-cabecalho { margin: 0 0 14px; display: flex; flex-direction: column; gap: 6px; }
-.rel-cabecalho div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e3e7e5; padding-bottom: 4px; }
-.rel-cabecalho dt { color: #5b6763; }
-.rel-cabecalho dd { margin: 0; font-weight: 600; text-align: right; }
-.rel-bloco { margin-top: 14px; }
-.rel-bloco h3 { margin: 0 0 6px; font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; color: #0f766e; }
-.rel-bloco dl { margin: 0; border: 1px solid #c9d0cd; }
-.rel-bloco dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 6px 8px; }
-.rel-bloco dl > div + div { border-top: 1px solid #e3e7e5; }
-.rel-bloco dt b { display: inline-block; min-width: 30px; }
-.rel-bloco dd { margin: 0; white-space: nowrap; }
-.rel-total { background: #f4f6f5; font-weight: 600; }
-.rel-geral { margin-top: 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 10px 8px; border: 2px solid #15201d; font-weight: 600; }
-.rel-geral b.mm-num { white-space: nowrap; font-size: 15px; }
-.rel-assinatura { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.rel-assinatura div { border-top: 1px solid #15201d; padding-top: 4px; font-size: 11px; color: #5b6763; }
-.rel-anexos { margin: 18px 0 0; font-size: 11px; line-height: 15px; color: #5b6763; }
-.relatorio > .principal { width: 100%; }
-
-@media print {
-  @page { size: A4; margin: 18mm; }
-  body { background: #ffffff; }
-  .app { padding: 0; min-height: 0; }
-  .relatorio > *:not(.rel-papel) { display: none !important; }
-  .rel-papel { box-shadow: none; padding: 0; font-size: 12pt; line-height: 1.4; }
-  .rel-papel h2 { font-size: 14pt; }
-}
-.campo-limite { margin-top: 18px; }
-
-/* Perfis PJ / PF / Tudo */
-.perfis { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 4px 14px 4px 4px; border: 0; border-radius: 999px; background: rgba(236,241,239,.08); color: inherit; font: inherit; text-align: left; cursor: pointer; }
-.perfis-pilha { position: relative; width: 70px; height: 44px; flex: none; }
-.perfil-bola { position: absolute; top: 0; left: 0; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font-size: 13px; font-weight: 700; letter-spacing: .02em; box-shadow: 0 0 0 3px var(--faixa); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s; }
-.perfil-bola[data-perfil="pj"] { background: #2dd4bf; color: #0b1f1c; }
-.perfil-bola[data-perfil="pf"] { background: #a5b4fc; color: #1e1b4b; }
-.perfil-bola[data-frente="true"] { z-index: 2; transform: translateX(0) scale(1); }
-.perfil-bola[data-frente="false"] { z-index: 1; transform: translateX(26px) scale(.82); opacity: .75; }
-.perfis[data-animar] .perfil-bola[data-frente="true"] { animation: perfil-frente .55s cubic-bezier(.3,.7,.2,1); }
-.perfis[data-animar] .perfil-bola[data-frente="false"] { animation: perfil-atras .55s cubic-bezier(.3,.7,.2,1); }
-@keyframes perfil-frente { from { transform: translateX(26px) scale(.82); } 50% { transform: translate(13px, -12px) scale(1.08); } to { transform: translateX(0) scale(1); } }
-@keyframes perfil-atras { from { transform: translateX(0) scale(1); opacity: 1; } 50% { transform: translate(13px, 10px) scale(.78); } to { transform: translateX(26px) scale(.82); opacity: .75; } }
-@media (prefers-reduced-motion: reduce) { .perfis[data-animar] .perfil-bola { animation: none; } }
-.perfis-nome { display: flex; flex-direction: column; line-height: 1.2; }
-.perfis-nome b { font-size: 15px; color: #ecf1ef; }
-.perfis-nome span { font-size: 12px; color: #a3b5b0; }
-.engrenagem[aria-pressed="true"] { background: #2dd4bf; color: #0b1f1c; border-color: #2dd4bf; }
-.faixa-grande { margin: 4px 0 2px; font: 600 40px/48px var(--mono); letter-spacing: -0.02em; }
-.faixa-sub { margin: 0; color: #a3b5b0; font-size: 14px; }
-.faixa-sub b { color: #ecf1ef; }
-.barra-uso { height: 8px; margin-top: 16px; border-radius: 999px; background: rgba(236,241,239,.14); overflow: hidden; }
-.barra-uso span { display: block; height: 100%; border-radius: inherit; background: #2dd4bf; }
-.faixa-legenda { display: flex; justify-content: space-between; margin: 8px 0 0; font-size: 12px; color: #a3b5b0; }
-.conteudo .barra-uso { background: #e3e7e5; }
-.conteudo .barra-uso span { background: var(--brand); }
-
-/* Esconder valores e dados sensíveis */
-.app.oculto .mm-num, .app.oculto .sensivel, .app.oculto .medidor text, .app.oculto .faixa-grande { filter: blur(7px); user-select: none; }
-.app.oculto .mm-num, .app.oculto .sensivel { transition: filter .15s; }
-
-.passagem { display: flex; gap: 14px; align-items: center; width: 100%; padding: 16px; border: 1px solid #99f6e4; border-radius: 22px; background: var(--brand-tint); text-align: left; cursor: pointer; }
-.passagem-icone { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; background: var(--brand); color: #fff; }
-.passagem > span:last-child { display: flex; flex-direction: column; gap: 2px; }
-.passagem > span:last-child > span { color: var(--ink-muted); font-size: 13px; line-height: 19px; }
-.ticket-etiqueta { display: grid; place-items: center; }
-
-.lista-cartao { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.lista-cartao button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); text-align: left; cursor: pointer; }
-.lista-cartao .movs-nome { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.lista-cartao .movs-nome > span { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
-.sigla { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--brand-tint); color: var(--brand); font-size: 13px; font-weight: 700; }
-.sigla[data-tipo="pdf"] { background: #e0f2fe; color: #0369a1; }
-.sigla[data-tipo="foto"] { background: #f1f5f9; color: #475569; }
-.sigla[data-tipo="saude"] { background: #fce7f3; color: #be185d; }
-.estado { font-size: 12px; font-weight: 600; }
-.lista-cartao .movs-nome > .estado[data-ok="true"] { color: var(--success); }
-.lista-cartao .movs-nome > .estado[data-ok="false"] { color: var(--warning); }
-
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chips button { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-raised); font-size: 14px; font-weight: 600; cursor: pointer; }
-.chips button[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-tint); color: var(--brand); }
-.chips i { width: 10px; height: 10px; border-radius: 999px; }
-.saidas-lista .chips { margin-top: 12px; }
-.dica-categoria { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--ink-muted); }
-
-/* Folha do botão + */
-.adicionar { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.adicionar button { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 68px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); text-align: left; cursor: pointer; }
-.adicionar button > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; }
-.adicionar button > span:nth-child(2) > span { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
-.adicionar-icone { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; }
-.adicionar-icone[data-tom="pj"] { background: var(--brand-tint); color: var(--brand); }
-.adicionar-icone[data-tom="azul"] { background: #e0f2fe; color: #0369a1; }
-.adicionar-icone[data-tom="pf"] { background: #ede9fe; color: #6d28d9; }
-.adicionar-icone[data-tom="rosa"] { background: #fce7f3; color: #be185d; }
-
-
-/* Comprovante */
-.cupom { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-raised); display: flex; flex-direction: column; gap: 10px; }
-.cupom h2 { margin: 0; }
-.cupom-foto { max-width: 100%; border-radius: 12px; }
-.cupom-itens { list-style: none; margin: 0; padding: 10px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
-.cupom-itens li { display: flex; justify-content: space-between; gap: 12px; }
-.cupom-total { display: flex; justify-content: space-between; margin: 0; font-size: 18px; font-weight: 600; }
-.ligada { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; border: 1px solid #99f6e4; border-radius: 16px; background: var(--brand-tint); }
-.ligada > span { display: flex; flex-direction: column; min-width: 0; }
-.ligada > span > span { color: var(--ink-muted); font-size: 13px; }
-.chave-acesso { margin: 0; font-size: 13px; line-height: 20px; color: var(--ink-muted); }
-.comprovante .movs-abas { margin-bottom: 12px; }
-.botao.perigo { color: var(--danger); border-color: #fecaca; justify-content: center; }
-.arquivo-grande { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 18px; border: 2px dashed #99f6e4; border-radius: 20px; background: var(--brand-tint); text-align: center; cursor: pointer; }
-.arquivo-grande input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.arquivo-grande span { color: var(--ink-muted); font-size: 14px; }
-.campo { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px; }
-.campo select { min-height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-.campo input[aria-invalid="true"] { border-color: var(--warning); }
-
-/* Ler nota */
-.camera { position: relative; overflow: hidden; border-radius: 22px; background: #0b1f1c; aspect-ratio: 3 / 4; }
-.camera video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.camera-mira { position: absolute; left: 50%; top: 45%; width: 220px; height: 220px; transform: translate(-50%, -50%); border: 3px solid #2dd4bf; border-radius: 22px; box-shadow: 0 0 0 999px rgba(11,31,28,.45); }
-.camera p { position: absolute; left: 0; right: 0; bottom: 14px; margin: 0; text-align: center; color: #ecf1ef; font-size: 14px; font-weight: 600; }
-.nota-lida { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 20px; background: var(--surface-raised); border: 1px solid var(--line); }
-.nota-lida h2 { margin: 0; }
-
-/* IRPF da pessoa física */
-.irpf-total { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 12px 0; font-weight: 600; }
-.irpf-total span { flex: 1; }
-.irpf-total b { font-size: 18px; white-space: nowrap; }
-.irpf-total small { flex-basis: 100%; text-align: right; }
-.irpf-total small { color: var(--warning); font-weight: 600; }
-.medidor-educacao h3 { margin: 0 0 4px; font-size: 16px; }
-.medidor-educacao p { margin: 0; }
-button.lembrete { text-align: left; cursor: pointer; width: 100%; font: inherit; }
-.recibo-papel small { font-size: 12px; color: var(--ink-muted); font-weight: 400; }
-
-/* Privacidade */
-.exemplo-privacidade { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 20px; background: var(--faixa); color: #ecf1ef; }
-.exemplo-privacidade .rotulo { color: #a3b5b0; }
-.exemplo-privacidade div { display: flex; justify-content: space-between; font-size: 15px; }
-.exemplo-privacidade div span { color: #a3b5b0; }
-.exemplo-privacidade .link { color: #2dd4bf; align-self: flex-start; }
-a.link { color: var(--brand); font-weight: 600; }
-
-/* Cada perfil com a sua cor: PJ verde-azulado, PF índigo. */
-.app[data-perfil="pf"] { --faixa: #1e1b4b; }
-.app[data-perfil="pf"] .perfis-nome span { color: #c7d2fe; }
-.botoes button.principal { background: var(--brand); color: var(--on-brand); border-color: var(--brand); }
-.por-banco { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
-.por-banco li { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
-.por-banco li + li { border-top: 1px solid var(--line); }
-.por-banco span { display: flex; align-items: center; gap: 10px; font-weight: 600; }
-.por-banco i { width: 10px; height: 10px; border-radius: 999px; }
-/* Topo dos Inícios: perfil, olho e ajustes; o período fica junto do título. */
-.faixa-topo .perfis { margin-top: 0; }
-.faixa-linha { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 22px; }
-.faixa-linha h1, .faixa-linha .faixa-nota { margin: 0; }
-.faixa-linha + .faixa-nota { margin-top: 4px; }
-.faixa-linha select { min-height: 36px; padding: 0 14px; font-size: 14px; }
-.faixa-compara { display: flex; gap: 8px; align-items: center; margin: 12px 0 0; padding: 8px 12px; border-radius: 12px; background: rgba(236,241,239,.08); font-size: 13px; color: #c9d6d2; width: fit-content; }
-.faixa-compara b { color: #ecf1ef; font-weight: 600; }
-.faixa-compara[data-subiu="true"] > span:first-child { color: #fca5a5; }
-.faixa-compara[data-subiu="false"] > span:first-child { color: #5eead4; }
-.maiores { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
-.maiores li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
-.maiores li + li { border-top: 1px solid var(--line); }
-.maiores .movs-nome { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.maiores .movs-nome b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.maiores .movs-nome span { font-size: 13px; color: var(--ink-muted); }
-.legenda-pf { display: flex; align-items: center; gap: 6px; }
-.legenda-pf i, .meses-pf i { display: inline-block; border-radius: 3px; }
-.legenda-pf i { width: 10px; height: 10px; }
-.legenda-pf i + * { margin-right: 4px; }
-[data-s="entrou"] { background: #a5b4fc; }
-[data-s="gastou"] { background: var(--faixa); }
-.meses-pf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 14px 10px 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
-.meses-pf button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 0; border: 0; border-radius: 10px; background: none; font: inherit; font-size: 12px; color: var(--ink-muted); cursor: pointer; }
-.meses-pf button[aria-pressed="true"] { background: #eef2ff; color: var(--ink); font-weight: 600; }
-.meses-pf button:disabled { cursor: default; opacity: .5; }
-.meses-pf .barras { display: flex; align-items: flex-end; gap: 3px; height: 96px; }
-.meses-pf .barras i { width: 10px; min-height: 2px; }
-.passagem[data-de="ir"] { background: var(--surface-raised); border-color: var(--line); }
-.passagem[data-de="ir"] .passagem-icone { background: #4338ca; }
-.barra-uso[data-alerta] span { background: #fbbf24; }
-.visoes-claras { background: var(--surface-raised); box-shadow: 0 0 0 1px var(--line); margin-top: 0; }
-.visoes-claras button { color: var(--ink-muted); }
-.visoes-claras button[aria-checked="true"] { background: var(--brand); color: var(--on-brand); }
-
 body{margin:0}
-.app{position:relative;min-height:2380px;padding-bottom:110px}
-.app .abas{position:absolute}
+a{color:#0f766e}a:hover{color:#0b5d57}
+.ni *{box-sizing:border-box}
+.ni{font-family:"Instrument Sans","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:22px;color:#15201d;background:#f4f6f5}
+.ni button{font:inherit;color:inherit;cursor:pointer}
+.ni .mono{white-space:nowrap;font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-weight:500;letter-spacing:-0.01em}
+.ni h2{margin:0;font-size:20px;line-height:26px;font-weight:600}
+.ni .apoio{font-size:13px;line-height:18px;color:#5b6763}
+.ni .rotulo{font-size:12px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.ni .circ{flex:none;width:48px;height:48px;border-radius:999px;background:#ffffff;box-shadow:0 0 0 1px #e3e7e5;border:0;display:flex;align-items:center;justify-content:center;color:#15201d}
+.ni .cartao{border-radius:24px;background:#ffffff;box-shadow:0 1px 2px rgba(21,32,29,.05),0 10px 30px rgba(21,32,29,.07)}
+.ni .sec-topo{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.ni .item{display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 0}
+.ni .item + .item{border-top:1px dashed #e3e7e5}
+.ni .ini{flex:none;width:40px;height:40px;border-radius:999px;background:#e6f4f1;color:#0f766e;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ni .meio{flex:1 1 auto;padding-right:8px;display:flex;flex-direction:column;min-width:0}
+.ni .pont{flex:1 1 auto;align-self:baseline;border-bottom:2px dotted #c9d1ce;margin:0 4px;transform:translateY(-4px);min-width:16px}
+.ni .lin{display:flex;align-items:baseline;gap:8px}
+.ni .lin > i{flex:none;align-self:center}
+.ni .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:56px;min-height:52px;text-decoration:none;font-size:11px;line-height:14px;font-weight:500;color:#5b6763}
+.ni .tab[aria-current="page"]{color:#0f766e;font-weight:600}
+.ni .marco{position:relative;display:flex;gap:14px;padding-bottom:20px}
+.ni .marco:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:2px;width:2px;background:#e3e7e5}
+.ni .marco-ic{flex:none;width:32px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center}
 </style>
 </helmet>
-<div style="width: 390px; height: 2380px; position: relative; overflow: hidden; background: var(--surface)">
-<div class="app" data-perfil="pj"><main><section class="faixa" aria-label="Resumo do ano"><div class="faixa-topo"><button class="perfis" aria-label="Perfil Bruno PJ. Trocar para Bruno PF"><span class="perfis-pilha" aria-hidden="true"><span class="perfil-bola" data-perfil="pj" data-frente="true">PJ</span><span class="perfil-bola" data-perfil="pf" data-frente="false">PF</span></span><span class="perfis-nome"><b>Bruno PJ</b><span>Toque para trocar</span></span></button><div class="faixa-acoes"><button class="engrenagem" aria-label="Esconder valores" aria-pressed="false"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="engrenagem" aria-label="Ajustes"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button></div></div><div class="faixa-linha"><h1 class="faixa-nota">Você faturou em 2026</h1><label class="so-leitor" for="ano">Ano</label><select id="ano"><option>2026</option></select></div><p class="faixa-grande mm-num">R$ 51.320,00</p><p class="faixa-sub">de <span class="sensivel">R$ 81.000,00</span> do limite · faltam <b class="sensivel">R$ 29.680,00</b></p><div class="barra-uso" aria-hidden="true"><span style="width: 63%;"></span></div><p class="faixa-legenda"><span>63% do limite</span><span>Extrato até outubro</span></p><p class="faixa-compara" data-subiu="false"><span aria-hidden="true">→</span><span>No ritmo atual, fecha perto de <b class="sensivel">R$ 63.400</b>, folga de R$ 17.600</span></p><svg class="faixa-onda" aria-hidden="true" viewBox="0 0 390 56" preserveAspectRatio="none"><path d="M0 56 V30 C 70 6, 150 6, 205 24 S 330 50, 390 18 V56 Z"></path></svg></section><div class="conteudo"><button class="ticket" aria-label="1 Pix esperando revisão, R$ 980,00 ainda fora do total. Abrir revisão."><span class="ticket-rostos" aria-hidden="true"><span data-i="0">JL</span></span><span class="ticket-corte" aria-hidden="true"></span><span class="ticket-texto"><span class="rotulo">1 pendente</span><b>Pix esperando você</b><span><span class="sensivel">R$ 980,00</span> ainda fora do total</span></span><span class="ticket-seta" aria-hidden="true"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></span></button><section><div class="titulo-linha"><h2>De onde veio</h2><span>janeiro a outubro</span></div><div class="mm-split" style="display: flex; flex-direction: column; gap: 14px;"><div role="img" aria-label="Serviços 53%, Comércio 47%" style="display: flex; gap: 4px; height: 14px;"><div style="width: 53.2346%; min-width: 8px; border-radius: 999px; background: var(--servicos); transition: width 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);"></div><div style="width: 46.7654%; min-width: 8px; border-radius: 999px; background: var(--comercio); transition: width 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) 120ms;"></div></div><div style="display: flex; flex-direction: column; gap: 10px;"><div style="display: flex; align-items: baseline; gap: 10px;"><i aria-hidden="true" style="flex: 0 0 auto; width: 10px; height: 10px; border-radius: 999px; background: var(--servicos); align-self: center;"></i><span style="flex: 1 1 auto; font-size: 15px; color: rgb(21, 32, 29);">Serviços</span><span class="mm-num" style="font-size: 15px; font-weight: 500; color: rgb(21, 32, 29);">R$ 27.320,00</span><span style="width: 40px; text-align: right; font-size: 13px; color: rgb(91, 103, 99);">53%</span></div><div style="display: flex; align-items: baseline; gap: 10px;"><i aria-hidden="true" style="flex: 0 0 auto; width: 10px; height: 10px; border-radius: 999px; background: var(--comercio); align-self: center;"></i><span style="flex: 1 1 auto; font-size: 15px; color: rgb(21, 32, 29);">Comércio</span><span class="mm-num" style="font-size: 15px; font-weight: 500; color: rgb(21, 32, 29);">R$ 24.000,00</span><span style="width: 40px; text-align: right; font-size: 13px; color: rgb(91, 103, 99);">47%</span></div></div></div></section><section aria-labelledby="maiores-t"><div class="titulo-linha"><h2 id="maiores-t">Quem mais pagou</h2><span>janeiro a outubro</span></div><ol class="maiores"><li><span class="sigla" aria-hidden="true">DE</span><span class="movs-nome"><b>DELTA EVENTOS LTDA</b><span>Comércio · 10 vezes</span></span><b class="mm-num">R$ 24.000,00</b></li><li><span class="sigla" aria-hidden="true">MS</span><span class="movs-nome"><b>MARIA SOUZA</b><span>Serviços · 10 vezes</span></span><b class="mm-num">R$ 18.500,00</b></li><li><span class="sigla" aria-hidden="true">JL</span><span class="movs-nome"><b>JOAO LIMA</b><span>Serviços · 9 vezes</span></span><b class="mm-num">R$ 8.820,00</b></li></ol></section><section aria-labelledby="meses-t"><h2 id="meses-t">Mês a mês</h2><div class="graficos" role="radiogroup" aria-label="Forma do gráfico"><button role="radio" aria-checked="true">Rastro</button><button role="radio" aria-checked="false">Cápsulas</button><button role="radio" aria-checked="false">Desvio</button><button role="radio" aria-checked="false">Linha</button><button role="radio" aria-checked="false">Calor</button><button role="radio" aria-checked="false">Relógio</button></div><div class="rastro"><div class="rastro-topo"><div><span class="rotulo">Maior mês do ano</span><span class="mm-num" style="font-size: 26px; line-height: 32px; font-weight: 500; white-space: nowrap;">R$ 5.230,00</span></div><div class="rastro-mes"><b>Janeiro</b><span data-acima="false">R$ 1.520 abaixo do corte</span></div></div><svg viewBox="0 0 350 190" width="100%" role="slider" tabindex="0" aria-label="Faturamento por mês" aria-valuemin="1" aria-valuemax="12" aria-valuenow="1" aria-valuetext="Janeiro: R$ 5.230" style="display: block; overflow: visible; touch-action: pan-y;"><rect x="4" y="8" width="346" height="47.40740740740742" fill="var(--warning-surface)"></rect><line x1="4" x2="350" y1="55.40740740740742" y2="55.40740740740742" stroke="var(--warning)" stroke-width="1.5"></line><text x="350" y="49.40740740740742" text-anchor="end" font-size="10" font-weight="600" fill="var(--warning)">corte R$ 6.750</text><g opacity="1" style="transition: opacity 0.2s;"><rect x="10.416666666666664" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="10.416666666666664" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="18.416666666666664" y="186" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)">J</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="39.24999999999999" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="39.24999999999999" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="47.24999999999999" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">F</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="68.08333333333333" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="68.08333333333333" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="76.08333333333333" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">M</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="96.91666666666667" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="96.91666666666667" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="104.91666666666667" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">A</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="125.75" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="125.75" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="133.75" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">M</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="154.58333333333331" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="154.58333333333331" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="162.58333333333331" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">J</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="183.41666666666666" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="183.41666666666666" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="191.41666666666666" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">J</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="212.24999999999997" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="212.24999999999997" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="220.24999999999997" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">A</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="241.08333333333331" y="120.79451303155007" width="16" height="47.20548696844993" rx="4" fill="var(--servicos)"></rect><rect x="241.08333333333331" y="80.76159122085048" width="16" height="38.03292181069959" rx="4" fill="var(--comercio)"></rect><text x="249.08333333333331" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">S</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><rect x="269.9166666666667" y="137.14128943758573" width="16" height="30.858710562414274" rx="4" fill="var(--servicos)"></rect><rect x="269.9166666666667" y="97.10836762688615" width="16" height="38.03292181069958" rx="4" fill="var(--comercio)"></rect><text x="277.9166666666667" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">O</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><circle cx="306.75" cy="166" r="2.5" fill="var(--ink-muted)"></circle><text x="306.75" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">N</text></g><g opacity="0.28" style="transition: opacity 0.2s;"><circle cx="335.5833333333333" cy="166" r="2.5" fill="var(--ink-muted)"></circle><text x="335.5833333333333" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="var(--ink)">D</text></g><g style="transform: translateY(80.7616px); transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);"><line x1="4" x2="350" y1="0" y2="0" stroke="var(--ink)" stroke-dasharray="3 3"></line><rect x="2" y="-9" width="49" height="18" rx="4" fill="var(--ink)"></rect><text x="9" y="4" font-size="11" font-weight="600" fill="var(--surface)" class="mm-num">5.230</text><circle cx="350" cy="0" r="3" fill="var(--ink)"></circle></g></svg><div class="rastro-legenda"><span><i style="background: var(--servicos);"></i>Serviços</span><span><i style="background: var(--comercio);"></i>Comércio</span><span><i style="background: var(--warning);"></i>Acima do corte de R$ 6.750</span></div></div></section><section aria-labelledby="limite-t"><div class="titulo-linha"><h2 id="limite-t">Limite do ano</h2><span>R$ 81.000,00</span></div><div class="visoes visoes-claras" role="radiogroup" aria-label="Forma do limite"><button role="radio" aria-checked="true">Arco</button><button role="radio" aria-checked="false">Curva</button><button role="radio" aria-checked="false">Barra</button></div><div class="medidor"><div class="mm-gauge" role="img" aria-label="Faturado no ano: R$ 51.320,00, 63% do limite de R$ 81.000" style="position: relative; width: 300px; height: 240px; color: rgb(21, 32, 29);"><svg width="300" height="240" viewBox="0 0 300 240" aria-hidden="true" style="display: block; overflow: visible;"><path d="M37.42 215.00 A130 130 0 1 1 262.58 215.00" fill="none" stroke="#e3e7e5" stroke-width="14" stroke-linecap="round"></path><path d="M37.42 215.00 A130 130 0 1 1 262.58 215.00" fill="none" stroke="#0f766e" stroke-width="14" stroke-linecap="round" stroke-dasharray="544.54" stroke-dashoffset="199.53"></path><line x1="50.40707856478956" y1="207.5" x2="59.067332602633954" y2="202.5" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="45.77460449078525" y1="198.60110010018042" x2="50.3061434259685" y2="196.48800879147691" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="41.93534860962053" y1="189.3323164824519" x2="46.633811713550074" y2="187.62221576582357" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="38.91852997675713" y1="179.76419018678985" x2="43.74815910820247" y2="178.47009496127723" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="36.74710840359607" y1="169.969540431697" x2="41.671147168657114" y2="169.10129954336236" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="35.437609719449256" y1="160.02291041598068" x2="40.41858320990799" y2="159.58713170224237" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="35" y1="150" x2="45" y2="150" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="35.437609719449256" y1="139.97708958401927" x2="40.41858320990799" y2="140.41286829775754" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="36.74710840359607" y1="130.03045956830303" x2="41.671147168657114" y2="130.89870045663767" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="38.918529976757156" y1="120.23580981321008" x2="43.7481591082025" y2="121.52990503872269" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="41.93534860962055" y1="110.66768351754808" x2="46.63381171355009" y2="112.37778423417643" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="45.77460449078525" y1="101.39889989981955" x2="50.3061434259685" y2="103.51199120852306" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="50.40707856478954" y1="92.5" x2="59.06733260263394" y2="97.5" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="55.79751490676597" y1="84.03870981962966" x2="59.89327512821093" y2="86.9065920013849" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="61.904889041317546" y1="76.07942488604796" x2="65.73511125691243" y2="79.29336293448065" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="68.68272016354705" y1="68.68272016354703" x2="72.21825406947978" y2="72.21825406947977" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="76.07942488604797" y1="61.90488904131753" x2="79.29336293448067" y2="65.73511125691242" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="84.03870981962973" y1="55.79751490676591" x2="86.90659200138495" y2="59.893275128210874" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="92.50000000000003" y1="50.40707856478954" x2="97.50000000000003" y2="59.06733260263394" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="101.39889989981958" y1="45.77460449078525" x2="103.51199120852307" y2="50.3061434259685" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="110.6676835175481" y1="41.93534860962053" x2="112.37778423417643" y2="46.633811713550074" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="120.2358098132101" y1="38.91852997675714" x2="121.5299050387227" y2="43.748159108202486" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="130.030459568303" y1="36.74710840359607" x2="130.89870045663767" y2="41.671147168657114" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="139.9770895840193" y1="35.437609719449256" x2="140.4128682977576" y2="40.41858320990799" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="150" y1="35" x2="150" y2="45" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="160.02291041598073" y1="35.437609719449256" x2="159.58713170224246" y2="40.41858320990799" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="169.969540431697" y1="36.74710840359607" x2="169.10129954336236" y2="41.671147168657114" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="179.76419018678988" y1="38.91852997675714" x2="178.47009496127728" y2="43.748159108202486" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="189.33231648245192" y1="41.93534860962055" x2="187.62221576582357" y2="46.63381171355009" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="198.60110010018045" y1="45.77460449078525" x2="196.48800879147694" y2="50.3061434259685" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"></line><line x1="207.5" y1="50.40707856478956" x2="202.5" y2="59.067332602633954" stroke="#0f766e" stroke-width="2" stroke-linecap="round"></line><line x1="215.96129018037033" y1="55.79751490676594" x2="213.09340799861508" y2="59.8932751282109" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="223.92057511395203" y1="61.90488904131753" x2="220.70663706551932" y2="65.73511125691242" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="231.31727983645297" y1="68.68272016354705" x2="227.78174593052023" y2="72.21825406947978" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="238.09511095868248" y1="76.07942488604799" x2="234.26488874308757" y2="79.29336293448068" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="244.20248509323406" y1="84.0387098196297" x2="240.10672487178908" y2="86.90659200138494" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="249.59292143521046" y1="92.5" x2="240.93266739736606" y2="97.5" stroke="#d5dbd8" stroke-width="2" stroke-linecap="round"></line><line x1="254.22539550921476" y1="101.39889989981955" x2="249.69385657403149" y2="103.51199120852306" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="258.0646513903795" y1="110.6676835175481" x2="253.36618828644993" y2="112.37778423417643" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="261.08147002324284" y1="120.23580981321011" x2="256.25184089179754" y2="121.52990503872272" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="263.2528915964039" y1="130.030459568303" x2="258.3288528313429" y2="130.89870045663767" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="264.56239028055074" y1="139.97708958401932" x2="259.581416790092" y2="140.4128682977576" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="265" y1="150" x2="255" y2="150" stroke="#d5dbd8" stroke-width="2" stroke-linecap="round"></line><line x1="264.56239028055074" y1="160.02291041598068" x2="259.581416790092" y2="159.5871317022424" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="263.2528915964039" y1="169.969540431697" x2="258.3288528313429" y2="169.10129954336233" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="261.08147002324284" y1="179.76419018678988" x2="256.25184089179754" y2="178.47009496127728" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="258.0646513903795" y1="189.33231648245192" x2="253.36618828644993" y2="187.62221576582357" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="254.22539550921476" y1="198.60110010018045" x2="249.69385657403149" y2="196.48800879147694" stroke="#d5dbd8" stroke-width="1.2" stroke-linecap="round"></line><line x1="249.59292143521046" y1="207.5" x2="240.93266739736606" y2="202.5" stroke="#d5dbd8" stroke-width="2" stroke-linecap="round"></line><line x1="239.9205238827647" y1="69.03519663057816" x2="253.29713074135782" y2="56.9908457161187" stroke="#ffffff" stroke-width="3"></line><text x="262.2148686470865" y="52.9612784398124" text-anchor="middle" font-size="10" font-weight="600" fill="#5b6763" font-family="Instrument Sans, system-ui, sans-serif">70%</text><line x1="270.33714933956105" y1="162.64794405538606" x2="288.23854345619" y2="164.52945639420383" stroke="#ffffff" stroke-width="3"></line><text x="300.1728062006093" y="169.78379795341567" text-anchor="middle" font-size="10" font-weight="600" fill="#5b6763" font-family="Instrument Sans, system-ui, sans-serif">90%</text><circle class="mm-pulse" cx="219.00349178587408" cy="39.82505674448109" r="10" fill="#0f766e" opacity="0.5"></circle><circle cx="219.00349178587408" cy="39.82505674448109" r="9" fill="#0f766e" stroke="#ffffff" stroke-width="3"></circle></svg><div style="position: absolute; left: 0px; right: 0px; top: 90px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;"><span style="font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(91, 103, 99);">Faturado no ano</span><span class="mm-num" style="font-size: 32px; line-height: 1.1; font-weight: 500; color: rgb(21, 32, 29);">R$ 51.320,00</span><span style="font-size: 13px; line-height: 18px; color: rgb(91, 103, 99);">63% de R$ 81.000</span></div></div></div></section><section aria-labelledby="das-t" class="das"><div class="titulo-linha"><h2 id="das-t">DAS do ano</h2><span>9 pagos</span></div><ol class="das-meses"><li><button type="button" data-estado="pago" aria-label="janeiro: pago em 21/02, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">J</span></button></li><li><button type="button" data-estado="pago" aria-label="fevereiro: pago em 21/03, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">F</span></button></li><li><button type="button" data-estado="pago" aria-label="março: pago em 21/04, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">M</span></button></li><li><button type="button" data-estado="pago" aria-label="abril: pago em 21/05, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">A</span></button></li><li><button type="button" data-estado="pago" aria-label="maio: pago em 21/06, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">M</span></button></li><li><button type="button" data-estado="pago" aria-label="junho: pago em 21/07, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">J</span></button></li><li><button type="button" data-estado="pago" aria-label="julho: pago em 21/08, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">J</span></button></li><li><button type="button" data-estado="pago" aria-label="agosto: pago em 21/09, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">A</span></button></li><li><button type="button" data-estado="pago" aria-label="setembro: pago em 21/10, R$ 120,00" aria-disabled="false"><span class="das-marca" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span aria-hidden="true">S</span></button></li><li><button type="button" data-estado="a-vencer" aria-label="outubro: vence em 20/11" aria-disabled="true"><span class="das-marca" aria-hidden="true"></span><span aria-hidden="true">O</span></button></li><li><button type="button" data-estado="a-vencer" aria-label="novembro: vence em 20/12" aria-disabled="true"><span class="das-marca" aria-hidden="true"></span><span aria-hidden="true">N</span></button></li><li><button type="button" data-estado="a-vencer" aria-label="dezembro: vence em 20/01" aria-disabled="true"><span class="das-marca" aria-hidden="true"></span><span aria-hidden="true">D</span></button></li></ol><ul class="das-legenda" aria-hidden="true"><li data-estado="pago"><span class="das-marca">✓</span>pago</li><li data-estado="a-vencer"><span class="das-marca"></span>a vencer</li></ul><p class="das-nota">Tudo pago até agora. O DAS vence todo dia 20 e é achado sozinho no extrato.</p></section><section aria-labelledby="prazos-titulo"><h2 id="prazos-titulo">Próximos prazos</h2><ol class="prazos"><li data-hoje="true"><span class="marco" aria-hidden="true"></span><b class="mm-num">22 out</b><span>Hoje</span></li><li><span class="marco" aria-hidden="true"></span><b class="mm-num">20 nov</b><span>DAS de outubro, em 29 dias</span></li><li><span class="marco" aria-hidden="true"></span><b class="mm-num">31 mai</b><span>DASN-SIMEI 2026, em 221 dias</span></li></ol></section><section class="lembrete" aria-labelledby="instalar-titulo"><b id="instalar-titulo">Instale o app na tela de início</b><span>No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. Aberto pelo navegador, o iPhone pode apagar os dados depois de alguns dias sem uso.</span></section></div></main><nav class="abas" aria-label="Seções"><button aria-current="true"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path><path d="M10 20v-5h4v5"></path></svg>Início</button><button aria-current="false"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"></rect><path d="M7 5h10"></path><path d="m9 14 2 2 4-4"></path></svg>Revisar<span class="contador" aria-label="1 pendentes">1</span></button><button class="importar" aria-current="false" aria-haspopup="dialog"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg><span class="so-leitor">Adicionar</span></button><button aria-current="false"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path><path d="M9 8h6M9 12h6M9 16h3"></path></svg>Notas</button><button aria-current="false"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><path d="M9 13h6M9 17h4"></path></svg>Declaração</button></nav></div>
+<div class="ni" style="width: 390px; height: 1960px; position: relative; overflow: hidden">
+<div style="padding: 16px 20px 120px; display: flex; flex-direction: column; gap: 24px">
+
+<header style="display: flex; align-items: center; justify-content: space-between">
+<button type="button" aria-label="Perfil Bruno PJ. Trocar para Bruno PF" style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 2px 16px 2px 2px; border: 0; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5">
+<span aria-hidden="true" style="position: relative; width: 62px; height: 44px; display: block">
+<span style="position: absolute; left: 22px; top: 4px; width: 36px; height: 36px; border-radius: 999px; background: #e0e7ff; color: #3730a3; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">PF</span>
+<span style="position: absolute; left: 0; top: 0; width: 44px; height: 44px; border-radius: 999px; background: #0f766e; color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 3px #fff">PJ</span>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-start"><span style="font-weight: 600; line-height: 20px">Bruno PJ</span><span class="apoio" style="font-size: 12px; line-height: 16px">Toque para trocar</span></span>
+</button>
+<div style="display: flex; gap: 8px">
+<button type="button" class="circ" aria-label="Esconder valores"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+<a href="Ajustes.dc.html" class="circ" aria-label="Ajustes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></a>
+</div>
+</header>
+
+<div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Seu ano até aqui</h1><button type="button" aria-label="Ano 2026. Trocar ano" style="flex: none; display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; font-weight: 600">2026 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+<p class="apoio" style="margin: 4px 0 0; font-size: 14px; line-height: 20px">Extrato até outubro</p>
+</div>
+
+<section aria-label="Faturado no ano" style="position: relative; overflow: hidden; border-radius: 24px; background: #0c2a27; color: #ecf1ef; padding: 20px">
+<svg aria-hidden="true" width="200" height="140" viewBox="0 0 200 140" style="position: absolute; right: -44px; top: -36px"><circle cx="120" cy="64" r="58" fill="none" stroke="#2dd4bf" stroke-opacity="0.12" stroke-width="16"/><circle cx="120" cy="64" r="94" fill="none" stroke="#2dd4bf" stroke-opacity="0.07" stroke-width="16"/></svg>
+<span class="rotulo" style="position: relative; display: block; color: #a3b5b0">Faturado em 2026</span>
+<p class="mono" style="position: relative; margin: 6px 0 0; font-size: 34px; line-height: 40px; color: #ffffff">R$ 51.320,00</p>
+<div role="img" aria-label="63% do limite de R$ 81.000 usado" style="position: relative; margin-top: 16px; height: 10px; border-radius: 999px; background: rgba(236,241,239,.12); display: flex; overflow: hidden"><span style="width: 34%; background: #2dd4bf"></span><span style="width: 29%; background: #a5b4fc"></span></div>
+<div style="position: relative; display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; font-size: 13px; line-height: 18px; color: #c9d6d2"><span>63% de <span class="mono">R$ 81.000</span></span><span>faltam <b class="mono" style="color: #ffffff">R$ 29.680,00</b></span></div>
+<div style="position: relative; margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(236,241,239,.18); display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; color: #c9d6d2">
+<span class="lin"><i aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #2dd4bf"></i>Serviços<span class="pont" style="border-color: rgba(236,241,239,.2)"></span><b class="mono" style="color: #ffffff">R$ 27.320,00</b></span>
+<span class="lin"><i aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #a5b4fc"></i>Comércio<span class="pont" style="border-color: rgba(236,241,239,.2)"></span><b class="mono" style="color: #ffffff">R$ 24.000,00</b></span>
+</div>
+</section>
+
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 18px; background: #e6f4f1; color: #0b4f4a; font-size: 14px; line-height: 20px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+<span>No ritmo atual, 2026 fecha perto de <b class="mono">R$ 63.400</b>, com folga de <b class="mono">R$ 17.600</b>.</span>
+</div>
+
+<section class="cartao" aria-labelledby="pj-pend" style="padding: 20px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span id="pj-pend" class="apoio" style="font-size: 14px">20 out · 1 Pix esperando você</span><span style="padding: 2px 10px; border-radius: 999px; background: #fffbeb; box-shadow: inset 0 0 0 1px #fcd34d; color: #92400e; font-size: 13px; font-weight: 600">Novo pagador</span></div>
+<p class="mono" style="margin: 12px 0 0; font-size: 30px; line-height: 36px">R$ 980,00</p>
+<p style="margin: 2px 0 0; font-weight: 600">JOAO LIMA</p>
+<p class="apoio" style="margin: 0">Ainda fora do total do ano</p>
+<a href="Revisar.dc.html" style="margin-top: 16px; min-height: 48px; border-radius: 14px; background: #0f766e; color: #ffffff; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Revisar agora</a>
+</section>
+
+<section aria-labelledby="pj-quem">
+<div class="sec-topo"><h2 id="pj-quem">Quem mais pagou</h2><span class="apoio">janeiro a outubro</span></div>
+<div class="cartao" style="padding: 6px 20px">
+<div class="item"><span class="ini" style="background: #e0e7ff; color: #3730a3">DE</span><span class="meio"><span style="font-weight: 600">DELTA EVENTOS LTDA</span><span class="apoio">Comércio · 10 vezes</span></span><b class="mono">R$ 24.000,00</b></div>
+<div class="item"><span class="ini">MS</span><span class="meio"><span style="font-weight: 600">MARIA SOUZA</span><span class="apoio">Serviços · 10 vezes</span></span><b class="mono">R$ 18.500,00</b></div>
+<div class="item"><span class="ini">JL</span><span class="meio"><span style="font-weight: 600">JOAO LIMA</span><span class="apoio">Serviços · 9 vezes</span></span><b class="mono">R$ 8.820,00</b></div>
+</div>
+</section>
+
+<section aria-labelledby="pj-mes">
+<div class="sec-topo"><h2 id="pj-mes">Mês a mês</h2><span class="apoio">corte de R$ 6.750</span></div>
+<div class="cartao" style="padding: 20px">
+<span class="rotulo" style="color: #5b6763">Maior mês do ano</span>
+<div style="display: flex; justify-content: space-between; align-items: baseline"><p class="mono" style="margin: 2px 0 0; font-size: 24px; line-height: 30px">R$ 5.230,00</p><span style="font-weight: 600">Janeiro</span></div>
+<div role="img" aria-label="Faturamento de janeiro a outubro, todos abaixo do corte de R$ 6.750" style="position: relative; height: 140px; margin-top: 16px; display: flex; align-items: flex-end; gap: 6px">
+<span aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; border-top: 1.5px dashed #b45309"></span>
+<span style="flex: 1; height: 77%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 70%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 72%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 66%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 74%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 75%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 71%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 76%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 73%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 72%; display: flex; flex-direction: column; border-radius: 6px 6px 2px 2px; overflow: hidden"><i style="flex: 47; background: #6366f1"></i><i style="flex: 53; background: #0d9488"></i></span>
+<span style="flex: 1; height: 3%; border-radius: 6px 6px 2px 2px; background: #e3e7e5"></span><span style="flex: 1; height: 3%; border-radius: 6px 6px 2px 2px; background: #e3e7e5"></span>
+</div>
+<div aria-hidden="true" style="display: flex; gap: 6px; margin-top: 8px; font-size: 11px; line-height: 14px; color: #5b6763; text-align: center"><span style="flex: 1">J</span><span style="flex: 1">F</span><span style="flex: 1">M</span><span style="flex: 1">A</span><span style="flex: 1">M</span><span style="flex: 1">J</span><span style="flex: 1">J</span><span style="flex: 1">A</span><span style="flex: 1">S</span><span style="flex: 1">O</span><span style="flex: 1">N</span><span style="flex: 1">D</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13px; line-height: 18px; color: #5b6763"><span style="display: flex; align-items: center; gap: 6px"><i aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #0d9488"></i>Serviços</span><span style="display: flex; align-items: center; gap: 6px"><i aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #6366f1"></i>Comércio</span><span style="display: flex; align-items: center; gap: 6px"><i aria-hidden="true" style="width: 14px; border-top: 1.5px dashed #b45309"></i>Corte de R$ 6.750</span></div>
+</div>
+</section>
+
+<section aria-labelledby="pj-das">
+<div class="sec-topo"><h2 id="pj-das">DAS do ano</h2><span class="apoio">9 pagos</span></div>
+<div class="cartao" style="padding: 20px">
+<div style="display: flex; justify-content: space-between">
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>J</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>F</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>M</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>A</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>M</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>J</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>J</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>A</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; background: #15803d; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></i>S</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; box-shadow: inset 0 0 0 2px #0f766e"></i>O</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; box-shadow: inset 0 0 0 2px #d5dad8"></i>N</span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 14px; color: #5b6763"><i style="width: 24px; height: 24px; border-radius: 999px; box-shadow: inset 0 0 0 2px #d5dad8"></i>D</span>
+</div>
+<p class="apoio" style="margin: 16px 0 0; font-size: 14px; line-height: 20px">Tudo pago até agora. O DAS vence todo dia 20 e é achado sozinho no extrato.</p>
+</div>
+</section>
+
+<section aria-labelledby="pj-prazos">
+<div class="sec-topo"><h2 id="pj-prazos">Próximos prazos</h2></div>
+<div class="marco"><span class="marco-ic" style="background: #e6f4f1; color: #0f766e"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></span><span class="meio"><b style="font-weight: 600">Hoje · 22 out</b><span class="apoio" style="font-size: 14px">Extrato importado até outubro</span></span></div>
+<div class="marco"><span class="marco-ic" style="background: #fffbeb; box-shadow: inset 0 0 0 2px #b45309; color: #b45309; font-weight: 700">!</span><span class="meio"><b style="font-weight: 600">20 nov · DAS de outubro</b><span class="apoio" style="font-size: 14px">em 29 dias</span></span></div>
+<div class="marco"><span class="marco-ic" style="background: #ffffff; box-shadow: inset 0 0 0 2px #c9d1ce"></span><span class="meio"><b style="font-weight: 600">31 mai · DASN-SIMEI 2026</b><span class="apoio" style="font-size: 14px">em 221 dias · <a href="Declaracao.dc.html" style="font-weight: 600">ver declaração</a></span></span></div>
+</section>
+
+</div>
+<nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 24px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5, 0 12px 30px rgba(21,32,29,.12)">
+<a class="tab" href="Main.dc.html" aria-current="page"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Início</a>
+<a class="tab" href="Revisar.dc.html" style="position: relative"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg><span aria-label="1 pendente" style="position: absolute; top: 4px; right: 10px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #c2410c; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span>Revisar</a>
+<a href="Adicionar.dc.html" aria-label="Adicionar" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0f766e; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 5px #f4f6f5, 0 8px 18px rgba(15,118,110,.35)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
+<a class="tab" href="Comprovantes.dc.html"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Notas</a>
+<a class="tab" href="Declaracao.dc.html"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Declaração</a>
+</nav>
 </div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
 </body>
 </html>
