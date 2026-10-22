@@ -494,12 +494,15 @@
     data.slice(0, last).forEach(function (d, i) {
       var s0 = d.s || 0, c0 = d.c || 0, x0 = X(acc), xs = X(acc + s0), xc = X(acc + s0 + c0);
       var on = i === sel;
+      // Mês sem faturamento não ocupa espaço na barra: sem segmento, rótulo nem alvo.
+      if (!(s0 + c0)) return;
       segs.push(h('g', { key: 's' + i, className: 'mm-growx', style: { animationDelay: (i * 70) + 'ms', opacity: on || sel == null ? 1 : 0.55, transition: 'opacity .25s' } },
         h('rect', { x: x0, y: TY, width: Math.max(0, xs - x0), height: TH, fill: servCol }),
         c0 ? h('rect', { x: xs, y: TY, width: Math.max(0, xc - xs), height: TH, fill: comCol }) : null,
         h('rect', { x: xc - 2, y: TY, width: 2, height: TH, fill: gapCol })
       ));
-      labels.push(h('text', { key: 'l' + i, x: (x0 + xc) / 2, y: TY + TH + 16, textAnchor: 'middle', fontSize: 10, fontWeight: on ? 700 : 500, fill: on ? t.ink : t.muted, fontFamily: 'Instrument Sans, system-ui, sans-serif' }, CURTO[i].charAt(0).toUpperCase()));
+      // Rótulo só quando o segmento tem largura para ele (ou está escolhido).
+      if (on || xc - x0 >= 10) labels.push(h('text', { key: 'l' + i, x: (x0 + xc) / 2, y: TY + TH + 16, textAnchor: 'middle', fontSize: 10, fontWeight: on ? 700 : 500, fill: on ? t.ink : t.muted, fontFamily: 'Instrument Sans, system-ui, sans-serif' }, CURTO[i].charAt(0).toUpperCase()));
       segs.push(h('rect', {
         key: 'h' + i, x: x0, y: TY - 6, width: Math.max(8, xc - x0), height: TH + 28, fill: 'transparent', tabIndex: 0, role: 'button', style: { cursor: 'pointer' },
         'aria-label': MESES[i] + ': R$ ' + fmt(s0 + c0), 'aria-pressed': on ? 'true' : 'false',
