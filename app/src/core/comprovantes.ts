@@ -84,6 +84,17 @@ export interface QrNfce extends Chave {
   dia?: string // AAAA-MM-DD, só offline
 }
 
+/** Só guarda e abre link de consulta de SEFAZ (site .gov.br): um QR
+ * falso não vira atalho para outro site. '' quando não serve. */
+export function urlSefaz(texto: string | undefined): string {
+  try {
+    const u = new URL(texto ?? '')
+    return /^https?:$/.test(u.protocol) && /(^|\.)gov\.br$/i.test(u.hostname) ? u.href : ''
+  } catch {
+    return ''
+  }
+}
+
 /** Lê o texto do QR code do cupom. Online: `p=chave|2|amb|idCSC|hash`.
  * Offline: `p=chave|2|amb|dia|valor|digVal|idCSC|hash`. */
 export function lerQrNfce(texto: string): QrNfce | null {
@@ -97,7 +108,7 @@ export function lerQrNfce(texto: string): QrNfce | null {
   const partes = decodeURIComponent(p).split('|')
   const chave = lerChave(partes[0] ?? '')
   if (!chave) return null
-  const qr: QrNfce = { ...chave, url: t.startsWith('http') ? t : '' }
+  const qr: QrNfce = { ...chave, url: urlSefaz(t) }
   if (partes.length >= 8) {
     const dia = partes[3]
     if (/^\d{2}$/.test(dia)) qr.dia = `${chave.mes}-${dia}`

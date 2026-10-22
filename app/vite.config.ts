@@ -53,9 +53,34 @@ self.addEventListener('fetch', (e) => {
   }
 }
 
+/** Política de segurança (CSP) na página publicada: só roda código do próprio
+ * app e nada sai para outros sites. Fica fora do `vite dev`, que injeta script
+ * inline. O GitHub Pages não deixa mandar cabeçalhos, então vai como <meta>. */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "worker-src 'self' blob:",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "media-src 'self' blob: mediastream:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ')
+
+function politicaDeSeguranca(): Plugin {
+  return {
+    name: 'meu-mei-csp',
+    apply: 'build',
+    transformIndexHtml: () => [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: CSP }, injectTo: 'head-prepend' }],
+  }
+}
+
 // base relativa: o mesmo build funciona no GitHub Pages (/AppIR/) e em localhost.
 export default defineConfig({
   base: './',
-  plugins: [react(), servicoOffline()],
+  plugins: [react(), servicoOffline(), politicaDeSeguranca()],
   server: { fs: { allow: ['..'] } },
 })

@@ -1,9 +1,20 @@
 import { useState } from 'react'
 import Folha from './Folha'
+import { digitosDoPin } from '../core/trava'
 
-/** Folha para ligar (pede o PIN) ou desligar a criptografia dos dados. */
-export default function FolhaCofre({ ligar, fechar, confirmar }: {
-  ligar: boolean
+export type AcaoCofre = 'ligar' | 'desligar' | 'tirarPin'
+
+const TEXTOS: Record<AcaoCofre, { titulo: string; botao: string }> = {
+  ligar: { titulo: 'Criptografar os dados', botao: 'Criptografar' },
+  desligar: { titulo: 'Desligar a criptografia?', botao: 'Desligar' },
+  tirarPin: { titulo: 'Desligar o PIN?', botao: 'Desligar' },
+}
+
+/** Folha que pede o PIN atual para ligar ou desligar a criptografia, ou para
+ * tirar o PIN. Quem pegar o celular destravado não desliga a proteção. */
+export default function FolhaCofre({ acao, comCofre, fechar, confirmar }: {
+  acao: AcaoCofre
+  comCofre: boolean
   fechar: () => void
   /** Rejeita com a mensagem para mostrar (PIN incorreto). */
   confirmar: (pin: string) => Promise<void>
@@ -11,9 +22,11 @@ export default function FolhaCofre({ ligar, fechar, confirmar }: {
   const [pin, setPin] = useState('')
   const [erro, setErro] = useState('')
   const [ocupado, setOcupado] = useState(false)
+  const digitos = digitosDoPin()
+  const ligar = acao === 'ligar'
 
   async function enviar() {
-    if (ligar && pin.length !== 4) return setErro('Digite os 4 dígitos do PIN.')
+    if (pin.length !== digitos) return setErro(`Digite os ${digitos} dígitos do PIN.`)
     setOcupado(true)
     try {
       await confirmar(pin)
@@ -25,12 +38,7 @@ export default function FolhaCofre({ ligar, fechar, confirmar }: {
   }
 
   return (
-    <Folha
-      etiqueta="Segurança"
-      titulo={ligar ? 'Criptografar os dados' : 'Desligar a criptografia?'}
-      fechar={fechar}
-      enviar={enviar}
-    >
+    <Folha etiqueta="Segurança" titulo={TEXTOS[acao].titulo} fechar={fechar} enviar={enviar}>
       {(fecharFolha) => (
         <>
           {ligar ? (
@@ -41,28 +49,32 @@ export default function FolhaCofre({ ligar, fechar, confirmar }: {
               <p className="folha-aviso">
                 Se esquecer o PIN, não tem como recuperar. Só um backup salva os dados.
               </p>
-              <label className="campo">
-                <span>PIN atual</span>
-                <input
-                  type="password"
-                  inputMode="numeric"
-                  autoComplete="current-password"
-                  maxLength={4}
-                  pattern="[0-9]*"
-                  value={pin}
-                  aria-invalid={!!erro}
-                  aria-describedby={erro ? 'cofre-erro' : undefined}
-                  onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setErro('') }}
-                />
-              </label>
-              {erro && <p className="folha-erro" id="cofre-erro" role="alert">{erro}</p>}
             </>
-          ) : (
+          ) : acao === 'desligar' ? (
             <p className="folha-texto">Os dados voltam a ficar guardados abertos no celular. O PIN continua trancando a tela.</p>
+          ) : (
+            <p className="folha-texto">
+              O app volta a abrir sem PIN{comCofre ? ' e os dados deixam de ficar criptografados' : ''}.
+            </p>
           )}
+          <label className="campo">
+            <span>PIN atual</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="current-password"
+              maxLength={digitos}
+              pattern="[0-9]*"
+              value={pin}
+              aria-invalid={!!erro}
+              aria-describedby={erro ? 'cofre-erro' : undefined}
+              onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setErro('') }}
+            />
+          </label>
+          {erro && <p className="folha-erro" id="cofre-erro" role="alert">{erro}</p>}
           <div className="folha-acoes">
             <button type="submit" className={ligar ? 'principal' : 'principal perigo'} disabled={ocupado}>
-              {ocupado ? 'Um instante…' : ligar ? 'Criptografar' : 'Desligar'}
+              {ocupado ? 'Um instante…' : TEXTOS[acao].botao}
             </button>
             <button type="button" className="folha-cancelar" onClick={fecharFolha}>Cancelar</button>
           </div>

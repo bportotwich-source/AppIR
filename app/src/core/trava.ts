@@ -11,6 +11,8 @@ import { chaveAtual, salvar, usarChave } from './store'
 const CHAVE = 'meu-mei:trava'
 export const MAX_TENTATIVAS = 5
 export const ESPERA_MS = 5 * 60_000
+// PIN novo tem 6 dígitos; quem criou com 4 continua com 4 até trocar.
+export const DIGITOS_PIN = 6
 
 export interface Trava {
   sal: string
@@ -18,6 +20,7 @@ export interface Trava {
   digital: string | null // id da credencial, em base64
   erros: number
   bloqueadaAte: number // timestamp em ms; 0 = livre
+  digitos?: number // ausente = 4, dos PINs antigos
   cofre?: Cofre
 }
 
@@ -48,6 +51,8 @@ export function ler(): Trava | null {
   }
 }
 
+export const digitosDoPin = (t: Trava | null = ler()) => t?.digitos ?? 4
+
 function gravar(t: Trava | null) {
   if (t) localStorage.setItem(CHAVE, JSON.stringify(t))
   else localStorage.removeItem(CHAVE)
@@ -63,7 +68,7 @@ export async function criarPin(pin: string): Promise<void> {
     const salCofre = b64(aleatorio(16))
     cofre = { ...cofre, sal: salCofre, pin: await embrulhar(chave, await chaveDoPin(pin, salCofre)) }
   }
-  gravar({ sal, hash: await hashPin(pin, sal), digital: antes?.digital ?? null, erros: 0, bloqueadaAte: 0, cofre })
+  gravar({ sal, hash: await hashPin(pin, sal), digital: antes?.digital ?? null, erros: 0, bloqueadaAte: 0, digitos: pin.length, cofre })
 }
 
 export function removerTrava() {

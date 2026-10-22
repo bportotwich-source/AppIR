@@ -10,8 +10,13 @@ export interface Cifrado {
   dados: ArrayBuffer
 }
 
-export const b64 = (bytes: ArrayBuffer | Uint8Array) =>
-  btoa(String.fromCharCode(...new Uint8Array(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes))))
+// Em pedaços: o backup com fotos tem megabytes, demais para um só fromCharCode.
+export function b64(bytes: ArrayBuffer | Uint8Array): string {
+  const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
+  let texto = ''
+  for (let i = 0; i < b.length; i += 0x8000) texto += String.fromCharCode(...b.subarray(i, i + 0x8000))
+  return btoa(texto)
+}
 export const deB64 = (texto: string) => Uint8Array.from(atob(texto), (c) => c.charCodeAt(0))
 export const aleatorio = (n: number) => crypto.getRandomValues(new Uint8Array(n))
 
@@ -27,6 +32,18 @@ export async function chaveDoPin(pin: string, sal: string): Promise<CryptoKey> {
     { name: 'AES-KW', length: 256 },
     false,
     ['wrapKey', 'unwrapKey'],
+  )
+}
+
+/** Chave que cifra o arquivo de backup, tirada de uma senha escolhida na hora. */
+export async function chaveDaSenha(senha: string, sal: Uint8Array, iteracoes: number): Promise<CryptoKey> {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(senha), 'PBKDF2', false, ['deriveKey'])
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', hash: 'SHA-256', salt: sal, iterations: iteracoes },
+    base,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt'],
   )
 }
 

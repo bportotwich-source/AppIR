@@ -3,7 +3,7 @@
 
 import { openDB } from 'idb'
 import { bancoVazio, type Banco } from './banco'
-import { cifrar, decifrar, type Cifrado } from './cofre'
+import { aleatorio, b64, chaveDaSenha, cifrar, deB64, decifrar, type Cifrado } from './cofre'
 
 const db = () =>
   openDB('meu-mei', 1, {
@@ -58,14 +58,62 @@ export function backupAtrasado(banco: Banco, agora = new Date()): number | null 
   return dias >= DIAS_LEMBRETE_BACKUP ? dias : null
 }
 
+// O arquivo de backup sai cifrado com uma senha (AES-GCM, chave tirada com
+// PBKDF2). Quem pegar o arquivo no Drive ou no WhatsApp não lê nada sem ela.
+const ITERACOES_BACKUP = 600_000
+
+interface BackupCifrado {
+  app: 'meu-mei'
+  versao: 1
+  cifrado: { sal: string; iv: string; dados: string; iteracoes: number }
+}
+
+/** O arquivo tem senha e ela não foi dada: a tela pede e tenta de novo. */
+export class BackupComSenha extends Error {
+  constructor() {
+    super('Esse backup tem senha.')
+  }
+}
+
+export async function gerarBackup(banco: Banco, senha: string): Promise<string> {
+  const sal = aleatorio(16)
+  const { iv, dados } = await cifrar(await chaveDaSenha(senha, sal, ITERACOES_BACKUP), banco)
+  const arquivo: BackupCifrado = { app: 'meu-mei', versao: 1, cifrado: { sal: b64(sal), iv: b64(iv), dados: b64(dados), iteracoes: ITERACOES_BACKUP } }
+  return JSON.stringify(arquivo)
+}
+
+/** Abre o texto de um backup, com senha ou dos antigos, que saíam abertos. */
+export async function abrirBackup(texto: string, senha?: string): Promise<Banco> {
+  let dados
+  try {
+    dados = JSON.parse(texto)
+  } catch {
+    dados = null
+  }
+  if (dados?.app === 'meu-mei' && dados.cifrado) {
+    if (!senha) throw new BackupComSenha()
+    const c = dados.cifrado
+    try {
+      const chave = await chaveDaSenha(senha, deB64(c.sal), c.iteracoes)
+      dados = await decifrar(chave, { iv: deB64(c.iv), dados: deB64(c.dados).buffer as ArrayBuffer })
+    } catch {
+      throw new Error('Senha incorreta.')
+    }
+  }
+  if (dados?.versao !== 1 || !Array.isArray(dados.movimentacoes)) {
+    throw new Error('Esse arquivo não é um backup do Meu MEI.')
+  }
+  return dados as Banco
+}
+
 /** Entrega o backup: pelo compartilhar do celular (Drive, WhatsApp, e-mail)
  * quando o aparelho deixa, senão como download. Devolve o banco com a data
  * do backup, ou null se a pessoa cancelou.
  */
-export async function enviarBackup(banco: Banco, agora = new Date()): Promise<Banco | null> {
+export async function enviarBackup(banco: Banco, senha: string, agora = new Date()): Promise<Banco | null> {
   const novo = { ...banco, ultimoBackup: agora.toISOString() }
   const nome = `meu-mei-backup-${agora.toISOString().slice(0, 10)}.json`
-  const arquivo = new File([JSON.stringify(novo)], nome, { type: 'application/json' })
+  const arquivo = new File([await gerarBackup(novo, senha)], nome, { type: 'application/json' })
   if (navigator.canShare?.({ files: [arquivo] })) {
     try {
       await navigator.share({ files: [arquivo], title: 'Backup do Meu MEI' })
@@ -83,10 +131,6 @@ export async function enviarBackup(banco: Banco, agora = new Date()): Promise<Ba
   return novo
 }
 
-export async function lerBackup(arquivo: File): Promise<Banco> {
-  const dados = JSON.parse(await arquivo.text())
-  if (dados?.versao !== 1 || !Array.isArray(dados.movimentacoes)) {
-    throw new Error('Esse arquivo não é um backup do Meu MEI.')
-  }
-  return dados as Banco
+export async function lerBackup(arquivo: File, senha?: string): Promise<Banco> {
+  return abrirBackup(await arquivo.text(), senha)
 }
