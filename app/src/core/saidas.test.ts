@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { bancoVazio, chaveDescricao, importar, marcar, type Banco } from './banco'
 import type { Movimentacao } from './parser'
-import { dasDoAno, gruposSaida, irpfDoAno, marcarDas, marcarSaida } from './saidas'
+import { dasDoAno, gruposSaida, irpfDoAno, irpfPorMes, marcarDas, marcarSaida } from './saidas'
 
 const das = (data: string, valor = 86.05): Movimentacao => ({ data, descricao: 'Pagamento de boleto efetuado - DAS-SIMPLES NACIONAL', valor, tipo: 'saida' })
 const pix = (data: string, valor: number, nome: string, tipo: 'entrada' | 'saida' = 'entrada'): Movimentacao => ({
@@ -84,5 +84,13 @@ describe('saídas e lucro isento', () => {
     // a próxima retirada para a mesma pessoa já entra separada
     const novo = importar(b, [pix('2026-11-15', 900, 'Bruno Silva Porto', 'saida')]).banco
     expect(novo.movimentacoes[novo.movimentacoes.length - 1].despesa).toBe(false)
+  })
+
+  it('mês a mês: cada mês com a própria receita e despesa', () => {
+    const b = marcarSaida(marcado, chaveDescricao(movs[2].descricao), false)
+    const meses = irpfPorMes(b, 2026)
+    expect(meses[9]).toMatchObject({ receita: 15_000, despesas: 80, lucro: 14_920 })
+    expect(meses[9].isenta).toBeCloseTo(3_600)
+    expect(meses[8]).toMatchObject({ receita: 0, tributavel: 0 })
   })
 })

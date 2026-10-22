@@ -6,7 +6,7 @@
 
 import { chaveDescricao, type Banco, type Registro } from './banco'
 import { pagador } from './formato'
-import { totaisAno } from './relatorio'
+import { totaisAno, totaisPorMes, type Totais } from './relatorio'
 
 const RE_DAS = /\bDAS\b|simples nacional|pgmei/i
 
@@ -152,20 +152,30 @@ export interface Irpf {
  * da parte isenta é rendimento tributável na declaração de pessoa física.
  */
 export function irpfDoAno(banco: Banco, ano: number): Irpf {
-  const t = totaisAno(banco, ano)
+  return calcularIrpf(banco, `${ano}-`, totaisAno(banco, ano))
+}
+
+/** A mesma conta mês a mês, só para acompanhar. A soma dos meses pode não
+ * bater com o ano: um mês com mais despesa que receita não desconta dos outros. */
+export function irpfPorMes(banco: Banco, ano: number): Irpf[] {
+  return totaisPorMes(banco, ano).map((t, i) => calcularIrpf(banco, `${ano}-${String(i + 1).padStart(2, '0')}`, t))
+}
+
+function calcularIrpf(banco: Banco, prefixo: string, t: Totais): Irpf {
   const receita = t.servicos + t.comercio
   const isenta = t.servicos * PRESUNCAO.servicos + t.comercio * PRESUNCAO.comercio
   let despesas = 0, das = 0, retiradas = 0, semSeparar = 0
-  for (const r of saidasDoAno(banco, ano)) {
+  for (const r of banco.movimentacoes) {
+    if (r.tipo !== 'saida' || !r.data.startsWith(prefixo)) continue
     const d = despesa(r)
     if (d === true) despesas += r.valor
     else if (d === false) retiradas += r.valor
     else semSeparar++
     if (ehDas(r)) das += r.valor
   }
-  // DAS pago fora do extrato e marcado à mão com o valor.
+  // DAS pago fora do extrato e marcado à mão com o valor (conta no mês da competência).
   for (const [comp, v] of Object.entries(banco.dasPago ?? {})) {
-    if (comp.startsWith(`${ano}-`) && typeof v === 'number') {
+    if (comp.startsWith(prefixo) && typeof v === 'number') {
       das += v
       despesas += v
     }
