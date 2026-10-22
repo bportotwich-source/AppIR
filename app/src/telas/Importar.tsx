@@ -1,14 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { TelaProps } from '../App'
 import { importar } from '../core/banco'
 import { lerArquivo } from '../core/arquivos'
 import { exportarBackup, lerBackup } from '../core/store'
+import { cadastrarDigital, digitalDisponivel, ler as lerTrava, removerDigital, removerTrava } from '../core/trava'
 
 type Resultado =
   | { tipo: 'ok'; arquivo: string; lidas: number; novas: number; repetidas: number; aRevisar: number }
   | { tipo: 'erro'; mensagem: string }
 
-export default function Importar({ banco, mudar, ir }: TelaProps) {
+export default function Importar({ banco, mudar, ir, criarPin }: TelaProps) {
+  const [trava, setTrava] = useState(lerTrava)
+  const [podeDigital, setPodeDigital] = useState(false)
+  const [avisoTrava, setAvisoTrava] = useState('')
+  useEffect(() => {
+    digitalDisponivel().then(setPodeDigital)
+  }, [])
+
+  async function ligarDigital() {
+    try {
+      await cadastrarDigital()
+      setTrava(lerTrava())
+      setAvisoTrava('Digital cadastrada. Na próxima vez, é só encostar o dedo.')
+    } catch {
+      setAvisoTrava('Não deu para cadastrar a digital. Tente de novo.')
+    }
+  }
+
   const [lendo, setLendo] = useState(false)
   const [resultado, setResultado] = useState<Resultado | null>(null)
 
@@ -76,6 +94,29 @@ export default function Importar({ banco, mudar, ir }: TelaProps) {
           )}
         </section>
       )}
+
+      <section>
+        <h2>Segurança</h2>
+        <p className="apoio">
+          {trava
+            ? `O app pede PIN${trava.digital ? ' ou digital' : ''} ao abrir e depois de 1 minuto fora dele.`
+            : 'Peça um PIN para abrir o app. Ele tranca a tela; os dados no celular não ficam criptografados.'}
+        </p>
+        <div className="botoes">
+          {trava ? (
+            <>
+              <button onClick={criarPin}>Trocar PIN</button>
+              <button onClick={() => { removerTrava(); setTrava(null); setAvisoTrava('') }}>Desligar PIN</button>
+            </>
+          ) : (
+            <button onClick={criarPin}>Proteger com PIN</button>
+          )}
+          {trava && podeDigital && !trava.digital && <button onClick={ligarDigital}>Entrar com digital</button>}
+          {trava?.digital && <button onClick={() => { removerDigital(); setTrava(lerTrava()) }}>Desligar digital</button>}
+        </div>
+        {trava && !podeDigital && <p className="apoio">Este aparelho ou navegador não oferece leitor de digital para sites.</p>}
+        {avisoTrava && <p className="apoio" aria-live="polite">{avisoTrava}</p>}
+      </section>
 
       <section>
         <h2>Backup</h2>

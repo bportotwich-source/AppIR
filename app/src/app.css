@@ -93,3 +93,33 @@ button.link { background: none; border: 0; padding: 0; color: var(--brand); text
 .rastro-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-muted); }
 .rastro-legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .rastro-legenda i.tracejado { width: 14px; height: 0; border-radius: 0; border-top: 2px dashed var(--ink-muted); background: none; vertical-align: 3px; }
+.trava { position: fixed; inset: 0; overflow: auto; background: #0c2a27; color: #ecf1ef; z-index: 10; }
+.trava-aneis { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+@keyframes trava-gira { to { transform: rotate(360deg); } }
+.trava-aneis circle:first-child { transform-origin: 195px 170px; animation: trava-gira 60s linear infinite; }
+.trava-conteudo { position: relative; min-height: 100%; box-sizing: border-box; max-width: 390px; margin: 0 auto; padding: 72px 32px 24px; display: flex; flex-direction: column; align-items: center; }
+.trava-marca { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.trava-marca h1 { font-size: 28px; }
+.trava-marca p { margin: -10px 0 0; color: #a3b5b0; }
+.trava-pontos { margin-top: 30px; height: 40px; display: flex; align-items: center; }
+.trava-pontos > div { display: flex; gap: 18px; }
+.trava-pontos span { width: 14px; height: 14px; box-sizing: border-box; border-radius: 999px; border: 2px solid rgba(236,241,239,.45); transition: transform .15s, background .15s; }
+.trava-pontos span[data-cheio="true"] { background: #2dd4bf; border-color: #2dd4bf; transform: scale(1.15); }
+.trava-pontos span[data-erro="true"] { border-color: #f87171; }
+@keyframes treme { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-10px) } 40% { transform: translateX(9px) } 60% { transform: translateX(-6px) } 80% { transform: translateX(4px) } }
+.treme { animation: treme .42s ease; }
+.trava-mensagem { margin: 10px 0 0; min-height: 22px; font-size: 14px; color: #fca5a5; text-align: center; }
+.teclado { margin-top: 22px; display: grid; grid-template-columns: repeat(3, 72px); gap: 14px 30px; }
+.tecla { width: 72px; height: 72px; border-radius: 999px; border: none; background: rgba(236,241,239,.08); color: #ecf1ef; font-size: 30px; line-height: 1; font-weight: 500; cursor: pointer; transition: transform .12s ease, background .12s ease; }
+.tecla:active { transform: scale(.9); background: rgba(45,212,191,.28); }
+.tecla:disabled { opacity: .35; }
+.tecla-icone, .tecla-texto { background: transparent; display: flex; align-items: center; justify-content: center; }
+.tecla-icone[aria-label="Entrar com a digital"] { color: #2dd4bf; }
+.tecla-texto { font-size: 14px; font-weight: 600; color: #a3b5b0; }
+.trava :focus-visible { outline: 2px solid #2dd4bf; outline-offset: 3px; }
+.trava-link { margin-top: 20px; min-height: 44px; padding: 0 14px; border: none; background: transparent; color: #2dd4bf; font-weight: 600; cursor: pointer; }
+.trava-link.perigo { margin-top: 4px; color: #fca5a5; }
+.trava-ajuda { max-width: 300px; text-align: center; font-size: 13px; line-height: 19px; color: #c9d6d2; }
+.trava-ajuda p { margin: 0; }
+.trava-rodape { margin: auto 0 0; padding-top: 24px; display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; color: #a3b5b0; }
+@media (prefers-reduced-motion: reduce) { .treme, .trava-aneis circle:first-child { animation: none; } }
