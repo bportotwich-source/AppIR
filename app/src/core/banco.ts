@@ -44,6 +44,8 @@ export interface Banco {
   // Por ano-calendário ("2026"): o que a DASN-SIMEI precisa e se já foi entregue.
   declaracoes?: Record<string, Declaracao>
   empresa?: { nome?: string; cnpj?: string }
+  // Limite anual do MEI, se a lei mudar. Ausente = R$ 81.000.
+  limiteAnual?: number
   // Por "AAAA-MM": quanto do faturamento do mês teve nota fiscal emitida.
   notasFiscais?: Record<string, { servicos?: number; comercio?: number }>
   ultimoBackup?: string // ISO

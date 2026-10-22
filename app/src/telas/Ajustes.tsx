@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import type { TelaProps } from '../App'
 import { enviarBackup, lerBackup } from '../core/store'
 import { CampoAbertura } from '../componentes/CampoAbertura'
+import { brl, LIMITE_ANUAL, limiteAnual } from '../core/relatorio'
 import { instalado } from '../core/armazenamento'
-import { dataCurta } from '../core/formato'
+import { dataCurta, lerValor } from '../core/formato'
 import { cadastrarDigital, digitalDisponivel, ler as lerTrava, removerDigital, removerTrava } from '../core/trava'
 
 export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }: TelaProps) {
@@ -48,7 +49,27 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
 
       <section>
         <h2>Sua empresa</h2>
-        <CampoAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />
+        <CampoAbertura valor={banco.abertura} anual={limiteAnual(banco)} mudar={(abertura) => mudar({ ...banco, abertura })} />
+        <label className="campo campo-limite">
+          <span>Limite anual do MEI</span>
+          <input
+            inputMode="decimal"
+            autoComplete="off"
+            defaultValue={brl(limiteAnual(banco)).replace('R$ ', '')}
+            onBlur={(e) => {
+              const v = lerValor(e.target.value)
+              // Valor vazio ou absurdo volta para o da lei.
+              const novo = v >= 10_000 && v <= 10_000_000 && v !== LIMITE_ANUAL ? v : undefined
+              e.target.value = brl(novo ?? LIMITE_ANUAL).replace('R$ ', '')
+              if (novo !== banco.limiteAnual) mudar({ ...banco, limiteAnual: novo })
+            }}
+          />
+        </label>
+        <p className="apoio">
+          {banco.limiteAnual
+            ? `Usando ${brl(banco.limiteAnual)} no lugar dos ${brl(LIMITE_ANUAL)} da lei. Apague o campo para voltar.`
+            : `Hoje a lei diz ${brl(LIMITE_ANUAL)} por ano. Se o teto mudar, troque aqui.`}
+        </p>
       </section>
 
       <section>

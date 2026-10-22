@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { TelaProps } from '../App'
 import BarrasRastro from '../componentes/BarrasRastro'
 import { PerguntaAbertura } from '../componentes/CampoAbertura'
-import { brl, LIMITE_ANUAL, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
+import { brl, limiteAnual, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
 import { dataCurta, MESES, pagador } from '../core/formato'
 import { iniciais, proximosPrazos, quando } from '../core/agenda'
 import { entradas } from '../core/banco'
@@ -92,6 +92,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const dadosMeses = meses.map((m, i) => ({ m: CURTO[i], s: m.servicos, c: m.comercio }))
   const nPendentes = pendentes(banco, ano)
   const limite = limiteDoAno(banco, ano)
+  const anual = limiteAnual(banco)
   const diasBackup = backupAtrasado(banco)
   const filaPendente = entradas(banco, ano).filter((r) => r.faturamento === null || (r.faturamento && r.categoria === null))
   const valorPendente = filaPendente.reduce((soma, r) => soma + r.valor, 0)
@@ -136,14 +137,14 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
         </div>
         <p className="faixa-nota">
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
-          {limite !== LIMITE_ANUAL && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
+          {limite !== anual && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
         </p>
         <h1>Seu ano até aqui</h1>
         <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
           {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={300} />}
-          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} tone="dark" />}
-          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} tone="dark" />}
+          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} projection={projecao ?? undefined} tone="dark" />}
+          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} projection={projecao ?? undefined} tone="dark" />}
         </div>
         {/* Curva e Barra já mostram a projeção. */}
         {visao === 'arco' && projecao !== null && (
@@ -196,7 +197,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
           </button>
         )}
 
-        {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />}
+        {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} anual={anual} mudar={(abertura) => mudar({ ...banco, abertura })} />}
 
         {dasn && (
           <section className="lembrete" data-tom={dasn.dias < 0 ? 'perigo' : undefined} aria-labelledby="dasn-titulo">
@@ -242,9 +243,9 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             <h2>Mês a mês</h2>
             <Seletor className="graficos" rotulo="Forma do gráfico" opcoes={GRAFICOS} valor={grafico} mudar={setGrafico} />
             {grafico === 'rastro' ? (
-              <BarrasRastro data={dadosMeses} />
+              <BarrasRastro data={dadosMeses} avg={anual / 12} />
             ) : (
-              <MonthChart key={grafico} data={dadosMeses} variant={grafico} />
+              <MonthChart key={grafico} data={dadosMeses} variant={grafico} avg={anual / 12} max={Math.max(9000, (anual / 12) * 1.33)} />
             )}
           </section>
         )}

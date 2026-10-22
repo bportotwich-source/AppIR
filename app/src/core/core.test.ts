@@ -143,13 +143,18 @@ describe('relatório', () => {
   it('projeta o ano pela média de janeiro até o último mês com extrato', () => {
     let { banco } = importar(bancoVazio(), parseLinhas(EXTRATO))
     for (const r of entradas(banco, 2026)) banco = marcar(banco, r.id, true, 'servicos', false)
-    expect(projecaoAno(banco, 2026)).toBeCloseTo((2550 / 10) * 12)
+    expect(projecaoAno(banco, 2026, new Date('2027-01-15T12:00:00'))).toBeCloseTo((2550 / 10) * 12)
     expect(projecaoAno(banco, 2025)).toBeNull()
   })
 
   it('limite proporcional no ano de abertura', () => {
     expect(limiteProporcional(1)).toBe(81_000)
     expect(limiteProporcional(7)).toBe(40_500)
+    // Limite ajustado em Ajustes: vale no ano todo e no proporcional.
+    const ajustado = { ...bancoVazio(), limiteAnual: 120_000 }
+    expect(limiteDoAno(ajustado, 2026)).toBe(120_000)
+    expect(limiteDoAno({ ...ajustado, abertura: '2026-07' }, 2026)).toBe(60_000)
+    expect(textoLimite('2026-10', 2026, 120_000)).toContain('R$ 30.000,00 (3 meses × R$ 10.000,00)')
   })
 })
 
@@ -267,8 +272,12 @@ describe('projeção no ano de abertura', () => {
     const movs = ['08', '09', '10'].map((m) => ({ data: `2026-${m}-05`, descricao: 'Pix', valor: 3_000, tipo: 'entrada' as const }))
     const b = importar(bancoVazio(), movs).banco
     const marcado = b.movimentacoes.reduce((acc, r) => marcar(acc, r.id, true, 'servicos'), b)
-    expect(projecaoAno(marcado, 2026)).toBe(10_800) // 9.000 em 10 meses desde jan, × 12
-    expect(projecaoAno({ ...marcado, abertura: '2026-08' }, 2026)).toBe(15_000) // 3.000 × 5 meses
+    expect(projecaoAno(marcado, 2026, new Date('2027-01-15T12:00:00'))).toBe(10_800) // 9.000 em 10 meses desde jan, × 12
+    // No dia 10 de outubro, outubro conta como 10/31 de mês.
+    expect(projecaoAno(marcado, 2026, new Date('2026-10-10T12:00:00'))).toBeCloseTo((9000 / (9 + 10 / 31)) * 12)
+    // No dia 2, conta como um quarto de mês, para um Pix grande não estourar a projeção.
+    expect(projecaoAno(marcado, 2026, new Date('2026-10-02T12:00:00'))).toBeCloseTo((9000 / 9.25) * 12)
+    expect(projecaoAno({ ...marcado, abertura: '2026-08' }, 2026, new Date('2027-01-15T12:00:00'))).toBe(15_000) // 3.000 × 5 meses
   })
 })
 

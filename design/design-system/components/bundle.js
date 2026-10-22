@@ -391,6 +391,8 @@
     var cum = cumulate(data);
     var last = cum.last, total = cum.total;
     var avg = last ? total / last : 0;
+    // projection: projeção calculada por fora (ex.: com os dias do mês em andamento).
+    if (p.projection != null && last < 12) avg = (Number(p.projection) - total) / (12 - last);
     var proj = total + avg * (12 - last);
     var s = R.useState(null), scrub = s[0], setScrub = s[1];
     var W = 350, H = 196, PT = 14, PB = 22, PR = 6;
@@ -485,6 +487,8 @@
     var cum = cumulate(data);
     var last = cum.last, total = cum.total;
     var avg = last ? total / last : 0;
+    // projection: projeção calculada por fora (ex.: com os dias do mês em andamento).
+    if (p.projection != null && last < 12) avg = (Number(p.projection) - total) / (12 - last);
     var proj = total + avg * (12 - last);
     var st = R.useState(last - 1), sel = st[0], setSel = st[1];
     var W = 350, TY = 26, TH = 34;

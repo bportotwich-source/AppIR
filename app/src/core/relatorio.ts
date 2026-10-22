@@ -77,41 +77,53 @@ export function alerta(valor: number, limite = LIMITE_ANUAL): { nivel: Nivel; me
   return { nivel: 'ok', mensagem: `${pct}% do limite anual usado.` }
 }
 
-/** No ano de abertura, o limite é R$ 6.750 por mês de atividade. */
-export function limiteProporcional(mesAbertura: number): number {
-  return 6_750 * (13 - mesAbertura)
+/** Limite anual configurado (Ajustes), ou os R$ 81 mil da lei. */
+export const limiteAnual = (banco: Pick<Banco, 'limiteAnual'>) => banco.limiteAnual || LIMITE_ANUAL
+
+/** No ano de abertura, o limite é 1/12 do anual (R$ 6.750) por mês de atividade. */
+export function limiteProporcional(mesAbertura: number, anual = LIMITE_ANUAL): number {
+  return (anual / 12) * (13 - mesAbertura)
 }
 
 /** Limite de faturamento do ano: proporcional no ano de abertura. */
 export function limiteDoAno(banco: Banco, ano: number): number {
   const a = banco.abertura
-  if (!a || Number(a.slice(0, 4)) !== ano) return LIMITE_ANUAL
-  return limiteProporcional(Number(a.slice(5, 7)))
+  if (!a || Number(a.slice(0, 4)) !== ano) return limiteAnual(banco)
+  return limiteProporcional(Number(a.slice(5, 7)), limiteAnual(banco))
 }
 
-/** Projeção do ano no ritmo atual: média de janeiro (ou do mês de abertura,
- * no ano em que o MEI abriu) até o último mês com extrato, estendida até
- * dezembro. Fora do ano de abertura é a mesma conta dos componentes
- * AccumulatedChart e LimitTrack, para os números baterem na tela.
+// No começo do mês a fração é pequena e um Pix grande estouraria a projeção:
+// o mês em andamento conta pelo menos como um quarto de mês.
+const FRACAO_MINIMA = 0.25
+
+/** Projeção do ano no ritmo atual: média por mês de janeiro (ou do mês de
+ * abertura, no ano em que o MEI abriu) até o último mês com extrato, estendida
+ * até dezembro. O mês em andamento conta só pelos dias que já passaram, para a
+ * projeção não ficar baixa no começo do mês.
  */
-export function projecaoAno(banco: Banco, ano: number): number | null {
+export function projecaoAno(banco: Banco, ano: number, hoje = new Date()): number | null {
   const meses = banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => Number(r.data.slice(5, 7)))
   if (meses.length === 0) return null
   const a = banco.abertura
   const inicio = a && Number(a.slice(0, 4)) === ano ? Number(a.slice(5, 7)) : 1
   const ultimo = Math.max(...meses)
   if (ultimo < inicio) return null
-  return (total(totaisAno(banco, ano)) / (ultimo - inicio + 1)) * (13 - inicio)
+  let decorridos = ultimo - inicio + 1
+  if (ano === hoje.getFullYear() && ultimo === hoje.getMonth() + 1) {
+    const diasNoMes = new Date(ano, ultimo, 0).getDate()
+    decorridos = ultimo - inicio + Math.max(hoje.getDate() / diasNoMes, FRACAO_MINIMA)
+  }
+  return (total(totaisAno(banco, ano)) / decorridos) * (13 - inicio)
 }
 
 /** Explica o limite que vale para o ano de abertura escolhido. */
-export function textoLimite(abertura: string | null | undefined, ano = new Date().getFullYear()): string {
+export function textoLimite(abertura: string | null | undefined, ano = new Date().getFullYear(), anual = LIMITE_ANUAL): string {
   if (abertura === undefined) return ''
-  if (!abertura || Number(abertura.slice(0, 4)) < ano) return `Limite de ${ano}: ${brl(LIMITE_ANUAL)}, o ano inteiro.`
+  if (!abertura || Number(abertura.slice(0, 4)) < ano) return `Limite de ${ano}: ${brl(anual)}, o ano inteiro.`
   const mes = Number(abertura.slice(5, 7))
   const meses = 13 - mes
   return (
     `Aberto em ${MESES[mes - 1]} de ${abertura.slice(0, 4)}. Limite de ${abertura.slice(0, 4)}: ` +
-    `${brl(limiteProporcional(mes))} (${meses} ${meses === 1 ? 'mês' : 'meses'} × R$ 6.750,00).`
+    `${brl(limiteProporcional(mes, anual))} (${meses} ${meses === 1 ? 'mês' : 'meses'} × ${brl(anual / 12)}).`
   )
 }

@@ -89,6 +89,8 @@ export interface AccumulatedChartProps {
   data: MonthDatum[];
   /** Padrão 81000. */
   limit?: number;
+  /** Projeção do ano. Padrão: média dos meses com dados até dezembro. */
+  projection?: number;
   tone?: "light" | "dark";
   /** Rótulo acima do valor. Padrão "Faturado no ano". */
   label?: string;
@@ -99,6 +101,8 @@ export interface LimitTrackProps {
   data: MonthDatum[];
   /** Padrão 81000. */
   limit?: number;
+  /** Projeção do ano. Padrão: média dos meses com dados até dezembro. */
+  projection?: number;
   tone?: "light" | "dark";
   label?: string;
 }
