@@ -12,9 +12,9 @@
   },
   "groups": [],
   "lastChange": {
-    "at": "2026-10-21T23:20:00Z",
+    "at": "2026-10-21T23:50:00Z",
     "by": "Bruno Porto",
-    "note": "Alternativas ao medidor: AccumulatedChart e LimitTrack.",
+    "note": "MonthChart: cinco formas para o mês a mês.",
     "via": "Claude Code"
   },
   "layout": "files",

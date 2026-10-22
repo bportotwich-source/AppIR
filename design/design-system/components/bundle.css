@@ -21,6 +21,11 @@
 .mm-draw { stroke-dasharray: var(--mm-len, 100); animation: mm-draw .6s ease-out both; }
 .mm-draw-slow { animation: mm-draw 2.4s cubic-bezier(.4,0,.2,1) both; }
 
+.mm-growdown { transform-box: fill-box; transform-origin: 50% 0; animation: mm-grow .7s cubic-bezier(.2,.8,.2,1) both; }
+
+@keyframes mm-pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+.mm-pop { transform-box: view-box; animation: mm-pop .6s cubic-bezier(.2,.8,.2,1) both; }
+
 @keyframes mm-growx { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .mm-growx { transform-box: fill-box; transform-origin: 0 50%; animation: mm-growx .45s cubic-bezier(.2,.8,.2,1) both; }
 
@@ -41,5 +46,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mm-spin, .mm-pulse, .mm-grow, .mm-growx, .mm-fade, .mm-scan, .mm-draw, .mm-draw-slow, .mm-rise { animation: none !important; }
+  .mm-spin, .mm-pulse, .mm-grow, .mm-growdown, .mm-pop, .mm-growx, .mm-fade, .mm-scan, .mm-draw, .mm-draw-slow, .mm-rise { animation: none !important; }
 }

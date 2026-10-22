@@ -42,7 +42,7 @@ Meu MEI é uma ferramenta pessoal, de um único usuário, que lê o extrato do N
 
 ## Componentes
 
-`window.MeuMEI` traz os componentes do app em React 18: `LimitGauge`, `AccumulatedChart`, `LimitTrack`, `AnimatedNumber`, `MonthBars`, `SplitBar`, `ReviewDeck`, `CountdownRing` e `ScanDrop`. Para o topo do Início há três formas do limite: `LimitGauge` (arco), `AccumulatedChart` (curva acumulada com projeção) e `LimitTrack` (barra de orçamento); use uma só por tela. Use-os sempre que a tela mostrar essas coisas, em vez de redesenhar à mão. Para usar num canvas, carregue `components/bundle.css` e depois `components/bundle.js`; o React já vem com a página.
+`window.MeuMEI` traz os componentes do app em React 18: `LimitGauge`, `AccumulatedChart`, `LimitTrack`, `AnimatedNumber`, `MonthBars`, `MonthChart`, `SplitBar`, `ReviewDeck`, `CountdownRing` e `ScanDrop`. Para o topo do Início há três formas do limite: `LimitGauge` (arco), `AccumulatedChart` (curva acumulada com projeção) e `LimitTrack` (barra de orçamento); use uma só por tela. Para o mês a mês, `MonthChart` traz cinco formas pela propriedade `variant` (`capsulas`, `desvio`, `linha`, `calor`, `relogio`). Use-os sempre que a tela mostrar essas coisas, em vez de redesenhar à mão. Para usar num canvas, carregue `components/bundle.css` e depois `components/bundle.js`; o React já vem com a página.
 
 ## Gráficos
 

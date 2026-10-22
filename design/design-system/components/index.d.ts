@@ -102,3 +102,15 @@ export interface LimitTrackProps {
   tone?: "light" | "dark";
   label?: string;
 }
+
+/** O mês a mês em cinco formas: cápsulas, desvio da média, linha, faixa de calor e relógio do ano. */
+export interface MonthChartProps {
+  data: MonthDatum[];
+  variant: "capsulas" | "desvio" | "linha" | "calor" | "relogio";
+  /** Topo da escala. Padrão 9000. */
+  max?: number;
+  /** Média permitida por mês. Padrão 6750. */
+  avg?: number;
+  /** Índice do mês aberto (0 = janeiro). Padrão: último mês com dados. */
+  selected?: number;
+}

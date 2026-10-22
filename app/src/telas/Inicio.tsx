@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
+import BarrasRastro from '../componentes/BarrasRastro'
 import { LIMITE_ANUAL, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
 import { MESES } from '../core/formato'
 
@@ -8,7 +9,7 @@ const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString(
 
 const CURTO = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 
-// Três formas do limite no topo, uma por vez; a escolha fica no aparelho.
+// Formas alternativas do mesmo dado, uma por vez; a escolha fica no aparelho.
 const VISOES = [
   { id: 'arco', nome: 'Arco' },
   { id: 'curva', nome: 'Curva' },
@@ -16,13 +17,52 @@ const VISOES = [
 ] as const
 type Visao = (typeof VISOES)[number]['id']
 
-function visaoSalva(): Visao {
-  try {
-    const v = localStorage.getItem('meu-mei:visao')
-    return VISOES.some((x) => x.id === v) ? (v as Visao) : 'arco'
-  } catch {
-    return 'arco'
+const GRAFICOS = [
+  { id: 'rastro', nome: 'Rastro' },
+  { id: 'capsulas', nome: 'Cápsulas' },
+  { id: 'desvio', nome: 'Desvio' },
+  { id: 'linha', nome: 'Linha' },
+  { id: 'calor', nome: 'Calor' },
+  { id: 'relogio', nome: 'Relógio' },
+] as const
+type Grafico = (typeof GRAFICOS)[number]['id']
+
+function useEscolha<T extends string>(chave: string, opcoes: readonly { id: T }[]): [T, (v: T) => void] {
+  const [valor, setValor] = useState<T>(() => {
+    try {
+      const v = localStorage.getItem(chave)
+      return opcoes.find((o) => o.id === v)?.id ?? opcoes[0].id
+    } catch {
+      return opcoes[0].id
+    }
+  })
+  const escolher = (v: T) => {
+    setValor(v)
+    try {
+      localStorage.setItem(chave, v)
+    } catch {
+      // sem armazenamento: a escolha vale só nesta sessão
+    }
   }
+  return [valor, escolher]
+}
+
+function Seletor<T extends string>(props: {
+  rotulo: string
+  opcoes: readonly { id: T; nome: string }[]
+  valor: T
+  mudar: (v: T) => void
+  className: string
+}) {
+  return (
+    <div className={props.className} role="radiogroup" aria-label={props.rotulo}>
+      {props.opcoes.map((o) => (
+        <button key={o.id} role="radio" aria-checked={props.valor === o.id} onClick={() => props.mudar(o.id)}>
+          {o.nome}
+        </button>
+      ))}
+    </div>
+  )
 }
 
 interface Props extends TelaProps {
@@ -31,16 +71,9 @@ interface Props extends TelaProps {
 }
 
 export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
-  const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthBars } = window.MeuMEI
-  const [visao, setVisao] = useState<Visao>(visaoSalva)
-  const escolher = (v: Visao) => {
-    setVisao(v)
-    try {
-      localStorage.setItem('meu-mei:visao', v)
-    } catch {
-      // sem armazenamento: a escolha vale só nesta sessão
-    }
-  }
+  const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthChart } = window.MeuMEI
+  const [visao, setVisao] = useEscolha<Visao>('meu-mei:visao', VISOES)
+  const [grafico, setGrafico] = useEscolha<Grafico>('meu-mei:grafico', GRAFICOS)
   const t = totaisAno(banco, ano)
   const meses = totaisPorMes(banco, ano)
   const comExtrato = banco.movimentacoes.some((r) => r.data.startsWith(`${ano}-`))
@@ -63,13 +96,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
         </p>
         <h1>Seu ano até aqui</h1>
-        <div className="visoes" role="radiogroup" aria-label="Forma do limite">
-          {VISOES.map((v) => (
-            <button key={v.id} role="radio" aria-checked={visao === v.id} onClick={() => escolher(v.id)}>
-              {v.nome}
-            </button>
-          ))}
-        </div>
+        <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
           {visao === 'arco' && <LimitGauge value={total(t)} limit={LIMITE_ANUAL} tone="dark" size={280} />}
           {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
@@ -115,7 +142,12 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         {comExtrato && (
           <section>
             <h2>Mês a mês</h2>
-            <MonthBars data={dadosMeses} />
+            <Seletor className="graficos" rotulo="Forma do gráfico" opcoes={GRAFICOS} valor={grafico} mudar={setGrafico} />
+            {grafico === 'rastro' ? (
+              <BarrasRastro data={dadosMeses} />
+            ) : (
+              <MonthChart key={grafico} data={dadosMeses} variant={grafico} />
+            )}
           </section>
         )}
       </div>

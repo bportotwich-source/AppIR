@@ -4,7 +4,7 @@
 import * as React from 'react'
 import type { ComponentType } from 'react'
 import type {
-  AccumulatedChartProps, AnimatedNumberProps, CountdownRingProps, LimitTrackProps, LimitGaugeProps, MonthBarsProps, ReviewDeckProps, SplitBarProps,
+  AccumulatedChartProps, AnimatedNumberProps, CountdownRingProps, LimitTrackProps, LimitGaugeProps, MonthBarsProps, MonthChartProps, ReviewDeckProps, SplitBarProps,
 } from '../../design/design-system/components/index'
 
 declare global {
@@ -16,6 +16,7 @@ declare global {
       LimitTrack: ComponentType<LimitTrackProps>
       AnimatedNumber: ComponentType<AnimatedNumberProps>
       MonthBars: ComponentType<MonthBarsProps>
+      MonthChart: ComponentType<MonthChartProps>
       SplitBar: ComponentType<SplitBarProps>
       ReviewDeck: ComponentType<ReviewDeckProps>
       CountdownRing: ComponentType<CountdownRingProps>
