@@ -1,20 +1,161 @@
 {
   "v": 3,
-  "createdOnFiles": {"v": 1, "at": "2026-10-21T22:16:00Z"},
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-21T22:16:00Z"
+  },
   "title": "Meu MEI · Telas",
-  "launch": {"view": "canvas"},
+  "launch": {
+    "view": "canvas"
+  },
   "pages": [],
   "boards": {
-    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 1440, "title": "Início", "is_interactive": true, "radius": 36},
-    "Importar.dc.html": {"x": 470, "y": 0, "w": 390, "h": 1400, "title": "Importar extrato", "is_interactive": true, "radius": 36},
-    "Revisar.dc.html": {"x": 940, "y": 0, "w": 390, "h": 1000, "title": "Revisar entradas", "is_interactive": true, "radius": 36},
-    "Declaracao.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 1360, "title": "Declaração anual", "is_interactive": true, "radius": 36}
+    "Login.dc.html": {
+      "x": -470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Desbloquear",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 1440,
+      "title": "Início",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Importar.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 1400,
+      "title": "Importar extrato",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Revisar.dc.html": {
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 1000,
+      "title": "Revisar entradas",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Declaracao.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 1360,
+      "title": "Declaração anual",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "InicioAcumulado.dc.html": {
+      "x": 2040,
+      "y": 0,
+      "w": 390,
+      "h": 1440,
+      "title": "Início · A · evolução acumulada",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "InicioFaixa.dc.html": {
+      "x": 2510,
+      "y": 0,
+      "w": 390,
+      "h": 1440,
+      "title": "Início · B · faixa do teto",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Graficos.dc.html": {
+      "x": 2980,
+      "y": 0,
+      "w": 390,
+      "h": 2280,
+      "title": "Opções para o mês a mês",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Ajustes.dc.html": {
+      "x": 0,
+      "y": 1560,
+      "w": 390,
+      "h": 980,
+      "title": "Ajustes",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Avisos.dc.html": {
+      "x": 470,
+      "y": 1560,
+      "w": 390,
+      "h": 860,
+      "title": "Início · cartões de aviso",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "DasIr.dc.html": {
+      "x": 940,
+      "y": 1560,
+      "w": 390,
+      "h": 1100,
+      "title": "Início e Declaração · DAS e Imposto de Renda",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Saidas.dc.html": {
+      "x": 1410,
+      "y": 1560,
+      "w": 390,
+      "h": 1000,
+      "title": "Saídas do ano",
+      "is_interactive": true,
+      "radius": 36
+    }
   },
-  "order": ["Main.dc.html", "Importar.dc.html", "Revisar.dc.html", "Declaracao.dc.html"],
+  "order": [
+    "Login.dc.html",
+    "Main.dc.html",
+    "Ajustes.dc.html",
+    "Avisos.dc.html",
+    "Importar.dc.html",
+    "Revisar.dc.html",
+    "Declaracao.dc.html",
+    "InicioAcumulado.dc.html",
+    "InicioFaixa.dc.html",
+    "Graficos.dc.html",
+    "DasIr.dc.html",
+    "Saidas.dc.html"
+  ],
   "notes": {
-    "titulo": {"x": 0, "y": -300, "text": "Meu MEI · celular", "kind": "title1", "maxW": 1800}
+    "titulo": {
+      "x": -470,
+      "y": -300,
+      "text": "Meu MEI · celular",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "alternativas": {
+      "x": 2040,
+      "y": -300,
+      "text": "Alternativas ao medidor",
+      "kind": "title1",
+      "maxW": 860
+    }
   },
   "designSystems": [
-    {"title": "Meu MEI", "namespace": "meumei", "artifact": "https://claude.ai/artifact/EtzfWesDUBjBEkwrsYJhhW", "version": "1792622005-3b06", "copiedAt": "2026-10-21T22:50:00Z"}
+    {
+      "title": "Meu MEI",
+      "namespace": "meumei",
+      "artifact": "https://claude.ai/artifact/EtzfWesDUBjBEkwrsYJhhW",
+      "version": "1792626770-6377",
+      "copiedAt": "2026-10-21T23:55:00Z"
+    }
   ]
 }
