@@ -3,7 +3,7 @@ import { parseLinhas, valorBr } from './parser'
 import { bancoVazio, chaveDescricao, entradas, importar, marcar } from './banco'
 import { dataCurta, pagador } from './formato'
 import { parseCsv, parseOfx } from './arquivos'
-import { alerta, limiteDoAno, limiteProporcional, pendentes, projecaoAno, textoLimite, totaisAno, totaisPorMes } from './relatorio'
+import { alerta, limiteDoAno, maioresPagadores, limiteProporcional, pendentes, projecaoAno, textoLimite, totaisAno, totaisPorMes } from './relatorio'
 import { backupAtrasado } from './store'
 import { extratosDoAno, iniciais, proximosPrazos } from './agenda'
 
@@ -309,5 +309,25 @@ describe('prazos e extratos', () => {
     expect(iniciais('Delta Eventos Ltda')).toBe('DE')
     expect(iniciais('João')).toBe('J')
     expect(iniciais('')).toBe('?')
+  })
+})
+
+describe('maioresPagadores', () => {
+  it('soma o faturamento do ano por pagador e ignora o que não é faturamento', () => {
+    const base = { arquivo: 'x', importadoEm: '2026-01-01T00:00:00Z', tipo: 'entrada' as const }
+    const b = {
+      ...bancoVazio(),
+      movimentacoes: [
+        { ...base, id: '1', data: '2026-03-03', descricao: 'Transferência recebida pelo Pix MARIA SOUZA', valor: 350, faturamento: true, categoria: 'servicos' as const },
+        { ...base, id: '2', data: '2026-04-03', descricao: 'Transferência recebida pelo Pix MARIA SOUZA', valor: 350, faturamento: true, categoria: 'servicos' as const },
+        { ...base, id: '3', data: '2026-04-05', descricao: 'Transferência recebida pelo Pix DELTA EVENTOS', valor: 500, faturamento: true, categoria: 'comercio' as const },
+        { ...base, id: '4', data: '2026-04-06', descricao: 'Transferência recebida pelo Pix JOAO LIMA', valor: 900, faturamento: false, categoria: null },
+        { ...base, id: '5', data: '2025-12-06', descricao: 'Transferência recebida pelo Pix DELTA EVENTOS', valor: 900, faturamento: true, categoria: 'comercio' as const },
+      ],
+    }
+    expect(maioresPagadores(b, 2026)).toEqual([
+      { nome: 'MARIA SOUZA', quantas: 2, valor: 700, categoria: 'servicos' },
+      { nome: 'DELTA EVENTOS', quantas: 1, valor: 500, categoria: 'comercio' },
+    ])
   })
 })

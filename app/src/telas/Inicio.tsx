@@ -2,11 +2,12 @@ import { useState } from 'react'
 import type { TelaProps } from '../App'
 import BarrasRastro from '../componentes/BarrasRastro'
 import { PerguntaAbertura } from '../componentes/CampoAbertura'
-import { brl, limiteAnual, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
+import { brl, limiteAnual, limiteDoAno, maioresPagadores, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
 import { dataCurta, MESES, pagador } from '../core/formato'
 import { iniciais, proximosPrazos, quando } from '../core/agenda'
 import { entradas } from '../core/banco'
 import Icone from '../componentes/Icone'
+import ListaMaiores from '../componentes/ListaMaiores'
 import LinhaDas from '../componentes/LinhaDas'
 import { LembretesAparelho } from '../componentes/Lembretes'
 import { avisoDasn, declaracaoDo } from '../core/declaracao'
@@ -102,40 +103,39 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const dasnEntregue = (p: { titulo: string; data: string }) => p.titulo.startsWith('DASN') && !!declaracaoDo(banco, Number(p.data.slice(0, 4)) - 1).entregueEm
   const retiradas = retiradasPj(banco, ano)
   const nomes = nomesPerfis(titularDo(banco))
+  const periodo = ultimoMes > 1 ? `janeiro a ${MESES[ultimoMes - 1]}` : MESES[0]
+
+  const faturado = total(t)
+  const usado = limite > 0 ? Math.min(100, Math.round((faturado / limite) * 100)) : 0
+  const maiores = maioresPagadores(banco, ano)
+  const nomeCat = { servicos: 'Serviços', comercio: 'Comércio' } as const
 
   return (
     <main>
       <section className="faixa" aria-label="Resumo do ano">
-        <svg className="faixa-circulos" aria-hidden="true" width="390" height="560" viewBox="0 0 390 560">
-          {[150, 200, 250, 300].map((r, i) => <circle key={r} cx="195" cy="300" r={r} fill="none" stroke="#2dd4bf" strokeOpacity={[0.08, 0.06, 0.045, 0.03][i]} />)}
-        </svg>
         <TopoInicio perfil={perfil} mudarPerfil={mudarPerfil} titular={titularDo(banco)} oculto={oculto} alternarOlho={alternarOlho} abrirAjustes={() => ir('ajustes')} />
         <div className="faixa-linha">
-          <h1>Seu ano até aqui</h1>
+          <h1 className="faixa-nota">Você faturou em {ano}</h1>
           <label className="so-leitor" htmlFor="ano">Ano</label>
           <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
             {anos.map((a) => <option key={a}>{a}</option>)}
           </select>
         </div>
-        <p className="faixa-nota">
-          {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
-          {limite !== anual && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
+        <p className="faixa-grande mm-num">{brl(faturado)}</p>
+        <p className="faixa-sub">
+          de <span className="sensivel">{brl(limite)}</span> {limite !== anual ? 'do limite do ano de abertura' : 'do limite'} · {faturado <= limite
+            ? <>faltam <b className="sensivel">{brl(limite - faturado)}</b></>
+            : <>passou <b className="sensivel">{brl(faturado - limite)}</b></>}
         </p>
-        <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
-        <div className="medidor">
-          {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={300} />}
-          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} projection={projecao ?? undefined} tone="dark" />}
-          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} projection={projecao ?? undefined} tone="dark" />}
-        </div>
-        {/* Curva e Barra já mostram a projeção. */}
-        {visao === 'arco' && projecao !== null && (
-          <p className="projecao sobe">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 17 6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>
-            <span>No ritmo atual, {ano} fecha perto de <b className="sensivel">{reais(projecao)}</b>.{' '}
-            {projecao <= limite
-              ? `Fica dentro do limite, com folga de ${reais(limite - projecao)}.`
-              : 'Passa do limite: vale falar com um contador.'}
-            </span>
+        <div className="barra-uso" aria-hidden="true" data-alerta={usado >= 80 || undefined}><span style={{ width: `${usado}%` }} /></div>
+        <p className="faixa-legenda">
+          <span>{usado}% do limite</span>
+          <span>{comExtrato ? `Extrato até ${MESES[ultimoMes - 1]}` : 'Nenhum extrato ainda'}</span>
+        </p>
+        {projecao !== null && (
+          <p className="faixa-compara" data-subiu={projecao > limite}>
+            <span aria-hidden="true">→</span>
+            <span>No ritmo atual, fecha perto de <b className="sensivel">{reais(projecao)}</b>{projecao > limite ? ', acima do limite' : `, folga de ${reais(limite - projecao)}`}</span>
           </p>
         )}
         <svg className="faixa-onda" aria-hidden="true" viewBox="0 0 390 56" preserveAspectRatio="none"><path d="M0 56 V30 C 70 6, 150 6, 205 24 S 330 50, 390 18 V56 Z" /></svg>
@@ -148,44 +148,6 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             <p>Importe o extrato do Nubank PJ em OFX, CSV ou PDF. Ele é lido aqui e não sai do celular.</p>
             <button className="principal" onClick={() => ir('importar')}>Importar extrato</button>
           </section>
-        )}
-
-        {comExtrato && (
-          <section>
-            <div className="titulo-linha">
-              <h2>Por categoria</h2>
-              <span>{ultimoMes > 1 ? `janeiro a ${MESES[ultimoMes - 1]}` : MESES[0]}</span>
-            </div>
-            <SplitBar items={[
-              { label: 'Serviços', value: t.servicos, color: 'var(--servicos)' },
-              { label: 'Comércio', value: t.comercio, color: 'var(--comercio)' },
-            ]} />
-          </section>
-        )}
-
-        {nPendentes > 0 && (
-          <button className="ticket" onClick={() => ir('revisar')} aria-label={`${nPendentes} Pix esperando revisão, ${brl(valorPendente)} ainda fora do total. Abrir revisão.`}>
-            <span className="ticket-rostos" aria-hidden="true">
-              {pagadores.map((p, i) => <span key={p + i} data-i={i}>{p}</span>)}
-            </span>
-            <span className="ticket-corte" aria-hidden="true" />
-            <span className="ticket-texto">
-              <span className="rotulo">{nPendentes} {nPendentes === 1 ? 'pendente' : 'pendentes'}</span>
-              <b>Pix esperando você</b>
-              <span><span className="sensivel">{brl(valorPendente)}</span> ainda fora do total</span>
-            </span>
-            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
-          </button>
-        )}
-
-        {retiradas.length > 0 && (
-          <button className="passagem" onClick={() => mudarPerfil('pf')}>
-            <span className="passagem-icone" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h14" /><path d="m13 6 6 6-6 6" /></svg></span>
-            <span>
-              <b><span className="sensivel">{brl(retiradas.reduce((s, r) => s + r.valor, 0))}</span> foram para {nomes.pf}</b>
-              <span>{retiradas.length} Pix para você em {ano}. Saem do lucro da empresa e entram como renda no {nomes.pf}. Toque para abrir.</span>
-            </span>
-          </button>
         )}
 
         {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} anual={anual} mudar={(abertura) => mudar({ ...banco, abertura })} />}
@@ -204,17 +166,78 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
           </section>
         )}
 
-        <LembretesAparelho banco={banco} mudar={mudar} dadosProtegidos={dadosProtegidos} instalar={instalar} comDados={comExtrato} />
+        {retiradas.length > 0 && (
+          <button className="passagem" onClick={() => mudarPerfil('pf')}>
+            <span className="passagem-icone" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h14" /><path d="m13 6 6 6-6 6" /></svg></span>
+            <span>
+              <b><span className="sensivel">{brl(retiradas.reduce((s, r) => s + r.valor, 0))}</span> foram para {nomes.pf}</b>
+              <span>{retiradas.length} Pix para você em {ano}. Saem do lucro da empresa e entram como renda no {nomes.pf}. Toque para abrir.</span>
+            </span>
+          </button>
+        )}
+
+        {nPendentes > 0 && (
+          <button className="ticket" onClick={() => ir('revisar')} aria-label={`${nPendentes} Pix esperando revisão, ${brl(valorPendente)} ainda fora do total. Abrir revisão.`}>
+            <span className="ticket-rostos" aria-hidden="true">
+              {pagadores.map((p, i) => <span key={p + i} data-i={i}>{p}</span>)}
+            </span>
+            <span className="ticket-corte" aria-hidden="true" />
+            <span className="ticket-texto">
+              <span className="rotulo">{nPendentes} {nPendentes === 1 ? 'pendente' : 'pendentes'}</span>
+              <b>Pix esperando você</b>
+              <span><span className="sensivel">{brl(valorPendente)}</span> ainda fora do total</span>
+            </span>
+            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
+          </button>
+        )}
 
         {comExtrato && (
           <section>
-            <h2>Mês a mês</h2>
+            <div className="titulo-linha">
+              <h2>De onde veio</h2>
+              <span>{periodo}</span>
+            </div>
+            <SplitBar items={[
+              { label: 'Serviços', value: t.servicos, color: 'var(--servicos)' },
+              { label: 'Comércio', value: t.comercio, color: 'var(--comercio)' },
+            ]} />
+          </section>
+        )}
+
+        {maiores.length > 0 && (
+          <section aria-labelledby="maiores-t">
+            <div className="titulo-linha">
+              <h2 id="maiores-t">Quem mais pagou</h2>
+              <span>{periodo}</span>
+            </div>
+            <ListaMaiores itens={maiores.map((g) => ({ nome: g.nome, detalhe: `${g.categoria ? nomeCat[g.categoria] : 'Faturamento'}${g.quantas > 1 ? ` · ${g.quantas} vezes` : ''}`, valor: g.valor }))} />
+          </section>
+        )}
+
+        {comExtrato && (
+          <section aria-labelledby="meses-t">
+            <h2 id="meses-t">Mês a mês</h2>
             <Seletor className="graficos" rotulo="Forma do gráfico" opcoes={GRAFICOS} valor={grafico} mudar={setGrafico} />
             {grafico === 'rastro' ? (
               <BarrasRastro data={dadosMeses} avg={anual / 12} />
             ) : (
               <MonthChart key={grafico} data={dadosMeses} variant={grafico} avg={anual / 12} max={Math.max(9000, (anual / 12) * 1.33)} />
             )}
+          </section>
+        )}
+
+        {comExtrato && (
+          <section aria-labelledby="limite-t">
+            <div className="titulo-linha">
+              <h2 id="limite-t">Limite do ano</h2>
+              <span>{brl(limite)}</span>
+            </div>
+            <Seletor className="visoes visoes-claras" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
+            <div className="medidor">
+              {visao === 'arco' && <LimitGauge value={faturado} limit={limite} size={300} />}
+              {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} projection={projecao ?? undefined} />}
+              {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} projection={projecao ?? undefined} />}
+            </div>
           </section>
         )}
 
@@ -237,6 +260,8 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             ))}
           </ol>
         </section>
+
+        <LembretesAparelho banco={banco} mudar={mudar} dadosProtegidos={dadosProtegidos} instalar={instalar} comDados={comExtrato} />
       </div>
     </main>
   )

@@ -1,7 +1,7 @@
 // Totais de faturamento e alerta de limite do MEI.
 
-import type { Banco } from './banco'
-import { MESES } from './formato'
+import { chaveDescricao, type Banco, type Categoria } from './banco'
+import { MESES, pagador } from './formato'
 
 export const LIMITE_ANUAL = 81_000
 // Até 20% acima do limite o desenquadramento vale a partir do ano seguinte;
@@ -126,4 +126,26 @@ export function textoLimite(abertura: string | null | undefined, ano = new Date(
     `Aberto em ${MESES[mes - 1]} de ${abertura.slice(0, 4)}. Limite de ${abertura.slice(0, 4)}: ` +
     `${brl(limiteProporcional(mes, anual))} (${meses} ${meses === 1 ? 'mês' : 'meses'} × ${brl(anual / 12)}).`
   )
+}
+
+export interface MaiorPagador {
+  nome: string
+  quantas: number
+  valor: number
+  categoria: Categoria | null
+}
+
+/** Quem mais pagou no ano: faturamento somado por pagador, do maior para o menor. */
+export function maioresPagadores(banco: Banco, ano: number, quantos = 5): MaiorPagador[] {
+  const grupos = new Map<string, MaiorPagador>()
+  for (const r of banco.movimentacoes) {
+    if (r.tipo !== 'entrada' || !r.faturamento || !r.data.startsWith(`${ano}-`)) continue
+    const chave = chaveDescricao(r.descricao)
+    const g = grupos.get(chave)
+    if (g) {
+      g.quantas++
+      g.valor += r.valor
+    } else grupos.set(chave, { nome: pagador(r.descricao).nome, quantas: 1, valor: r.valor, categoria: r.categoria })
+  }
+  return [...grupos.values()].sort((a, b) => b.valor - a.valor).slice(0, quantos)
 }

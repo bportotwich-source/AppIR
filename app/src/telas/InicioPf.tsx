@@ -5,10 +5,10 @@ import { mesLongo, nomeMes, rotuloComprovante, useMes } from './mes'
 import { carteiraPf, gruposSemCategoria, maioresGastos, mesesPf, nomeCategoria, nomesPerfis, resumoPf, retiradasPj, titularDo } from '../core/pf'
 import { comprovantes } from '../core/comprovantes'
 import { irpfPfDoAno } from '../core/irpfPf'
-import { iniciais } from '../core/agenda'
 import { TopoInicio } from '../componentes/Perfil'
 import { LembretesAparelho } from '../componentes/Lembretes'
 import Icone from '../componentes/Icone'
+import ListaMaiores from '../componentes/ListaMaiores'
 
 export function SeletorMes({ mes, meses, mudar }: { mes: string; meses: string[]; mudar: (m: string) => void }) {
   return (
@@ -51,7 +51,7 @@ export default function InicioPf({ banco, mudar, ir, perfil, mudarPerfil, oculto
       <section className="faixa" aria-label="Resumo do mês">
         <TopoInicio perfil={perfil} mudarPerfil={mudarPerfil} titular={titularDo(banco)} oculto={oculto} alternarOlho={alternarOlho} abrirAjustes={() => ir('ajustes')} />
         <div className="faixa-linha">
-          <p className="faixa-nota">Você gastou em {mesLongo(mes)}</p>
+          <h1 className="faixa-nota">Você gastou em {mesLongo(mes)}</h1>
           <SeletorMes mes={mes} meses={meses} mudar={setMes} />
         </div>
         <p className="faixa-grande mm-num">{brl(r.gastos)}</p>
@@ -94,6 +94,21 @@ export default function InicioPf({ banco, mudar, ir, perfil, mudarPerfil, oculto
           </button>
         )}
 
+        {grupos.length > 0 && (
+          <button className="ticket" onClick={() => ir('revisar-pf')} aria-label={`${grupos.length} destinos sem categoria, ${brl(valorSem)}. Abrir revisão.`}>
+            <span className="ticket-rostos ticket-etiqueta" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg>
+            </span>
+            <span className="ticket-corte" aria-hidden="true" />
+            <span className="ticket-texto">
+              <span className="rotulo">{grupos.length} sem categoria</span>
+              <b>Gastos para separar</b>
+              <span><span className="sensivel">{brl(valorSem)}</span> em {ano} ainda sem categoria</span>
+            </span>
+            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
+          </button>
+        )}
+
         {r.porCategoria.length > 0 && (
           <section>
             <div className="titulo-linha">
@@ -110,15 +125,7 @@ export default function InicioPf({ banco, mudar, ir, perfil, mudarPerfil, oculto
               <h2 id="maiores-t">Onde mais gastou</h2>
               <span>{mesLongo(mes)}</span>
             </div>
-            <ol className="maiores">
-              {maiores.map((g) => (
-                <li key={g.nome}>
-                  <span className="sigla" aria-hidden="true">{iniciais(g.nome)}</span>
-                  <span className="movs-nome"><b>{g.nome}</b><span>{nomeCategoria(g.categoria)}{g.quantas > 1 && ` · ${g.quantas} vezes`}</span></span>
-                  <b className="mm-num">{brl(g.valor)}</b>
-                </li>
-              ))}
-            </ol>
+            <ListaMaiores itens={maiores.map((g) => ({ nome: g.nome, detalhe: `${nomeCategoria(g.categoria)}${g.quantas > 1 ? ` · ${g.quantas} vezes` : ''}`, valor: g.valor }))} />
           </section>
         )}
 
@@ -159,21 +166,6 @@ export default function InicioPf({ banco, mudar, ir, perfil, mudarPerfil, oculto
             </ul>
             {r.entreContas > 0 && <p className="apoio"><span className="sensivel">{brl(r.entreContas)}</span> passaram de uma conta sua para a outra. Não contam como gasto nem como entrada.</p>}
           </section>
-        )}
-
-        {grupos.length > 0 && (
-          <button className="ticket" onClick={() => ir('revisar-pf')} aria-label={`${grupos.length} destinos sem categoria, ${brl(valorSem)}. Abrir revisão.`}>
-            <span className="ticket-rostos ticket-etiqueta" aria-hidden="true">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg>
-            </span>
-            <span className="ticket-corte" aria-hidden="true" />
-            <span className="ticket-texto">
-              <span className="rotulo">{grupos.length} sem categoria</span>
-              <b>Gastos para separar</b>
-              <span><span className="sensivel">{brl(valorSem)}</span> em {ano} ainda sem categoria</span>
-            </span>
-            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
-          </button>
         )}
 
         <button className="passagem" data-de="ir" onClick={() => ir('irpf')}>
