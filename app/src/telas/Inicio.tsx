@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
 import BarrasRastro from '../componentes/BarrasRastro'
-import { LIMITE_ANUAL, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
+import { PerguntaAbertura } from '../componentes/CampoAbertura'
+import { brl, LIMITE_ANUAL, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
 import { MESES } from '../core/formato'
+import { dadosEmRisco, ehIphone } from '../core/armazenamento'
+import { backupAtrasado, enviarBackup } from '../core/store'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
@@ -70,7 +73,7 @@ interface Props extends TelaProps {
   mudarAno: (ano: number) => void
 }
 
-export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
+export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosProtegidos, instalar }: Props) {
   const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthChart } = window.MeuMEI
   const [visao, setVisao] = useEscolha<Visao>('meu-mei:visao', VISOES)
   const [grafico, setGrafico] = useEscolha<Grafico>('meu-mei:grafico', GRAFICOS)
@@ -81,6 +84,18 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
   const projecao = projecaoAno(banco, ano)
   const dadosMeses = meses.map((m, i) => ({ m: CURTO[i], s: m.servicos, c: m.comercio }))
   const nPendentes = pendentes(banco, ano)
+  const limite = limiteDoAno(banco, ano)
+  const diasBackup = backupAtrasado(banco)
+  const [backupFalhou, setBackupFalhou] = useState(false)
+
+  async function fazerBackup() {
+    try {
+      const novo = await enviarBackup(banco)
+      if (novo) mudar(novo)
+    } catch {
+      setBackupFalhou(true)
+    }
+  }
 
   return (
     <main>
@@ -94,20 +109,21 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         </div>
         <p className="faixa-nota">
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
+          {limite !== LIMITE_ANUAL && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
         </p>
         <h1>Seu ano até aqui</h1>
         <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
-          {visao === 'arco' && <LimitGauge value={total(t)} limit={LIMITE_ANUAL} tone="dark" size={280} />}
-          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
-          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
+          {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={280} />}
+          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} tone="dark" />}
+          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} tone="dark" />}
         </div>
         {/* Curva e Barra já mostram a projeção. */}
         {visao === 'arco' && projecao !== null && (
           <p className="projecao">
             No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
-            {projecao <= LIMITE_ANUAL
-              ? `Fica dentro do limite, com folga de ${reais(LIMITE_ANUAL - projecao)}.`
+            {projecao <= limite
+              ? `Fica dentro do limite, com folga de ${reais(limite - projecao)}.`
               : 'Passa do limite: vale falar com um contador.'}
           </p>
         )}
@@ -127,6 +143,32 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
             <b>{nPendentes} {nPendentes === 1 ? 'entrada para revisar' : 'entradas para revisar'}</b>
             <span>Fora do total até você decidir · Revisar agora</span>
           </button>
+        )}
+
+        {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />}
+
+        {diasBackup !== null && (
+          <section className="lembrete" aria-labelledby="backup-titulo">
+            <b id="backup-titulo">{diasBackup === Infinity ? 'Você ainda não fez backup' : `Último backup há ${diasBackup} dias`}</b>
+            <span>Se o celular quebrar ou o navegador limpar os dados, os extratos e as marcações somem. Guarde uma cópia no Drive, no WhatsApp ou no e-mail.</span>
+            <button className="principal" onClick={fazerBackup}>Fazer backup agora</button>
+            {backupFalhou && <span role="alert">Não deu para gerar o backup. Tente pela tela Importar.</span>}
+          </section>
+        )}
+
+        {comExtrato && dadosEmRisco(dadosProtegidos) && (
+          <section className="lembrete" aria-labelledby="instalar-titulo">
+            <b id="instalar-titulo">Instale o app na tela de início</b>
+            {ehIphone() ? (
+              <span>No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. Aberto pelo navegador, o iPhone pode apagar os dados depois de alguns dias sem uso.</span>
+            ) : (
+              <span>
+                Assim o navegador não apaga seus dados quando faltar espaço no celular.
+                {!instalar && ' No Chrome, abra o menu ⋮ e toque em Instalar app.'}
+              </span>
+            )}
+            {instalar && <button className="principal" onClick={instalar}>Instalar app</button>}
+          </section>
         )}
 
         {comExtrato && (

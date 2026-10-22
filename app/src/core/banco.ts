@@ -25,6 +25,11 @@ export interface Banco {
   versao: 1
   movimentacoes: Registro[]
   regras: Record<string, Regra> // por descrição normalizada
+  // Mês de abertura do MEI ("AAAA-MM"). null = aberto antes do ano atual;
+  // ausente = a pessoa ainda não respondeu.
+  abertura?: string | null
+  ultimoBackup?: string // ISO
+  alteradoEm?: string // ISO; última mudança em movimentações ou marcações
 }
 
 export function bancoVazio(): Banco {

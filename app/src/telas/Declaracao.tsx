@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
-import { alerta, brl, pendentes, total, totaisAno } from '../core/relatorio'
+import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 
 export default function Declaracao({ banco, ano, ir }: TelaProps) {
   const [empregado, setEmpregado] = useState(false)
@@ -10,7 +10,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
   const nPendentes = pendentes(banco, ano)
   const meses = new Set(banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => Number(r.data.slice(5, 7))))
   const faltam = Array.from({ length: 12 }, (_, i) => i + 1).filter((m) => !meses.has(m))
-  const limite = alerta(total(t))
+  const limite = alerta(total(t), limiteDoAno(banco, ano))
 
   const texto =
     `DASN-SIMEI ${ano}\n` +

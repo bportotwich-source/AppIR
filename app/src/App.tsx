@@ -3,6 +3,7 @@ import { anosDisponiveis, bancoVazio, type Banco } from './core/banco'
 import { pendentes } from './core/relatorio'
 import { carregar, salvar } from './core/store'
 import { ler as lerTrava, removerTrava } from './core/trava'
+import { protegerDados } from './core/armazenamento'
 import Desbloquear from './telas/Desbloquear'
 import Inicio from './telas/Inicio'
 import Importar from './telas/Importar'
@@ -17,6 +18,12 @@ export interface TelaProps {
   mudar: (banco: Banco) => void
   ir: (aba: Aba) => void
   criarPin: () => void
+  dadosProtegidos: boolean
+  instalar: (() => void) | null // Android/Chrome: abre o pedido de instalação
+}
+
+interface PedidoInstalacao extends Event {
+  prompt: () => Promise<void>
 }
 
 // Fora do app por mais que isso, ele pede o PIN de novo.
@@ -29,9 +36,26 @@ export default function App() {
   const [travado, setTravado] = useState(() => lerTrava() !== null)
   const [criandoPin, setCriandoPin] = useState(false)
   const saiuEm = useRef(0)
+  const [dadosProtegidos, setDadosProtegidos] = useState(false)
+  const [pedido, setPedido] = useState<PedidoInstalacao | null>(null)
 
   useEffect(() => {
     carregar().then(setBanco, () => setBanco(bancoVazio()))
+    protegerDados().then(setDadosProtegidos)
+    const guardar = (e: Event) => {
+      e.preventDefault()
+      setPedido(e as PedidoInstalacao)
+    }
+    const instalou = () => {
+      setPedido(null)
+      protegerDados().then(setDadosProtegidos)
+    }
+    window.addEventListener('beforeinstallprompt', guardar)
+    window.addEventListener('appinstalled', instalou)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', guardar)
+      window.removeEventListener('appinstalled', instalou)
+    }
   }, [])
 
   useEffect(() => {
@@ -65,11 +89,17 @@ export default function App() {
   if (!banco) return null
 
   const mudar = (novo: Banco) => {
+    // A data de alteração diz se o último backup ficou velho.
+    const alterou = novo.movimentacoes !== banco.movimentacoes || novo.regras !== banco.regras
+    if (alterou) novo = { ...novo, alteradoEm: new Date().toISOString() }
     setBanco(novo)
     void salvar(novo)
   }
   const anos = [...new Set([new Date().getFullYear(), ...anosDisponiveis(banco)])].sort((a, b) => b - a)
-  const props: TelaProps = { banco, ano, mudar, ir: setAba, criarPin: () => setCriandoPin(true) }
+  const props: TelaProps = {
+    banco, ano, mudar, ir: setAba, criarPin: () => setCriandoPin(true), dadosProtegidos,
+    instalar: pedido ? () => void pedido.prompt().then(() => setPedido(null)) : null,
+  }
   const nPendentes = pendentes(banco, ano)
 
   return (

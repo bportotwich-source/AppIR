@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react'
 import type { TelaProps } from '../App'
 import { importar } from '../core/banco'
 import { lerArquivo } from '../core/arquivos'
-import { exportarBackup, lerBackup } from '../core/store'
+import { enviarBackup, lerBackup } from '../core/store'
+import { CampoAbertura } from '../componentes/CampoAbertura'
+import { instalado } from '../core/armazenamento'
+import { dataCurta } from '../core/formato'
 import { cadastrarDigital, digitalDisponivel, ler as lerTrava, removerDigital, removerTrava } from '../core/trava'
 
 type Resultado =
   | { tipo: 'ok'; arquivo: string; lidas: number; novas: number; repetidas: number; aRevisar: number }
   | { tipo: 'erro'; mensagem: string }
 
-export default function Importar({ banco, mudar, ir, criarPin }: TelaProps) {
+export default function Importar({ banco, mudar, ir, criarPin, dadosProtegidos }: TelaProps) {
   const [trava, setTrava] = useState(lerTrava)
   const [podeDigital, setPodeDigital] = useState(false)
   const [avisoTrava, setAvisoTrava] = useState('')
@@ -49,12 +52,9 @@ export default function Importar({ banco, mudar, ir, criarPin }: TelaProps) {
     }
   }
 
-  function baixarBackup() {
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(exportarBackup(banco))
-    a.download = `meu-mei-backup-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(a.href)
+  async function baixarBackup() {
+    const novo = await enviarBackup(banco)
+    if (novo) mudar(novo)
   }
 
   async function restaurar(arquivo: File | undefined) {
@@ -96,6 +96,11 @@ export default function Importar({ banco, mudar, ir, criarPin }: TelaProps) {
       )}
 
       <section>
+        <h2>Sua empresa</h2>
+        <CampoAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />
+      </section>
+
+      <section>
         <h2>Segurança</h2>
         <p className="apoio">
           {trava
@@ -120,9 +125,15 @@ export default function Importar({ banco, mudar, ir, criarPin }: TelaProps) {
 
       <section>
         <h2>Backup</h2>
-        <p className="apoio">Os dados ficam só neste celular. Guarde um backup antes de trocar de aparelho.</p>
+        <p className="apoio">
+          Os dados ficam só neste celular.{' '}
+          {instalado() || dadosProtegidos
+            ? 'O navegador foi avisado para não apagá-los.'
+            : 'Instale o app na tela de início para o navegador não apagá-los.'}{' '}
+          {banco.ultimoBackup ? `Último backup em ${dataCurta(banco.ultimoBackup.slice(0, 10))}.` : 'Você ainda não fez backup.'}
+        </p>
         <div className="botoes">
-          <button onClick={baixarBackup}>Baixar backup</button>
+          <button onClick={baixarBackup}>Fazer backup</button>
           <label className="botao">
             <input type="file" accept="application/json" onChange={(e) => restaurar(e.target.files?.[0])} />
             Restaurar backup
