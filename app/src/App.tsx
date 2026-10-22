@@ -111,17 +111,20 @@ export default function App() {
       {aba === 'declaracao' && <Declaracao {...props} />}
       {aba === 'ajustes' && <Ajustes {...props} />}
 
-      <nav className="abas" aria-label="Seções">
-        <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}>Início</button>
-        <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>
-          Revisar{nPendentes > 0 && <span className="contador">{nPendentes}</span>}
-        </button>
-        <button className="importar" aria-current={aba === 'importar'} onClick={() => setAba('importar')}>
-          <span aria-hidden="true">+</span>
-          <span className="so-leitor">Importar extrato</span>
-        </button>
-        <button aria-current={aba === 'declaracao'} onClick={() => setAba('declaracao')}>Declaração</button>
-      </nav>
+      {/* Ajustes é uma tela de dentro do Início, com botão de voltar: sem a barra de abas. */}
+      {aba !== 'ajustes' && (
+        <nav className="abas" aria-label="Seções">
+          <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}>Início</button>
+          <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>
+            Revisar{nPendentes > 0 && <span className="contador">{nPendentes}</span>}
+          </button>
+          <button className="importar" aria-current={aba === 'importar'} onClick={() => setAba('importar')}>
+            <span aria-hidden="true">+</span>
+            <span className="so-leitor">Importar extrato</span>
+          </button>
+          <button aria-current={aba === 'declaracao'} onClick={() => setAba('declaracao')}>Declaração</button>
+        </nav>
+      )}
     </div>
   )
 }
