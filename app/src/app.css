@@ -330,6 +330,9 @@ button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: f
 .folha-valor:focus-within { border-color: var(--brand); background: var(--surface-raised); }
 .folha-valor input { flex: 1; min-width: 0; border: 0; padding: 0; background: none; font-family: var(--mono); font-size: 32px; line-height: 44px; font-weight: 600; color: var(--ink); outline: none; }
 .folha-dica { margin: 8px 0 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.folha-aviso { margin: 0 0 16px; padding: 12px 14px; border-radius: 12px; background: var(--warning-surface); color: var(--warning); font-size: 14px; line-height: 20px; }
+.folha-erro { margin: 8px 0 0; color: var(--danger); font-size: 14px; }
+.ajustes-chave { margin-top: 14px; }
 .folha-acoes { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
 .folha-acoes .principal { width: 100%; }
 button.principal.perigo { background: var(--danger); }

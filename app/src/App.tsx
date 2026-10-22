@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { anosDisponiveis, bancoVazio, type Banco } from './core/banco'
 import { pendentes } from './core/relatorio'
-import { carregar, salvar } from './core/store'
+import { apagarTudo, carregar, salvar, usarChave } from './core/store'
 import { ler as lerTrava, removerTrava } from './core/trava'
 import { protegerDados } from './core/armazenamento'
 import Desbloquear from './telas/Desbloquear'
@@ -45,7 +45,9 @@ export default function App() {
   const [pedido, setPedido] = useState<PedidoInstalacao | null>(null)
 
   useEffect(() => {
-    carregar().then(setBanco, () => setBanco(bancoVazio()))
+    // Com os dados cifrados, carregar só depois do PIN. Cifrados sem trava
+    // (dados do site apagados pela metade) não há como abrir: começa vazio.
+    carregar().then((b) => { if (b || !lerTrava()) setBanco(b ?? bancoVazio()) }, () => setBanco(bancoVazio()))
     protegerDados().then(setDadosProtegidos)
     const guardar = (e: Event) => {
       e.preventDefault()
@@ -66,7 +68,14 @@ export default function App() {
   useEffect(() => {
     const mudou = () => {
       if (document.hidden) saiuEm.current = Date.now()
-      else if (lerTrava() && Date.now() - saiuEm.current > TRAVA_APOS_MS) setTravado(true)
+      else if (lerTrava() && Date.now() - saiuEm.current > TRAVA_APOS_MS) {
+        setTravado(true)
+        // Travado, a chave dos dados sai da memória.
+        if (lerTrava()?.cofre) {
+          usarChave(null)
+          setBanco(null)
+        }
+      }
     }
     document.addEventListener('visibilitychange', mudou)
     return () => document.removeEventListener('visibilitychange', mudou)
@@ -76,13 +85,15 @@ export default function App() {
     return (
       <Desbloquear
         modo="entrar"
-        aoTerminar={() => setTravado(false)}
-        aoApagarTudo={() => {
+        aoTerminar={() => {
+          setTravado(false)
+          carregar().then((b) => setBanco((atual) => atual ?? b ?? bancoVazio()), () => setBanco(bancoVazio()))
+        }}
+        aoApagarTudo={async () => {
           if (!confirm('Apagar todos os extratos e marcações deste celular? Isso não pode ser desfeito.')) return
           removerTrava()
-          const vazio = bancoVazio()
-          setBanco(vazio)
-          void salvar(vazio)
+          await apagarTudo()
+          setBanco(bancoVazio())
           setTravado(false)
         }}
       />

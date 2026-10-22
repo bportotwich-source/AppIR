@@ -86,7 +86,7 @@
       "x": 0,
       "y": 1560,
       "w": 390,
-      "h": 1096,
+      "h": 1241,
       "title": "Ajustes",
       "is_interactive": true,
       "radius": 36
@@ -138,7 +138,7 @@
     },
     "Movimentacoes.dc.html": {
       "x": 0,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 1023,
       "title": "Movimentações do ano",
@@ -147,7 +147,7 @@
     },
     "CorrigirMovimentacao.dc.html": {
       "x": 470,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 844,
       "title": "Corrigir movimentação",
@@ -156,7 +156,7 @@
     },
     "Pagadores.dc.html": {
       "x": 940,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 844,
       "title": "Pagadores lembrados",
@@ -165,7 +165,7 @@
     },
     "EntregaDasn.dc.html": {
       "x": 1410,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 844,
       "title": "Marcar DASN entregue",
@@ -174,7 +174,7 @@
     },
     "RelatorioMensal.dc.html": {
       "x": 1880,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 1804,
       "title": "Relatório mensal das receitas",
@@ -183,10 +183,19 @@
     },
     "AvisoDasn.dc.html": {
       "x": 2350,
-      "y": 2760,
+      "y": 2960,
       "w": 390,
       "h": 1142,
       "title": "Início · aviso da DASN",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "CriptografarDados.dc.html": {
+      "x": 2820,
+      "y": 1560,
+      "w": 390,
+      "h": 844,
+      "title": "Criptografar os dados",
       "is_interactive": true,
       "radius": 36
     }
@@ -211,7 +220,8 @@
     "Pagadores.dc.html",
     "EntregaDasn.dc.html",
     "RelatorioMensal.dc.html",
-    "AvisoDasn.dc.html"
+    "AvisoDasn.dc.html",
+    "CriptografarDados.dc.html"
   ],
   "notes": {
     "titulo": {
@@ -230,7 +240,7 @@
     },
     "melhorias": {
       "x": 0,
-      "y": 2460,
+      "y": 2660,
       "text": "Correções, declaração e relatório",
       "kind": "title1",
       "maxW": 2270
