@@ -59,7 +59,8 @@ export const bancoDe = (r: RegistroPf): BancoPf => r.banco ?? 'nubank'
 // Palavras que já dizem a categoria, para a primeira importação não vir toda vazia.
 const SUGESTOES: [RegExp, CategoriaPf][] = [
   [/drogaria|farmacia|drogasil|droga raia|raia|pague menos|panvel|pacheco/i, 'farmacia'],
-  [/supermerc|mercado|atacad|assai|carrefour|hortifruti|padaria|acougue|sacolao|zaffari|pao de acucar/i, 'mercado'],
+  [/supermerc|mercado|atacad|assai|carrefour|hortifruti|padaria|pada\b|confeit|panific|acougue|sacolao|zaffari|pao de acucar/i, 'mercado'],
+  [/^(juros|iof|multa moratoria|tarifa)/i, 'outros'],
   [/uber|99app|\b99\b|posto|combust|ipiranga|shell|petrobras|estaciona|metro|onibus|bilhete/i, 'transporte'],
   [/amazon|mercadolivre|mercado livre|mercadopago|magalu|magazine|shopee|aliexpress|americanas|shein/i, 'compras'],
   [/netflix|spotify|disney|hbo|max\b|prime video|youtube|apple\.com|google one|icloud/i, 'assinaturas'],

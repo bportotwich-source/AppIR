@@ -28,7 +28,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 <a href="Adicionar.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; align-items: center; justify-content: center; color: #15201d"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Importar extrato</h1>
-<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">OFX, CSV ou PDF do Nubank, da empresa ou pessoal. É lido aqui e não sai do celular.</p>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">OFX de qualquer banco, CSV do Nubank ou PDF do Nubank e do Santander. É lido aqui e não sai do celular.</p>
 </div>
 </header>
 
@@ -41,7 +41,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 <span style="padding: 2px 8px; border-radius: 999px; background: {{c.tagFundo}}; color: {{c.tagCor}}; font-size: 12px; font-weight: 700">{{c.tag}}</span>
 </label>
 </sc-for>
-<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O app reconhece o banco pelo OFX e já deixa marcado. Pix entre o Nubank e o Santander não conta como gasto.</p>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O app reconhece o banco pelo arquivo (OFX ou PDF) e já deixa marcado. Pix entre o Nubank e o Santander não conta como gasto.</p>
 </fieldset>
 
 <x-import component-from-global-scope="MeuMEI.ScanDrop" file-name="extrato-novembro-2026.pdf" done-text="31 movimentações lidas" size="{{tamanhoScan}}"></x-import>
@@ -114,7 +114,7 @@ class Component extends DCLogic {
     var contas = [
       ['Nubank · conta', 'Extrato em OFX, CSV ou PDF', 'NU', '#f3e8ff', '#820ad1'],
       ['Nubank · cartão de crédito', 'Fatura do cartão em CSV', 'NU', '#f3e8ff', '#820ad1'],
-      ['Santander · conta', 'Extrato em OFX', 'ST', '#fee2e2', '#b91c1c']
+      ['Santander · conta', 'Extrato em OFX ou PDF', 'ST', '#fee2e2', '#b91c1c']
     ].map(function (c, i) {
       var on = self.state.conta === i;
       return { nome: c[0], desc: c[1], tag: c[2], tagFundo: c[3], tagCor: c[4], on: on, anel: on ? '0 0 0 2px #0f766e' : '0 0 0 1px #e3e7e5', pick: function () { self.setState({ conta: i }); } };
