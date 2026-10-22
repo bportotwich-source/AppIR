@@ -6,7 +6,7 @@ import { extratosDoAno } from '../core/agenda'
 import { brl } from '../core/relatorio'
 import { MESES } from '../core/formato'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { Alternar, SeletorPerfil } from '../componentes/Perfil'
+import { Alternar } from '../componentes/Perfil'
 import { BANCOS_PF, bancoDe, carteiraPf, importarPf, nomeBanco, nomesPerfis, separarRetiradasDoTitular, titularDo, type BancoPf, type ContaPf } from '../core/pf'
 
 type Conta = 'pj' | 'conta' | 'cartao'
@@ -30,7 +30,7 @@ function mesDoExtrato(datas: string[]): string {
   return ym ? `${maiuscula(MESES[Number(ym.slice(5, 7)) - 1])} de ${ym.slice(0, 4)}` : ''
 }
 
-export default function Importar({ banco, ano, mudar, ir, historico, perfil, mudarPerfil }: TelaProps & { historico?: boolean }) {
+export default function Importar({ banco, ano, mudar, ir, historico, perfil }: TelaProps & { historico?: boolean }) {
   const { ScanDrop } = window.MeuMEI
   const [estado, setEstado] = useState<Estado>('idle')
   const [leitura, setLeitura] = useState<Leitura | null>(null)
@@ -98,7 +98,6 @@ export default function Importar({ banco, ano, mudar, ir, historico, perfil, mud
   return (
     <main className="conteudo topo">
       <Cabecalho titulo="Importar extrato" sub={perfil === 'pj' ? 'Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular.' : 'Extrato em OFX de qualquer banco (o mais confiável), ou CSV e PDF do Nubank. Ele é lido aqui e não sai do celular.'} voltar={() => ir('inicio')} empilhado />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
       {perfil === 'pf' && (
         <>
           <Alternar rotulo="De qual banco é o extrato" valor={bancoPf} mudar={setBancoPf} opcoes={BANCOS_PF.map((b) => ({ id: b.id, nome: b.nome }))} />

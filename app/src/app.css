@@ -428,9 +428,21 @@ button.principal.perigo { background: var(--danger); }
 .campo-limite { margin-top: 18px; }
 
 /* Perfis PJ / PF / Tudo */
-.perfis { display: flex; gap: 4px; margin-top: 14px; padding: 4px; border-radius: 999px; background: rgba(236,241,239,.08); width: fit-content; }
-.perfis button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: #a3b5b0; font-size: 13px; font-weight: 600; cursor: pointer; }
-.perfis button[aria-checked="true"] { background: #2dd4bf; color: #0b1f1c; }
+.perfis { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 4px 14px 4px 4px; border: 0; border-radius: 999px; background: rgba(236,241,239,.08); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.perfis-pilha { position: relative; width: 70px; height: 44px; flex: none; }
+.perfil-bola { position: absolute; top: 0; left: 0; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font-size: 13px; font-weight: 700; letter-spacing: .02em; box-shadow: 0 0 0 3px var(--faixa); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s; }
+.perfil-bola[data-perfil="pj"] { background: #2dd4bf; color: #0b1f1c; }
+.perfil-bola[data-perfil="pf"] { background: #a5b4fc; color: #1e1b4b; }
+.perfil-bola[data-frente="true"] { z-index: 2; transform: translateX(0) scale(1); }
+.perfil-bola[data-frente="false"] { z-index: 1; transform: translateX(26px) scale(.82); opacity: .75; }
+.perfis[data-animar] .perfil-bola[data-frente="true"] { animation: perfil-frente .55s cubic-bezier(.3,.7,.2,1); }
+.perfis[data-animar] .perfil-bola[data-frente="false"] { animation: perfil-atras .55s cubic-bezier(.3,.7,.2,1); }
+@keyframes perfil-frente { from { transform: translateX(26px) scale(.82); } 50% { transform: translate(13px, -12px) scale(1.08); } to { transform: translateX(0) scale(1); } }
+@keyframes perfil-atras { from { transform: translateX(0) scale(1); opacity: 1; } 50% { transform: translate(13px, 10px) scale(.78); } to { transform: translateX(26px) scale(.82); opacity: .75; } }
+@media (prefers-reduced-motion: reduce) { .perfis[data-animar] .perfil-bola { animation: none; } }
+.perfis-nome { display: flex; flex-direction: column; line-height: 1.2; }
+.perfis-nome b { font-size: 15px; color: #ecf1ef; }
+.perfis-nome span { font-size: 12px; color: #a3b5b0; }
 .engrenagem[aria-pressed="true"] { background: #2dd4bf; color: #0b1f1c; border-color: #2dd4bf; }
 .faixa-grande { margin: 4px 0 2px; font: 600 40px/48px var(--mono); letter-spacing: -0.02em; }
 .faixa-sub { margin: 0; color: #a3b5b0; font-size: 14px; }
@@ -531,11 +543,7 @@ a.link { color: var(--brand); font-weight: 600; }
 
 /* Cada perfil com a sua cor: PJ verde-azulado, PF índigo. */
 .app[data-perfil="pf"] { --faixa: #1e1b4b; }
-.app[data-perfil="pf"] .perfis button[aria-checked="true"] { background: #a5b4fc; color: #1e1b4b; }
-.perfis.claro { margin: 0; background: #eef1f0; }
-.perfis.claro button { color: var(--ink-muted); }
-.perfis.claro button[aria-checked="true"] { background: var(--faixa); color: #ecf1ef; }
-.app[data-perfil="pf"] .perfis.claro button[aria-checked="true"] { background: var(--faixa); color: #e0e7ff; }
+.app[data-perfil="pf"] .perfis-nome span { color: #c7d2fe; }
 .botoes button.principal { background: var(--brand); color: var(--on-brand); border-color: var(--brand); }
 .por-banco { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-raised); }
 .por-banco li { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }

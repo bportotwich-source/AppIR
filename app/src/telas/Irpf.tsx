@@ -3,10 +3,8 @@ import { brl } from '../core/relatorio'
 import { dataCurta } from '../core/formato'
 import { irpfPfDoAno, reciboCompleto } from '../core/irpfPf'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { SeletorPerfil } from '../componentes/Perfil'
-import { titularDo } from '../core/pf'
 
-export default function Irpf({ banco, ano, ir, perfil, mudarPerfil }: TelaProps) {
+export default function Irpf({ banco, ano, ir }: TelaProps) {
   const r = irpfPfDoAno(banco, ano)
   const e = r.empresa
   const isento = Math.max(0, e.lucro - e.tributavel)
@@ -17,7 +15,6 @@ export default function Irpf({ banco, ano, ir, perfil, mudarPerfil }: TelaProps)
   return (
     <main className="conteudo topo irpf-pf">
       <Cabecalho titulo="Imposto de Renda" voltar={() => ir('inicio')} />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section>
         <h2>Imposto de Renda {ano + 1}</h2>

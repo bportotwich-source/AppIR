@@ -1,16 +1,15 @@
 import type { TelaProps } from '../App'
 import { brl } from '../core/relatorio'
-import { categorizarPf, gruposSemCategoria, nomeCategoria, titularDo } from '../core/pf'
+import { categorizarPf, gruposSemCategoria, nomeCategoria } from '../core/pf'
 import { Cabecalho } from '../componentes/Pecas'
-import { Categorias, SeletorPerfil } from '../componentes/Perfil'
+import { Categorias } from '../componentes/Perfil'
 
-export default function RevisarPf({ banco, ano, mudar, ir, perfil, mudarPerfil }: TelaProps) {
+export default function RevisarPf({ banco, ano, mudar, ir }: TelaProps) {
   const grupos = gruposSemCategoria(banco, ano)
 
   return (
     <main className="conteudo topo">
       <Cabecalho titulo="Revisar gastos" voltar={() => ir('inicio')} />
-      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section>
         <h2>Para onde foi?</h2>

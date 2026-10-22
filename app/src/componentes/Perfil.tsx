@@ -1,18 +1,23 @@
 // Seletor dos perfis (Bruno PJ · Bruno PF), olho que esconde os
-// valores e a chave de duas opções usada no topo de Revisar e Declaração.
+// valores e a chave de duas opções.
 
 import { CATEGORIAS_PF, nomesPerfis, type CategoriaPf, type Perfil } from '../core/pf'
 
-/** `claro`: versão para o topo das abas (Revisar, Notas, Declaração), sobre fundo claro. */
-export function SeletorPerfil({ perfil, mudar, titular, claro }: { perfil: Perfil; mudar: (p: Perfil) => void; titular?: string; claro?: boolean }) {
+// Hora da última troca: o Início do outro perfil monta já com a animação.
+let trocouEm = 0
+
+/** Dois círculos sobrepostos. Um toque troca de perfil e eles trocam de lugar. */
+export function SeletorPerfil({ perfil, mudar, titular }: { perfil: Perfil; mudar: (p: Perfil) => void; titular?: string }) {
   const nomes = nomesPerfis(titular)
-  const opcoes: { id: Perfil; nome: string }[] = [{ id: 'pj', nome: nomes.pj }, { id: 'pf', nome: nomes.pf }]
+  const outro: Perfil = perfil === 'pj' ? 'pf' : 'pj'
+  const animar = Date.now() - trocouEm < 800
   return (
-    <div className={'perfis' + (claro ? ' claro' : '')} role="radiogroup" aria-label="Perfil">
-      {opcoes.map((o) => (
-        <button key={o.id} role="radio" aria-checked={perfil === o.id} onClick={() => mudar(o.id)}>{o.nome}</button>
-      ))}
-    </div>
+    <button className="perfis" data-animar={animar || undefined} aria-label={`Perfil ${nomes[perfil]}. Trocar para ${nomes[outro]}`} onClick={() => { trocouEm = Date.now(); mudar(outro) }}>
+      <span className="perfis-pilha" aria-hidden="true">
+        {(['pj', 'pf'] as const).map((p) => <span key={p} className="perfil-bola" data-perfil={p} data-frente={p === perfil}>{p.toUpperCase()}</span>)}
+      </span>
+      <span className="perfis-nome"><b>{nomes[perfil]}</b><span>Toque para ir ao {nomes[outro]}</span></span>
+    </button>
   )
 }
 
