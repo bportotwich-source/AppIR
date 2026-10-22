@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { conferirPin, criarPin, entrarComDigital, ler } from '../core/trava'
+import { conferirPin, criarPin, digitalAbreCofre, entrarComDigital, ler } from '../core/trava'
 
 // Tela de PIN do design (Meu MEI · Telas › Desbloquear). Serve para abrir o
 // app e para criar um PIN novo (digitar e confirmar).
@@ -24,7 +24,7 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
   const [ajuda, setAjuda] = useState(false)
   const [conferindo, setConferindo] = useState(false)
   const [agora, setAgora] = useState(Date.now())
-  const temDigital = modo === 'entrar' && !!ler()?.digital
+  const temDigital = modo === 'entrar' && digitalAbreCofre(ler())
   const bloqueadaAte = modo === 'entrar' ? (ler()?.bloqueadaAte ?? 0) : 0
   const bloqueada = bloqueadaAte > agora
   const tentouDigital = useRef(false)

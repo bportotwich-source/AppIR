@@ -3,6 +3,7 @@
 
 import { openDB } from 'idb'
 import { bancoVazio, type Banco } from './banco'
+import { cifrar, decifrar, type Cifrado } from './cofre'
 
 const db = () =>
   openDB('meu-mei', 1, {
@@ -11,12 +12,35 @@ const db = () =>
     },
   })
 
-export async function carregar(): Promise<Banco> {
-  return ((await (await db()).get('estado', 'banco')) as Banco | undefined) ?? bancoVazio()
+// Com a criptografia ligada, o banco fica cifrado no registro 'cofre' e a
+// chave só existe na memória enquanto o app está destravado.
+let chave: CryptoKey | null = null
+export const usarChave = (c: CryptoKey | null) => { chave = c }
+export const chaveAtual = () => chave
+
+/** null = os dados estão cifrados e falta destravar com PIN ou digital. */
+export async function carregar(): Promise<Banco | null> {
+  const d = await db()
+  const cofre = (await d.get('estado', 'cofre')) as Cifrado | undefined
+  if (cofre) return chave ? decifrar<Banco>(chave, cofre) : null
+  return ((await d.get('estado', 'banco')) as Banco | undefined) ?? bancoVazio()
 }
 
 export async function salvar(banco: Banco): Promise<void> {
-  await (await db()).put('estado', banco, 'banco')
+  const c = chave
+  const d = await db()
+  if (c) {
+    await d.put('estado', await cifrar(c, banco), 'cofre')
+    await d.delete('estado', 'banco')
+  } else {
+    await d.put('estado', banco, 'banco')
+    await d.delete('estado', 'cofre')
+  }
+}
+
+export async function apagarTudo(): Promise<void> {
+  chave = null
+  await (await db()).clear('estado')
 }
 
 // Sem backup novo há mais que isso, e com mudanças desde o último, o Início lembra.

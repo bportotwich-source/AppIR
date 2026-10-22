@@ -5,12 +5,14 @@ import { CampoAbertura } from '../componentes/CampoAbertura'
 import { brl, LIMITE_ANUAL, limiteAnual } from '../core/relatorio'
 import { instalado } from '../core/armazenamento'
 import { dataCurta, lerValor } from '../core/formato'
-import { cadastrarDigital, digitalDisponivel, ler as lerTrava, removerDigital, removerTrava } from '../core/trava'
+import { cadastrarDigital, desligarCofre, digitalDisponivel, ler as lerTrava, ligarCofre, prepararDigitalNoCofre, removerDigital, removerTrava } from '../core/trava'
+import FolhaCofre from '../componentes/FolhaCofre'
 
 export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }: TelaProps) {
   const [trava, setTrava] = useState(lerTrava)
   const [podeDigital, setPodeDigital] = useState(false)
   const [avisoTrava, setAvisoTrava] = useState('')
+  const [folhaCofre, setFolhaCofre] = useState<'ligar' | 'desligar' | null>(null)
   useEffect(() => {
     digitalDisponivel().then(setPodeDigital)
   }, [])
@@ -18,11 +20,36 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
   async function ligarDigital() {
     try {
       await cadastrarDigital()
+      // Com os dados cifrados, a digital precisa embrulhar a chave: pede o dedo de novo.
+      const abre = !lerTrava()?.cofre || (await prepararDigitalNoCofre())
       setTrava(lerTrava())
-      setAvisoTrava('Digital cadastrada. Na próxima vez, é só encostar o dedo.')
+      setAvisoTrava(abre
+        ? 'Digital cadastrada. Na próxima vez, é só encostar o dedo.'
+        : 'Digital cadastrada, mas este aparelho não consegue abrir dados criptografados com ela. Use o PIN.')
     } catch {
       setAvisoTrava('Não deu para cadastrar a digital. Tente de novo.')
     }
+  }
+
+  async function cofre(pin: string) {
+    if (folhaCofre === 'ligar') {
+      const { digital } = await ligarCofre(pin, banco)
+      setAvisoTrava(trava?.digital && !digital
+        ? 'Dados criptografados. Este aparelho não consegue abrir dados criptografados com a digital, então o app vai pedir o PIN.'
+        : 'Dados criptografados neste celular.')
+    } else {
+      await desligarCofre(banco)
+      setAvisoTrava('')
+    }
+    setTrava(lerTrava())
+    setFolhaCofre(null)
+  }
+
+  async function desligarPin() {
+    if (trava?.cofre) await desligarCofre(banco)
+    removerTrava()
+    setTrava(null)
+    setAvisoTrava('')
   }
 
   async function baixarBackup() {
@@ -87,14 +114,23 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
         <h2>Segurança</h2>
         <p className="apoio">
           {trava
-            ? `O app pede PIN${trava.digital ? ' ou digital' : ''} ao abrir e depois de 1 minuto fora dele.`
-            : 'Peça um PIN para abrir o app. Ele tranca a tela; os dados no celular não ficam criptografados.'}
+            ? `O app pede PIN${trava.digital && (!trava.cofre || trava.cofre.digital) ? ' ou digital' : ''} ao abrir e depois de 1 minuto fora dele.`
+            : 'Peça um PIN para abrir o app. Com ele, dá para criptografar os dados guardados no celular.'}
         </p>
+        {trava && (
+          <button type="button" role="switch" aria-checked={!!trava.cofre} className="chave-lembrar ajustes-chave" onClick={() => setFolhaCofre(trava.cofre ? 'desligar' : 'ligar')}>
+            <span>
+              <b>Criptografar os dados</b>
+              <span>{trava.cofre ? 'Só abrem com o PIN ou a digital' : 'Sem o PIN, ninguém lê os extratos'}</span>
+            </span>
+            <span className="chave-trilho" aria-hidden="true"><span /></span>
+          </button>
+        )}
         <div className="botoes">
           {trava ? (
             <>
               <button onClick={criarPin}>Trocar PIN</button>
-              <button onClick={() => { removerTrava(); setTrava(null); setAvisoTrava('') }}>Desligar PIN</button>
+              <button onClick={desligarPin}>Desligar PIN</button>
             </>
           ) : (
             <button onClick={criarPin}>Proteger com PIN</button>
@@ -114,6 +150,7 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
             ? 'O navegador foi avisado para não apagá-los.'
             : 'Instale o app na tela de início para o navegador não apagá-los.'}{' '}
           {banco.ultimoBackup ? `Último backup em ${dataCurta(banco.ultimoBackup.slice(0, 10))}.` : 'Você ainda não fez backup.'}
+          {trava?.cofre && ' O arquivo de backup sai sem criptografia: guarde num lugar só seu.'}
         </p>
         <div className="botoes">
           <button onClick={baixarBackup}>Fazer backup</button>
@@ -123,6 +160,8 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
           </label>
         </div>
       </section>
+
+      {folhaCofre && <FolhaCofre ligar={folhaCofre === 'ligar'} fechar={() => setFolhaCofre(null)} confirmar={cofre} />}
     </main>
   )
 }

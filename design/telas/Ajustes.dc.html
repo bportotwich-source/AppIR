@@ -344,6 +344,9 @@ button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: f
 .folha-valor:focus-within { border-color: var(--brand); background: var(--surface-raised); }
 .folha-valor input { flex: 1; min-width: 0; border: 0; padding: 0; background: none; font-family: var(--mono); font-size: 32px; line-height: 44px; font-weight: 600; color: var(--ink); outline: none; }
 .folha-dica { margin: 8px 0 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.folha-aviso { margin: 0 0 16px; padding: 12px 14px; border-radius: 12px; background: var(--warning-surface); color: var(--warning); font-size: 14px; line-height: 20px; }
+.folha-erro { margin: 8px 0 0; color: var(--danger); font-size: 14px; }
+.ajustes-chave { margin-top: 14px; }
 .folha-acoes { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
 .folha-acoes .principal { width: 100%; }
 button.principal.perigo { background: var(--danger); }
@@ -439,12 +442,12 @@ button.principal.perigo { background: var(--danger); }
 .campo-limite { margin-top: 18px; }
 
 body{margin:0}
-.app{position:relative;min-height:1096px;padding-bottom:110px}
+.app{position:relative;min-height:1241px;padding-bottom:110px}
 .app .abas{position:absolute}
 </style>
 </helmet>
-<div style="width: 390px; height: 1096px; position: relative; overflow: hidden; background: var(--surface)">
-<div class="app"><main class="conteudo topo"><button class="voltar"><span aria-hidden="true">←</span> Início</button><h1>Ajustes</h1><section><h2>Sua empresa</h2><label class="campo"><span>Mês de abertura do MEI</span><input max="2026-10" type="month" value=""></label><p class="apoio">Limite de 2026: R$ 120.000,00, o ano inteiro.</p><label class="campo campo-limite"><span>Limite anual do MEI</span><input inputmode="decimal" autocomplete="off" value="120.000,00"></label><p class="apoio">Usando R$ 120.000,00 no lugar dos R$ 81.000,00 da lei. Apague o campo para voltar.</p></section><section><h2>Marcações</h2><p class="apoio">0 pagadores e destinos lembrados. Veja, corrija ou esqueça.</p><div class="botoes"><button>Pagadores lembrados</button><button>Todas as movimentações</button></div></section><section><h2>Segurança</h2><p class="apoio">Peça um PIN para abrir o app. Ele tranca a tela; os dados no celular não ficam criptografados.</p><div class="botoes"><button>Proteger com PIN</button></div></section><section><h2>Backup</h2><p class="apoio">Os dados ficam só neste celular. Instale o app na tela de início para o navegador não apagá-los. Último backup em 21 out.</p><div class="botoes"><button>Fazer backup</button><label class="botao"><input accept="application/json" type="file" value="">Restaurar backup</label></div></section></main></div>
+<div style="width: 390px; height: 1241px; position: relative; overflow: hidden; background: var(--surface)">
+<div class="app"><main class="conteudo topo"><button class="voltar"><span aria-hidden="true">←</span> Início</button><h1>Ajustes</h1><section><h2>Sua empresa</h2><label class="campo"><span>Mês de abertura do MEI</span><input max="2026-10" type="month" value="" style=""></label><p class="apoio">Limite de 2026: R$ 81.000,00, o ano inteiro.</p><label class="campo campo-limite"><span>Limite anual do MEI</span><input inputmode="decimal" autocomplete="off" value="81.000,00" style=""></label><p class="apoio">Hoje a lei diz R$ 81.000,00 por ano. Se o teto mudar, troque aqui.</p></section><section><h2>Marcações</h2><p class="apoio">0 pagadores e destinos lembrados. Veja, corrija ou esqueça.</p><div class="botoes"><button>Pagadores lembrados</button><button>Todas as movimentações</button></div></section><section><h2>Segurança</h2><p class="apoio">O app pede PIN ao abrir e depois de 1 minuto fora dele.</p><button type="button" role="switch" aria-checked="true" class="chave-lembrar ajustes-chave"><span><b>Criptografar os dados</b><span>Só abrem com o PIN ou a digital</span></span><span class="chave-trilho" aria-hidden="true"><span></span></span></button><div class="botoes"><button>Trocar PIN</button><button>Desligar PIN</button></div><p class="apoio">Este aparelho ou navegador não oferece leitor de digital para sites.</p><p class="apoio" aria-live="polite">Dados criptografados neste celular.</p></section><section><h2>Backup</h2><p class="apoio">Os dados ficam só neste celular. Instale o app na tela de início para o navegador não apagá-los. Último backup em 21 out. O arquivo de backup sai sem criptografia: guarde num lugar só seu.</p><div class="botoes"><button>Fazer backup</button><label class="botao"><input accept="application/json" type="file" style="" value="">Restaurar backup</label></div></section></main></div>
 </div>
 </x-dc>
 </body>
