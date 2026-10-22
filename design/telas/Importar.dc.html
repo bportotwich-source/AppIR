@@ -20,17 +20,29 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 @media (prefers-reduced-motion: reduce){.sobe{animation:none}}
 </style>
 </helmet>
-<div style="width: 390px; height: 1400px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+<div style="width: 390px; height: 1720px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
 
 <div style="padding: 16px 20px 120px; display: flex; flex-direction: column; gap: 28px">
 
 <header style="display: flex; flex-direction: column; gap: 14px">
-<a href="Main.dc.html" aria-label="Voltar para o início" style="width: 44px; height: 44px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; align-items: center; justify-content: center; color: #15201d"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+<a href="Adicionar.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; align-items: center; justify-content: center; color: #15201d"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Importar extrato</h1>
-<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">Use o PDF que o Nubank PJ manda por e-mail. Ele é lido aqui e não sai do celular.</p>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">OFX, CSV ou PDF do Nubank, da empresa ou pessoal. É lido aqui e não sai do celular.</p>
 </div>
 </header>
+
+<fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+<legend style="padding: 0 0 10px; font-size: 18px; line-height: 24px; font-weight: 600">De qual conta é o extrato?</legend>
+<sc-for list="{{contas}}" as="c" hint-placeholder-count="3">
+<label style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 14px; border-radius: 16px; background: #ffffff; box-shadow: {{c.anel}}; cursor: pointer">
+<input type="radio" name="conta" checked="{{c.on}}" onChange="{{c.pick}}" style="width: 20px; height: 20px; margin: 0; accent-color: #0f766e">
+<span style="flex: 1 1 auto; display: flex; flex-direction: column"><b style="font-weight: 600">{{c.nome}}</b><span style="font-size: 13px; line-height: 18px; color: #5b6763">{{c.desc}}</span></span>
+<span style="padding: 2px 8px; border-radius: 999px; background: {{c.tagFundo}}; color: {{c.tagCor}}; font-size: 12px; font-weight: 700">{{c.tag}}</span>
+</label>
+</sc-for>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O app reconhece a conta pelo arquivo e já deixa marcada. Troque se estiver errado.</p>
+</fieldset>
 
 <x-import component-from-global-scope="MeuMEI.ScanDrop" file-name="extrato-novembro-2026.pdf" done-text="31 movimentações lidas" size="{{tamanhoScan}}"></x-import>
 
@@ -82,18 +94,31 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 </div>
 
 <nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,0.95); box-shadow: 0 12px 32px rgba(12,42,39,0.18), 0 0 0 1px rgba(12,42,39,0.06)">
-<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
-<a href="Revisar.dc.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">4</span></a>
-<a href="Importar.dc.html" aria-current="page" aria-label="Importar extrato" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0c2a27; color: #2dd4bf; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(12,42,39,0.35), 0 0 0 6px #f4f6f5, 0 0 0 8px #0f766e"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M5 19h14"/></svg></a>
-<a href="Declaracao.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
-<a href="#historico" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; color: #5b6763; font-size: 11px; line-height: 14px; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Extratos</a>
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
+<a href="Revisar.dc.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">11</span></a>
+<a href="Adicionar.dc.html" aria-current="page" aria-label="Adicionar" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0c2a27; color: #2dd4bf; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(15,118,110,0.4), 0 0 0 6px #f4f6f5"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></a>
+<a href="Comprovantes.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Notas</a>
+<a href="Declaracao.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
 </nav>
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1720}}'>
 class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { conta: 0 };
+  }
   renderVals() {
+    var self = this;
+    var contas = [
+      ['Bruno PJ', 'Conta Nubank PJ', 'PJ', '#e6f4f1', '#0f766e'],
+      ['Bruno PF · conta', 'Conta Nubank PF', 'PF', '#eef0ff', '#4338ca'],
+      ['Bruno PF · cartão', 'Fatura do cartão em CSV', 'PF', '#eef0ff', '#4338ca']
+    ].map(function (c, i) {
+      var on = self.state.conta === i;
+      return { nome: c[0], desc: c[1], tag: c[2], tagFundo: c[3], tagCor: c[4], on: on, anel: on ? '0 0 0 2px #0f766e' : '0 0 0 1px #e3e7e5', pick: function () { self.setState({ conta: i }); } };
+    });
     function serra(baixo) {
       var d = baixo ? 'M0 0' : 'M0 10', n = 25, w = 350 / n;
       for (var i = 0; i < n; i++) {
@@ -102,6 +127,7 @@ class Component extends DCLogic {
       return d + (baixo ? ' Z' : ' Z');
     }
     return {
+      contas: contas,
       tamanhoScan: 250,
       serraTopo: serra(false),
       serraBase: serra(true),

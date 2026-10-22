@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Revisar gastos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 1180px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+<div style="padding: 24px 20px 120px; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-direction: column; gap: 14px">
+<div role="radiogroup" aria-label="O que revisar" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #e3e7e5">
+<a href="Revisar.dc.html" role="radio" aria-checked="false" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #5b6763; font-size: 14px; font-weight: 600; text-decoration: none">PJ · entradas · 4</a>
+<a href="PfRevisar.dc.html" role="radio" aria-checked="true" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #ffffff; color: #15201d; font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 1px 3px rgba(12,42,39,0.18)">PF · gastos · 7</a>
+</div>
+<div><h1 style="margin: 0 0 4px; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Para onde foi?</h1>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5b6763">Escolha a categoria uma vez. O app lembra o destino e separa os próximos sozinho.</p></div>
+</header>
+
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{itens}}" as="it" hint-placeholder-count="3">
+<li style="padding: 14px 16px; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+<div style="display: flex; flex-direction: column; min-width: 0"><b style="font-weight: 600">{{it.nome}}</b><span style="font-size: 13px; line-height: 18px; color: #5b6763">{{it.info}}</span></div>
+<b class="mm-num" style="font-weight: 500; white-space: nowrap">{{it.valor}}</b>
+</div>
+<sc-if value="{{it.temDica}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #0f766e; font-weight: 600"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/></svg>{{it.dica}}</span>
+</sc-if>
+<div role="group" aria-label="{{it.nome}}: categoria" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{it.chips}}" as="c" hint-placeholder-count="8">
+<button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{c.borda}}; background: {{c.fundo}}; color: {{c.cor}}; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: {{c.ponto}}"></span>{{c.nome}}</button>
+</sc-for>
+</div>
+</li>
+</sc-for>
+</ul>
+
+<p style="margin: 0; padding: 14px 16px; border-radius: 16px; background: #e6f4f1; color: #134e48; font-size: 14px; line-height: 21px">Compras com nota lida já chegam com a categoria da loja. Saúde e Educação vão também para o Imposto de Renda.</p>
+</div>
+
+<nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,0.95); box-shadow: 0 12px 32px rgba(12,42,39,0.18), 0 0 0 1px rgba(12,42,39,0.06)">
+<a href="PfInicio.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
+<a href="PfRevisar.dc.html" aria-current="page" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #0f766e; font-weight: 700"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">11</span></a>
+<a href="Adicionar.dc.html" aria-label="Adicionar" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0f766e; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(15,118,110,0.4), 0 0 0 6px #f4f6f5"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></a>
+<a href="Comprovantes.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Notas</a>
+<a href="Declaracao.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { escolha: { 0: 'Mercado', 1: 'Transporte' } };
+  }
+  renderVals() {
+    var self = this;
+    var cats = [['Mercado', '#0f766e'], ['Casa', '#6366f1'], ['Transporte', '#d97706'], ['Saúde', '#db2777'], ['Educação', '#7c3aed'], ['Lazer', '#0891b2'], ['Compras online', '#0369a1'], ['Outros', '#94a3b8']];
+    var itens = [
+      ['SUPERMERCADO BOM PRECO', 'Compra no débito · 4 vezes', 'R$ 980,40', 'Sugerido pela nota lida em 19/10'],
+      ['UBER *TRIP', 'Compra no cartão · 6 vezes', 'R$ 142,30', 'Sugerido pelo nome'],
+      ['Ana Souza', 'Pix enviado · 2 vezes', 'R$ 350,00', '']
+    ];
+    return {
+      itens: itens.map(function (it, i) {
+        var atual = self.state.escolha[i];
+        return {
+          nome: it[0], info: it[1], valor: it[2], dica: it[3], temDica: !!it[3],
+          chips: cats.map(function (c) {
+            var on = atual === c[0];
+            return {
+              nome: c[0], on: on ? 'true' : 'false', ponto: c[1],
+              fundo: on ? '#15201d' : '#ffffff', cor: on ? '#ffffff' : '#15201d', borda: on ? '#15201d' : '#d5dbd8',
+              pick: function () { var e = Object.assign({}, self.state.escolha); e[i] = c[0]; self.setState({ escolha: e }); }
+            };
+          })
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

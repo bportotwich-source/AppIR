@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Início · Tudo</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/meumei/components/bundle.css">
+<script src="ds/meumei/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0f766e}a:hover{color:#0b5c56}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #2dd4bf;outline-offset:2px}
+.so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</helmet>
+<div style="width: 390px; height: 1160px; position: relative; overflow: hidden; background: #f4f6f5; color: #15201d; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 22px">
+
+<section aria-label="Resumo do mês" style="position: relative; background: #0c2a27; color: #ecf1ef; padding: 16px 20px 76px; overflow: hidden">
+<div style="position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 44px">
+<div style="display: flex; align-items: center; gap: 10px">
+<svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#2dd4bf"/><rect x="8" y="17" width="4" height="8" rx="2" fill="#0c2a27"/><rect x="14" y="12" width="4" height="13" rx="2" fill="#0c2a27"/><rect x="20" y="7" width="4" height="18" rx="2" fill="#0c2a27"/></svg>
+<span style="font-weight: 600; font-size: 17px">Meu MEI</span>
+</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<span aria-hidden="true" style="width: 40px; height: 40px; box-sizing: border-box; border-radius: 999px; border: 1px solid rgba(236,241,239,0.24); background: rgba(236,241,239,0.08); color: #ecf1ef; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+<label for="mes" class="so-leitor">Mês</label>
+<select id="mes" style="appearance: none; -webkit-appearance: none; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(236,241,239,0.24); background: rgba(236,241,239,0.08); color: #ecf1ef; font: inherit; font-weight: 600"><option>Out 2026</option><option>Set 2026</option></select>
+</div>
+</div>
+
+<div role="radiogroup" aria-label="Carteira" style="position: relative; margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 999px; background: rgba(236,241,239,0.08)">
+<a href="Main.dc.html" role="radio" aria-checked="false" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 999px; color: #a3b5b0; font-size: 14px; font-weight: 600; text-decoration: none">Bruno PJ</a>
+<a href="PfInicio.dc.html" role="radio" aria-checked="false" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 999px; color: #a3b5b0; font-size: 14px; font-weight: 600; text-decoration: none">Bruno PF</a>
+<a href="TudoInicio.dc.html" role="radio" aria-checked="true" style="min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #2dd4bf; color: #0b1f1c; font-size: 14px; font-weight: 600; text-decoration: none">Tudo</a>
+</div>
+
+<div style="position: relative; margin-top: 24px; display: flex; flex-direction: column; gap: 2px">
+<p style="margin: 0; font-size: 13px; line-height: 18px; color: #a3b5b0">Sobrou em outubro, somando tudo</p>
+<p class="mm-num" style="margin: 0; font-size: 40px; line-height: 46px; font-weight: 600; letter-spacing: -0.02em">R$ 4.780,50</p>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #a3b5b0">R$ 3.043,40 no PJ · R$ 1.737,10 no PF</p>
+</div>
+
+<svg aria-hidden="true" width="390" height="56" viewBox="0 0 390 56" style="position: absolute; left: 0; bottom: -1px; display: block"><path d="M0 56 V30 C 70 6, 150 6, 205 24 S 330 50, 390 18 V56 Z" fill="#f4f6f5"/></svg>
+</section>
+
+<div style="padding: 4px 20px 120px; display: flex; flex-direction: column; gap: 28px">
+
+<section aria-labelledby="fluxo-t" style="display: flex; flex-direction: column; gap: 12px">
+<h2 id="fluxo-t" style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Como o dinheiro andou</h2>
+<div style="display: flex; flex-direction: column; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px #e3e7e5">
+<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #0f766e">Bruno PJ</span>
+<div style="display: flex; justify-content: space-between"><span>Faturou</span><b class="mm-num" style="font-weight: 500">R$ 6.540,00</b></div>
+<div style="display: flex; justify-content: space-between; color: #5b6763"><span>Despesas e DAS</span><span class="mm-num">− R$ 496,60</span></div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #e6f4f1; color: #134e48">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="m6 14 6 6 6-6"/></svg>
+<span style="flex: 1 1 auto; font-size: 14px; font-weight: 600">Pix de Bruno PJ para Bruno PF</span>
+<b class="mm-num" style="font-weight: 600">R$ 3.000,00</b>
+</div>
+<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #4338ca">Bruno PF</span>
+<div style="display: flex; justify-content: space-between"><span>Outras entradas</span><b class="mm-num" style="font-weight: 500">R$ 3.120,00</b></div>
+<div style="display: flex; justify-content: space-between; color: #5b6763"><span>Gastos</span><span class="mm-num">− R$ 4.382,90</span></div>
+</div>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O Pix que sai do PJ para você entra no PF. Aqui ele aparece uma vez só, como passagem entre os perfis.</p>
+</section>
+
+<section aria-labelledby="meses-t" style="display: flex; flex-direction: column; gap: 12px">
+<h2 id="meses-t" style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Sobra dos últimos meses</h2>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{meses}}" as="m" hint-placeholder-count="4">
+<li style="display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px">
+<span style="font-size: 14px; font-weight: 600; color: #5b6763">{{m.mes}}</span>
+<span aria-hidden="true" style="display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #e3e7e5"><span style="width: {{m.pj}}; background: #0f766e"></span><span style="width: {{m.pf}}; background: #818cf8"></span></span>
+<b class="mm-num" style="font-weight: 500; min-width: 92px; text-align: right">{{m.valor}}</b>
+</li>
+</sc-for>
+</ol>
+<div style="display: flex; gap: 16px; font-size: 13px; color: #5b6763"><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #0f766e"></span>no PJ</span><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #818cf8"></span>no PF</span></div>
+</section>
+
+</div>
+
+<nav aria-label="Navegação" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,0.95); box-shadow: 0 12px 32px rgba(12,42,39,0.18), 0 0 0 1px rgba(12,42,39,0.06)">
+<a href="PfInicio.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #0f766e; font-weight: 700"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>Início</a>
+<a href="PfRevisar.dc.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M7 5h10"/><path d="m9 14 2 2 4-4"/></svg>Revisar<span style="position: absolute; top: 2px; right: 8px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #b45309; border: 2px solid #ffffff; color: #ffffff; font-size: 10px; line-height: 14px; font-weight: 700; text-align: center">11</span></a>
+<a href="Adicionar.dc.html" aria-label="Adicionar" style="width: 60px; height: 60px; margin-top: -34px; border-radius: 999px; background: #0f766e; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(15,118,110,0.4), 0 0 0 6px #f4f6f5"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></a>
+<a href="Comprovantes.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Notas</a>
+<a href="Declaracao.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; text-decoration: none; font-size: 11px; line-height: 14px; color: #5b6763; font-weight: 600"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>Declaração</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var d = [['Out', 3043.4, 1737.1, 'R$ 4.780,50'], ['Set', 2410, 980, 'R$ 3.390,00'], ['Ago', 3320, 1410, 'R$ 4.730,00'], ['Jul', 2890, 640, 'R$ 3.530,00']];
+    var max = 5000;
+    return {
+      meses: d.map(function (m) {
+        return { mes: m[0], pj: (m[1] / max * 100) + '%', pf: (m[2] / max * 100) + '%', valor: m[3] };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

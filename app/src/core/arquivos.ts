@@ -63,9 +63,11 @@ export function parseCsv(texto: string): Movimentacao[] {
   if (linhas.length < 2) return []
   const sep = (linhas[0].match(/;/g)?.length ?? 0) > (linhas[0].match(/,/g)?.length ?? 0) ? ';' : ','
   const cab = separarCsv(linhas[0], sep).map((c) => c.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase())
-  const iData = cab.findIndex((c) => c.startsWith('data'))
-  const iValor = cab.findIndex((c) => c.startsWith('valor'))
-  const iDesc = cab.findIndex((c) => c.startsWith('descri') || c.startsWith('historico'))
+  // Fatura do cartão do Nubank: "date,title,amount", com a compra positiva.
+  const cartao = cab.includes('amount')
+  const iData = cab.findIndex((c) => c.startsWith('data') || c === 'date')
+  const iValor = cab.findIndex((c) => c.startsWith('valor') || c === 'amount')
+  const iDesc = cab.findIndex((c) => c.startsWith('descri') || c.startsWith('historico') || c === 'title')
   if (iData < 0 || iValor < 0) throw new Error('O CSV precisa ter as colunas Data e Valor.')
 
   const movs: Movimentacao[] = []
@@ -74,7 +76,7 @@ export function parseCsv(texto: string): Movimentacao[] {
     const data = dataCsv(c[iData] ?? '')
     const valor = valorCsv(c[iValor] ?? '')
     if (!data || Number.isNaN(valor) || valor === 0) continue
-    movs.push(mov(data, valor, iDesc >= 0 ? c[iDesc] : ''))
+    movs.push(mov(data, cartao ? -valor : valor, iDesc >= 0 ? c[iDesc] : ''))
   }
   return movs
 }

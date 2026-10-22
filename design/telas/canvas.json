@@ -23,8 +23,8 @@
       "x": 0,
       "y": 0,
       "w": 390,
-      "h": 1440,
-      "title": "Início",
+      "h": 1500,
+      "title": "Início · Empresa (PJ)",
       "is_interactive": true,
       "radius": 36
     },
@@ -32,7 +32,7 @@
       "x": 470,
       "y": 0,
       "w": 390,
-      "h": 1400,
+      "h": 1720,
       "title": "Importar extrato",
       "is_interactive": true,
       "radius": 36
@@ -84,7 +84,7 @@
     },
     "Ajustes.dc.html": {
       "x": 0,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 1241,
       "title": "Ajustes",
@@ -93,7 +93,7 @@
     },
     "Avisos.dc.html": {
       "x": 470,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 860,
       "title": "Início · cartões de aviso",
@@ -102,7 +102,7 @@
     },
     "DasIr.dc.html": {
       "x": 940,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 1100,
       "title": "Início e Declaração · DAS e Imposto de Renda",
@@ -111,7 +111,7 @@
     },
     "Saidas.dc.html": {
       "x": 1410,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 1000,
       "title": "Saídas do ano",
@@ -120,7 +120,7 @@
     },
     "FolhaDas.dc.html": {
       "x": 1880,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 844,
       "title": "Confirmar DAS pago",
@@ -129,7 +129,7 @@
     },
     "FolhaDasDesfazer.dc.html": {
       "x": 2350,
-      "y": 1560,
+      "y": 1860,
       "w": 390,
       "h": 844,
       "title": "Desfazer DAS marcado",
@@ -138,7 +138,7 @@
     },
     "Movimentacoes.dc.html": {
       "x": 0,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 1023,
       "title": "Movimentações do ano",
@@ -147,7 +147,7 @@
     },
     "CorrigirMovimentacao.dc.html": {
       "x": 470,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 844,
       "title": "Corrigir movimentação",
@@ -156,7 +156,7 @@
     },
     "Pagadores.dc.html": {
       "x": 940,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 844,
       "title": "Pagadores lembrados",
@@ -165,7 +165,7 @@
     },
     "EntregaDasn.dc.html": {
       "x": 1410,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 844,
       "title": "Marcar DASN entregue",
@@ -174,7 +174,7 @@
     },
     "RelatorioMensal.dc.html": {
       "x": 1880,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 1804,
       "title": "Relatório mensal das receitas",
@@ -183,7 +183,7 @@
     },
     "AvisoDasn.dc.html": {
       "x": 2350,
-      "y": 2960,
+      "y": 3260,
       "w": 390,
       "h": 1142,
       "title": "Início · aviso da DASN",
@@ -191,11 +191,110 @@
       "radius": 36
     },
     "CriptografarDados.dc.html": {
-      "x": 2820,
-      "y": 1560,
+      "x": 3450,
+      "y": 1860,
       "w": 390,
       "h": 844,
       "title": "Criptografar os dados",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Mapa.dc.html": {
+      "x": -470,
+      "y": 5400,
+      "w": 1840,
+      "h": 1080,
+      "title": "Mapa do app · PF + PJ",
+      "is_interactive": true,
+      "radius": 0
+    },
+    "PfInicio.dc.html": {
+      "x": -470,
+      "y": 6720,
+      "w": 390,
+      "h": 1440,
+      "title": "Início · Pessoal (PF)",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "TudoInicio.dc.html": {
+      "x": 0,
+      "y": 6720,
+      "w": 390,
+      "h": 1160,
+      "title": "Início · Tudo",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Adicionar.dc.html": {
+      "x": 470,
+      "y": 6720,
+      "w": 390,
+      "h": 844,
+      "title": "Botão + · Adicionar",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "PfRevisar.dc.html": {
+      "x": 940,
+      "y": 6720,
+      "w": 390,
+      "h": 1180,
+      "title": "Revisar · gastos pessoais",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Comprovantes.dc.html": {
+      "x": 1410,
+      "y": 6720,
+      "w": 390,
+      "h": 1180,
+      "title": "Notas · Comprovantes",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "LerNota.dc.html": {
+      "x": 1880,
+      "y": 6720,
+      "w": 390,
+      "h": 844,
+      "title": "Ler nota · câmera",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Comprovante.dc.html": {
+      "x": 2350,
+      "y": 6720,
+      "w": 390,
+      "h": 1640,
+      "title": "Comprovante lido",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Irpf.dc.html": {
+      "x": 2820,
+      "y": 6720,
+      "w": 390,
+      "h": 1500,
+      "title": "Declaração · IRPF",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "ReciboSaude.dc.html": {
+      "x": 3290,
+      "y": 6720,
+      "w": 390,
+      "h": 1240,
+      "title": "Recibo de saúde",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Privacidade.dc.html": {
+      "x": 3760,
+      "y": 6720,
+      "w": 390,
+      "h": 1160,
+      "title": "Ajustes · Privacidade",
       "is_interactive": true,
       "radius": 36
     }
@@ -221,7 +320,18 @@
     "EntregaDasn.dc.html",
     "RelatorioMensal.dc.html",
     "AvisoDasn.dc.html",
-    "CriptografarDados.dc.html"
+    "CriptografarDados.dc.html",
+    "Mapa.dc.html",
+    "PfInicio.dc.html",
+    "TudoInicio.dc.html",
+    "Adicionar.dc.html",
+    "PfRevisar.dc.html",
+    "Comprovantes.dc.html",
+    "LerNota.dc.html",
+    "Comprovante.dc.html",
+    "Irpf.dc.html",
+    "ReciboSaude.dc.html",
+    "Privacidade.dc.html"
   ],
   "notes": {
     "titulo": {
@@ -240,10 +350,24 @@
     },
     "melhorias": {
       "x": 0,
-      "y": 2660,
+      "y": 2960,
       "text": "Correções, declaração e relatório",
       "kind": "title1",
       "maxW": 2270
+    },
+    "pfpj": {
+      "x": -470,
+      "y": 5100,
+      "text": "PF + PJ · mapa",
+      "kind": "title1",
+      "maxW": 1840
+    },
+    "pfpjtelas": {
+      "x": -470,
+      "y": 6420,
+      "text": "PF + PJ · telas novas",
+      "kind": "title1",
+      "maxW": 4600
     }
   },
   "designSystems": [

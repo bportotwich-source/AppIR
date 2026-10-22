@@ -3,6 +3,7 @@ import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
 import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
+import { AlternarDeclaracao } from './Irpf'
 import { dasDoAno, irpfDoAno, irpfPorMes, PRESUNCAO } from '../core/saidas'
 import { declaracaoDo, desfazerEntrega, entregar, hojeIso, mudarDeclaracao } from '../core/declaracao'
 import Folha from '../componentes/Folha'
@@ -70,6 +71,7 @@ export default function Declaracao({ banco, ano, mudar, ir }: TelaProps) {
   return (
     <main className="conteudo topo declaracao">
       <Cabecalho titulo="Declaração anual" voltar={() => ir('inicio')} />
+      <AlternarDeclaracao ir={ir} atual="declaracao" />
 
       <section aria-label="Prazo" className="prazo-dasn">
         <CountdownRing value={dias} max={365} label="dias" sub={`até ${prazo.toLocaleDateString('pt-BR')}`} size={124} />

@@ -6,6 +6,10 @@ import { extratosDoAno } from '../core/agenda'
 import { brl } from '../core/relatorio'
 import { MESES } from '../core/formato'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
+import { Alternar } from '../componentes/Perfil'
+import { importarPf, nomesPerfis, separarRetiradasDoTitular, titularDo } from '../core/pf'
+
+type Conta = 'pj' | 'conta' | 'cartao'
 
 const dataCurtaBr = (isoData: string) => `${isoData.slice(8, 10)}/${isoData.slice(5, 7)}`
 const maiuscula = (s: string) => s[0].toUpperCase() + s.slice(1)
@@ -13,6 +17,7 @@ const maiuscula = (s: string) => s[0].toUpperCase() + s.slice(1)
 type Leitura = {
   arquivo: string; quando: Date; mes: string
   lidas: number; novas: number; repetidas: number; saidas: number; sozinhas: number; aRevisar: number
+  pf?: boolean
 }
 type Estado = 'idle' | 'reading' | 'done'
 
@@ -24,13 +29,15 @@ function mesDoExtrato(datas: string[]): string {
   return ym ? `${maiuscula(MESES[Number(ym.slice(5, 7)) - 1])} de ${ym.slice(0, 4)}` : ''
 }
 
-export default function Importar({ banco, ano, mudar, ir, historico }: TelaProps & { historico?: boolean }) {
+export default function Importar({ banco, ano, mudar, ir, historico, perfil }: TelaProps & { historico?: boolean }) {
   const { ScanDrop } = window.MeuMEI
   const [estado, setEstado] = useState<Estado>('idle')
   const [leitura, setLeitura] = useState<Leitura | null>(null)
   const [erro, setErro] = useState('')
   const refHistorico = useRef<HTMLElement>(null)
   const meses = extratosDoAno(banco, ano)
+  const [conta, setConta] = useState<Conta>(perfil === 'pf' ? 'conta' : 'pj')
+  const nomes = nomesPerfis(titularDo(banco))
 
   useEffect(() => {
     if (historico) refHistorico.current?.scrollIntoView({ block: 'start' })
@@ -43,18 +50,27 @@ export default function Importar({ banco, ano, mudar, ir, historico }: TelaProps
     setErro('')
     try {
       const movs = await lerArquivo(arquivo)
-      if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse arquivo é o extrato do Nubank PJ?')
-      const r = importar(banco, movs, arquivo.name)
-      mudar(r.banco)
-      const ids = new Set(banco.movimentacoes.map((m) => m.id))
-      const novos = r.banco.movimentacoes.filter((m) => !ids.has(m.id))
-      setLeitura({
-        arquivo: arquivo.name, quando: new Date(), mes: mesDoExtrato(movs.map((m) => m.data)),
-        lidas: movs.length, novas: r.novas, repetidas: r.repetidas,
-        saidas: novos.filter((m) => m.tipo === 'saida').length,
-        sozinhas: novos.filter((m) => m.tipo === 'entrada' && m.faturamento !== null).length,
-        aRevisar: novos.filter((m) => m.faturamento === null).length,
-      })
+      if (movs.length === 0) throw new Error('Nenhuma movimentação encontrada. Esse arquivo é um extrato do Nubank?')
+      // A fatura do cartão em CSV tem a coluna "amount": vai para o cartão da PF.
+      const destino: Conta = arquivo.name.toLowerCase().endsWith('.csv') && /amount/i.test((await arquivo.text()).split('\n')[0]) ? 'cartao' : conta
+      if (destino !== conta) setConta(destino)
+      const base = { arquivo: arquivo.name, quando: new Date(), mes: mesDoExtrato(movs.map((m) => m.data)), lidas: movs.length }
+      if (destino !== 'pj') {
+        const r = importarPf(banco, movs, destino, arquivo.name)
+        mudar(r.banco)
+        setLeitura({ ...base, novas: r.novas, repetidas: r.repetidas, saidas: 0, sozinhas: 0, aRevisar: r.semCategoria, pf: true })
+      } else {
+        const r = importar(banco, movs, arquivo.name)
+        mudar(separarRetiradasDoTitular(r.banco))
+        const ids = new Set(banco.movimentacoes.map((m) => m.id))
+        const novos = r.banco.movimentacoes.filter((m) => !ids.has(m.id))
+        setLeitura({
+          ...base, novas: r.novas, repetidas: r.repetidas,
+          saidas: novos.filter((m) => m.tipo === 'saida').length,
+          sozinhas: novos.filter((m) => m.tipo === 'entrada' && m.faturamento !== null).length,
+          aRevisar: novos.filter((m) => m.faturamento === null).length,
+        })
+      }
       setEstado('done')
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Não deu para ler esse arquivo.')
@@ -66,7 +82,12 @@ export default function Importar({ banco, ano, mudar, ir, historico }: TelaProps
 
   return (
     <main className="conteudo topo">
-      <Cabecalho titulo="Importar extrato" sub="Use o extrato do Nubank PJ em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular." voltar={() => ir('inicio')} empilhado />
+      <Cabecalho titulo="Importar extrato" sub="Use o extrato do Nubank em OFX (o mais confiável), CSV ou PDF. Ele é lido aqui e não sai do celular." voltar={() => ir('inicio')} empilhado />
+      <Alternar rotulo="De qual conta é o extrato" valor={conta} mudar={setConta} opcoes={[
+        { id: 'pj', nome: nomes.pj },
+        { id: 'conta', nome: 'Conta PF' },
+        { id: 'cartao', nome: 'Cartão PF' },
+      ]} />
 
       <label className="scan">
         <input
@@ -96,15 +117,15 @@ export default function Importar({ banco, ano, mudar, ir, historico }: TelaProps
               <Pontilhado rotulo="Movimentações lidas" valor={leitura.lidas} />
               <Pontilhado rotulo="Novas" valor={leitura.novas} />
               <Pontilhado rotulo="Já importadas, ignoradas" valor={leitura.repetidas} cor="var(--ink-muted)" />
-              <Pontilhado rotulo="Saídas, fora do faturamento" valor={leitura.saidas} cor="var(--ink-muted)" />
-              <Pontilhado rotulo="Marcadas sozinhas" valor={leitura.sozinhas} cor="var(--brand)" forte />
-              <Pontilhado rotulo="Para você revisar" valor={leitura.aRevisar} cor="#92400e" forte />
+              {!leitura.pf && <Pontilhado rotulo="Saídas, fora do faturamento" valor={leitura.saidas} cor="var(--ink-muted)" />}
+              {!leitura.pf && <Pontilhado rotulo="Marcadas sozinhas" valor={leitura.sozinhas} cor="var(--brand)" forte />}
+              <Pontilhado rotulo={leitura.pf ? 'Gastos sem categoria' : 'Para você revisar'} valor={leitura.aRevisar} cor="#92400e" forte />
             </dl>
             {leitura.aRevisar > 0 && (
               <>
                 <div className="tracejado" aria-hidden="true" />
-                <button className="principal com-seta" onClick={() => ir('revisar')}>
-                  Revisar {leitura.aRevisar} {leitura.aRevisar === 1 ? 'entrada' : 'entradas'}
+                <button className="principal com-seta" onClick={() => ir(leitura.pf ? 'revisar-pf' : 'revisar')}>
+                  {leitura.pf ? `Separar ${leitura.aRevisar} ${leitura.aRevisar === 1 ? 'gasto' : 'gastos'}` : `Revisar ${leitura.aRevisar} ${leitura.aRevisar === 1 ? 'entrada' : 'entradas'}`}
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
                 </button>
               </>
