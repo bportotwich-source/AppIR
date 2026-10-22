@@ -162,6 +162,33 @@
       "title": "Pagadores lembrados",
       "is_interactive": true,
       "radius": 36
+    },
+    "EntregaDasn.dc.html": {
+      "x": 1410,
+      "y": 2760,
+      "w": 390,
+      "h": 844,
+      "title": "Marcar DASN entregue",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "RelatorioMensal.dc.html": {
+      "x": 1880,
+      "y": 2760,
+      "w": 390,
+      "h": 1804,
+      "title": "Relatório mensal das receitas",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "AvisoDasn.dc.html": {
+      "x": 2350,
+      "y": 2760,
+      "w": 390,
+      "h": 1142,
+      "title": "Início · aviso da DASN",
+      "is_interactive": true,
+      "radius": 36
     }
   },
   "order": [
@@ -181,7 +208,10 @@
     "FolhaDasDesfazer.dc.html",
     "Movimentacoes.dc.html",
     "CorrigirMovimentacao.dc.html",
-    "Pagadores.dc.html"
+    "Pagadores.dc.html",
+    "EntregaDasn.dc.html",
+    "RelatorioMensal.dc.html",
+    "AvisoDasn.dc.html"
   ],
   "notes": {
     "titulo": {

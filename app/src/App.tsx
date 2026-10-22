@@ -12,9 +12,10 @@ import Declaracao from './telas/Declaracao'
 import Ajustes from './telas/Ajustes'
 import Saidas from './telas/Saidas'
 import Movimentacoes from './telas/Movimentacoes'
+import Relatorio from './telas/Relatorio'
 import Icone from './componentes/Icone'
 
-export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes' | 'saidas' | 'movimentacoes' | 'pagadores'
+export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes' | 'saidas' | 'movimentacoes' | 'pagadores' | 'relatorio'
 
 export interface TelaProps {
   banco: Banco
@@ -94,8 +95,8 @@ export default function App() {
 
   const mudar = (novo: Banco) => {
     // A data de alteração diz se o último backup ficou velho.
-    const alterou = novo.movimentacoes !== banco.movimentacoes || novo.regras !== banco.regras ||
-      novo.regrasSaida !== banco.regrasSaida || novo.dasPago !== banco.dasPago
+    const campos = new Set([...Object.keys(novo), ...Object.keys(banco)] as (keyof Banco)[])
+    const alterou = [...campos].some((k) => k !== 'ultimoBackup' && k !== 'alteradoEm' && novo[k] !== banco[k])
     if (alterou) novo = { ...novo, alteradoEm: new Date().toISOString() }
     setBanco(novo)
     void salvar(novo)
@@ -118,9 +119,10 @@ export default function App() {
       {aba === 'saidas' && <Saidas {...props} />}
       {aba === 'movimentacoes' && <Movimentacoes {...props} />}
       {aba === 'pagadores' && <Movimentacoes {...props} pagadores />}
+      {aba === 'relatorio' && <Relatorio {...props} />}
 
       {/* Telas de dentro de outras, com botão de voltar: sem a barra de abas. */}
-      {!['ajustes', 'saidas', 'movimentacoes', 'pagadores'].includes(aba) && (
+      {!['ajustes', 'saidas', 'movimentacoes', 'pagadores', 'relatorio'].includes(aba) && (
         <nav className="abas" aria-label="Seções">
           <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}><Icone nome="inicio" />Início</button>
           <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>
