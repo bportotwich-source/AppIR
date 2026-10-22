@@ -109,8 +109,14 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   return (
     <main>
       <section className="faixa" aria-label="Resumo do ano">
+        <svg className="faixa-circulos" aria-hidden="true" width="390" height="560" viewBox="0 0 390 560">
+          {[150, 200, 250, 300].map((r, i) => <circle key={r} cx="195" cy="300" r={r} fill="none" stroke="#2dd4bf" strokeOpacity={[0.08, 0.06, 0.045, 0.03][i]} />)}
+        </svg>
         <div className="faixa-topo">
-          <span className="marca">Meu MEI</span>
+          <span className="marca">
+            <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#2dd4bf" /><rect x="8" y="17" width="4" height="8" rx="2" fill="#0c2a27" /><rect x="14" y="12" width="4" height="13" rx="2" fill="#0c2a27" /><rect x="20" y="7" width="4" height="18" rx="2" fill="#0c2a27" /></svg>
+            Meu MEI
+          </span>
           <label className="so-leitor" htmlFor="ano">Ano</label>
           <div className="faixa-acoes">
             <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
@@ -131,19 +137,22 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
         <h1>Seu ano até aqui</h1>
         <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
-          {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={280} />}
+          {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={300} />}
           {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} tone="dark" />}
           {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} tone="dark" />}
         </div>
         {/* Curva e Barra já mostram a projeção. */}
         {visao === 'arco' && projecao !== null && (
-          <p className="projecao">
-            No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
+          <p className="projecao sobe">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 17 6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>
+            <span>No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
             {projecao <= limite
               ? `Fica dentro do limite, com folga de ${reais(limite - projecao)}.`
               : 'Passa do limite: vale falar com um contador.'}
+            </span>
           </p>
         )}
+        <svg className="faixa-onda" aria-hidden="true" viewBox="0 0 390 56" preserveAspectRatio="none"><path d="M0 56 V30 C 70 6, 150 6, 205 24 S 330 50, 390 18 V56 Z" /></svg>
       </section>
 
       <div className="conteudo">
@@ -152,6 +161,19 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             <h2>Comece pelo extrato</h2>
             <p>Importe o extrato do Nubank PJ em OFX, CSV ou PDF. Ele é lido aqui e não sai do celular.</p>
             <button className="principal" onClick={() => ir('importar')}>Importar extrato</button>
+          </section>
+        )}
+
+        {comExtrato && (
+          <section>
+            <div className="titulo-linha">
+              <h2>Por categoria</h2>
+              <span>{ultimoMes > 1 ? `janeiro a ${MESES[ultimoMes - 1]}` : MESES[0]}</span>
+            </div>
+            <SplitBar items={[
+              { label: 'Serviços', value: t.servicos, color: 'var(--servicos)' },
+              { label: 'Comércio', value: t.comercio, color: 'var(--comercio)' },
+            ]} />
           </section>
         )}
 
@@ -196,15 +218,6 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
           </section>
         )}
 
-        {comExtrato && (
-          <section>
-            <h2>Por categoria</h2>
-            <SplitBar items={[
-              { label: 'Serviços', value: t.servicos, color: 'var(--servicos)' },
-              { label: 'Comércio', value: t.comercio, color: 'var(--comercio)' },
-            ]} />
-          </section>
-        )}
 
         {comExtrato && (
           <section>

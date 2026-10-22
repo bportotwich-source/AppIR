@@ -10,7 +10,6 @@ import Importar from './telas/Importar'
 import Revisar from './telas/Revisar'
 import Declaracao from './telas/Declaracao'
 import Ajustes from './telas/Ajustes'
-import Extratos from './telas/Extratos'
 import Icone from './componentes/Icone'
 
 export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes'
@@ -111,7 +110,7 @@ export default function App() {
       {aba === 'revisar' && <Revisar {...props} />}
       {aba === 'importar' && <Importar {...props} />}
       {aba === 'declaracao' && <Declaracao {...props} />}
-      {aba === 'extratos' && <Extratos {...props} />}
+      {aba === 'extratos' && <Importar {...props} historico />}
       {aba === 'ajustes' && <Ajustes {...props} />}
 
       {/* Ajustes é uma tela de dentro do Início, com botão de voltar: sem a barra de abas. */}
