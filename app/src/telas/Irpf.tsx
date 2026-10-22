@@ -3,14 +3,10 @@ import { brl } from '../core/relatorio'
 import { dataCurta } from '../core/formato'
 import { irpfPfDoAno, reciboCompleto } from '../core/irpfPf'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { Alternar } from '../componentes/Perfil'
+import { SeletorPerfil } from '../componentes/Perfil'
+import { titularDo } from '../core/pf'
 
-/** Abas irmãs no topo da Declaração: DASN da empresa e IRPF da pessoa. */
-export function AlternarDeclaracao({ ir, atual }: Pick<TelaProps, 'ir'> & { atual: 'declaracao' | 'irpf' }) {
-  return <Alternar rotulo="Qual declaração" valor={atual} mudar={(v) => ir(v)} opcoes={[{ id: 'declaracao', nome: 'PJ · DASN' }, { id: 'irpf', nome: 'PF · IRPF' }]} />
-}
-
-export default function Irpf({ banco, ano, ir }: TelaProps) {
+export default function Irpf({ banco, ano, ir, perfil, mudarPerfil }: TelaProps) {
   const r = irpfPfDoAno(banco, ano)
   const e = r.empresa
   const isento = Math.max(0, e.lucro - e.tributavel)
@@ -20,8 +16,8 @@ export default function Irpf({ banco, ano, ir }: TelaProps) {
 
   return (
     <main className="conteudo topo irpf-pf">
-      <Cabecalho titulo="IRPF" voltar={() => ir('inicio')} />
-      <AlternarDeclaracao ir={ir} atual="irpf" />
+      <Cabecalho titulo="Imposto de Renda" voltar={() => ir('inicio')} />
+      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section>
         <h2>Imposto de Renda {ano + 1}</h2>

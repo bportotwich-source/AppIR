@@ -1,31 +1,16 @@
 import type { TelaProps } from '../App'
-import { brl, pendentes } from '../core/relatorio'
-import { categorizarPf, gruposSemCategoria, nomeCategoria } from '../core/pf'
+import { brl } from '../core/relatorio'
+import { categorizarPf, gruposSemCategoria, nomeCategoria, titularDo } from '../core/pf'
 import { Cabecalho } from '../componentes/Pecas'
-import { Alternar, Categorias } from '../componentes/Perfil'
+import { Categorias, SeletorPerfil } from '../componentes/Perfil'
 
-/** Abas irmãs no topo de Revisar: entradas da PJ e gastos da PF. */
-export function AlternarRevisar({ banco, ano, ir, atual }: Pick<TelaProps, 'banco' | 'ano' | 'ir'> & { atual: 'revisar' | 'revisar-pf' }) {
-  return (
-    <Alternar
-      rotulo="O que revisar"
-      valor={atual}
-      mudar={(v) => ir(v)}
-      opcoes={[
-        { id: 'revisar', nome: `PJ · entradas · ${pendentes(banco, ano)}` },
-        { id: 'revisar-pf', nome: `PF · gastos · ${gruposSemCategoria(banco, ano).length}` },
-      ]}
-    />
-  )
-}
-
-export default function RevisarPf({ banco, ano, mudar, ir }: TelaProps) {
+export default function RevisarPf({ banco, ano, mudar, ir, perfil, mudarPerfil }: TelaProps) {
   const grupos = gruposSemCategoria(banco, ano)
 
   return (
     <main className="conteudo topo">
       <Cabecalho titulo="Revisar gastos" voltar={() => ir('inicio')} />
-      <AlternarRevisar banco={banco} ano={ano} ir={ir} atual="revisar-pf" />
+      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section>
         <h2>Para onde foi?</h2>

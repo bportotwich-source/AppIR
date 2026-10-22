@@ -217,15 +217,6 @@
       "is_interactive": true,
       "radius": 36
     },
-    "TudoInicio.dc.html": {
-      "x": 0,
-      "y": 6720,
-      "w": 390,
-      "h": 1160,
-      "title": "Início · Tudo",
-      "is_interactive": true,
-      "radius": 36
-    },
     "Adicionar.dc.html": {
       "x": 470,
       "y": 6720,
@@ -323,7 +314,6 @@
     "CriptografarDados.dc.html",
     "Mapa.dc.html",
     "PfInicio.dc.html",
-    "TudoInicio.dc.html",
     "Adicionar.dc.html",
     "PfRevisar.dc.html",
     "Comprovantes.dc.html",

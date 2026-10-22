@@ -1,13 +1,14 @@
-// Seletor dos perfis (Bruno PJ · Bruno PF · Tudo), olho que esconde os
+// Seletor dos perfis (Bruno PJ · Bruno PF), olho que esconde os
 // valores e a chave de duas opções usada no topo de Revisar e Declaração.
 
 import { CATEGORIAS_PF, nomesPerfis, type CategoriaPf, type Perfil } from '../core/pf'
 
-export function SeletorPerfil({ perfil, mudar, titular }: { perfil: Perfil; mudar: (p: Perfil) => void; titular?: string }) {
+/** `claro`: versão para o topo das abas (Revisar, Notas, Declaração), sobre fundo claro. */
+export function SeletorPerfil({ perfil, mudar, titular, claro }: { perfil: Perfil; mudar: (p: Perfil) => void; titular?: string; claro?: boolean }) {
   const nomes = nomesPerfis(titular)
-  const opcoes: { id: Perfil; nome: string }[] = [{ id: 'pj', nome: nomes.pj }, { id: 'pf', nome: nomes.pf }, { id: 'tudo', nome: 'Tudo' }]
+  const opcoes: { id: Perfil; nome: string }[] = [{ id: 'pj', nome: nomes.pj }, { id: 'pf', nome: nomes.pf }]
   return (
-    <div className="perfis" role="radiogroup" aria-label="Perfil">
+    <div className={'perfis' + (claro ? ' claro' : '')} role="radiogroup" aria-label="Perfil">
       {opcoes.map((o) => (
         <button key={o.id} role="radio" aria-checked={perfil === o.id} onClick={() => mudar(o.id)}>{o.nome}</button>
       ))}

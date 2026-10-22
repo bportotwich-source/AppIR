@@ -74,7 +74,7 @@ class Component extends DCLogic {
     }
     return {
       abas: [
-        { nome: 'Início', desc: 'Bruno PJ · Bruno PF · Tudo', cor: '#2dd4bf', fundo: 'rgba(45,212,191,0.14)' },
+        { nome: 'Início', desc: 'Bruno PJ · Bruno PF', cor: '#2dd4bf', fundo: 'rgba(45,212,191,0.14)' },
         { nome: 'Revisar', desc: 'entradas PJ e gastos PF', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
         { nome: '+ Adicionar', desc: 'ler nota, importar extrato, recibo', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
         { nome: 'Notas', desc: 'comprovantes, no lugar de Extratos', cor: '#ecf1ef', fundo: 'rgba(236,241,239,0.06)' },
@@ -83,9 +83,8 @@ class Component extends DCLogic {
       faixas: [
         { titulo: 'Entrada e Início', sub: 'o que todo mundo vê', cor: '#0c2a27', fundo: '#e7ecea', telas: [
           t('Desbloquear', 'Login.dc.html', 'ja', 'PIN ou digital', 'Início'),
-          t('Início · Bruno PJ', 'Main.dc.html', 'muda', 'limite do MEI, ganha o seletor Bruno PJ · Bruno PF · Tudo', 'Revisar, Saídas, DAS'),
+          t('Início · Bruno PJ', 'Main.dc.html', 'muda', 'limite do MEI, ganha o seletor Bruno PJ · Bruno PF', 'Revisar, Saídas, DAS'),
           t('Início · Bruno PF', 'PfInicio.dc.html', 'nova', 'gastos do mês por categoria, retirada do MEI que entrou', 'Revisar gastos, Comprovantes'),
-          t('Início · Tudo', 'TudoInicio.dc.html', 'nova', 'o mês somado, sem contar a retirada duas vezes', 'Início PF ou PJ'),
           t('Ajustes', 'Ajustes.dc.html', 'muda', 'ganha contas PF e categorias', 'Categorias, Privacidade'),
           t('Privacidade', 'Privacidade.dc.html', 'nova', 'olho para esconder valores, CPF/CNPJ e nomes', '')
         ] },

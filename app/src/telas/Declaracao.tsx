@@ -3,10 +3,11 @@ import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
 import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { AlternarDeclaracao } from './Irpf'
 import { dasDoAno, irpfDoAno, irpfPorMes, PRESUNCAO } from '../core/saidas'
 import { declaracaoDo, desfazerEntrega, entregar, hojeIso, mudarDeclaracao } from '../core/declaracao'
 import Folha from '../componentes/Folha'
+import { SeletorPerfil } from '../componentes/Perfil'
+import { titularDo } from '../core/pf'
 
 const DIA_MS = 86_400_000
 
@@ -24,7 +25,7 @@ function Passo({ ok, titulo, children }: { ok: boolean; titulo: string; children
   )
 }
 
-export default function Declaracao({ banco, ano, mudar, ir }: TelaProps) {
+export default function Declaracao({ banco, ano, mudar, ir, perfil, mudarPerfil }: TelaProps) {
   const { CountdownRing, AnimatedNumber } = window.MeuMEI
   const decl = declaracaoDo(banco, ano)
   const empregado = decl.empregado ?? false
@@ -71,7 +72,7 @@ export default function Declaracao({ banco, ano, mudar, ir }: TelaProps) {
   return (
     <main className="conteudo topo declaracao">
       <Cabecalho titulo="Declaração anual" voltar={() => ir('inicio')} />
-      <AlternarDeclaracao ir={ir} atual="declaracao" />
+      <SeletorPerfil claro perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
 
       <section aria-label="Prazo" className="prazo-dasn">
         <CountdownRing value={dias} max={365} label="dias" sub={`até ${prazo.toLocaleDateString('pt-BR')}`} size={124} />

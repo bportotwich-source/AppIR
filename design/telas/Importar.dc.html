@@ -33,7 +33,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 </header>
 
 <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
-<legend style="padding: 0 0 10px; font-size: 18px; line-height: 24px; font-weight: 600">De qual conta é o extrato?</legend>
+<legend style="padding: 0 0 10px; font-size: 18px; line-height: 24px; font-weight: 600">Bruno PF · de onde é o extrato?</legend>
 <sc-for list="{{contas}}" as="c" hint-placeholder-count="3">
 <label style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 14px; border-radius: 16px; background: #ffffff; box-shadow: {{c.anel}}; cursor: pointer">
 <input type="radio" name="conta" checked="{{c.on}}" onChange="{{c.pick}}" style="width: 20px; height: 20px; margin: 0; accent-color: #0f766e">
@@ -41,7 +41,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0f766e;outline-offset:2p
 <span style="padding: 2px 8px; border-radius: 999px; background: {{c.tagFundo}}; color: {{c.tagCor}}; font-size: 12px; font-weight: 700">{{c.tag}}</span>
 </label>
 </sc-for>
-<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">O app reconhece a conta pelo arquivo e já deixa marcada. Troque se estiver errado.</p>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: #5b6763">No Bruno PJ não tem escolha: o extrato vai para a empresa. A fatura do cartão em CSV vai sempre para o Bruno PF.</p>
 </fieldset>
 
 <x-import component-from-global-scope="MeuMEI.ScanDrop" file-name="extrato-novembro-2026.pdf" done-text="31 movimentações lidas" size="{{tamanhoScan}}"></x-import>
@@ -112,9 +112,8 @@ class Component extends DCLogic {
   renderVals() {
     var self = this;
     var contas = [
-      ['Bruno PJ', 'Conta Nubank PJ', 'PJ', '#e6f4f1', '#0f766e'],
-      ['Bruno PF · conta', 'Conta Nubank PF', 'PF', '#eef0ff', '#4338ca'],
-      ['Bruno PF · cartão', 'Fatura do cartão em CSV', 'PF', '#eef0ff', '#4338ca']
+      ['Conta', 'Conta Nubank PF em OFX, CSV ou PDF', 'PF', '#eef0ff', '#4338ca'],
+      ['Cartão de crédito', 'Fatura do cartão em CSV', 'PF', '#eef0ff', '#4338ca']
     ].map(function (c, i) {
       var on = self.state.conta === i;
       return { nome: c[0], desc: c[1], tag: c[2], tagFundo: c[3], tagCor: c[4], on: on, anel: on ? '0 0 0 2px #0f766e' : '0 0 0 1px #e3e7e5', pick: function () { self.setState({ conta: i }); } };

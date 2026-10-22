@@ -11,7 +11,7 @@ import LinhaDas from '../componentes/LinhaDas'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
 import { avisoDasn, declaracaoDo } from '../core/declaracao'
-import { titularDo } from '../core/pf'
+import { nomesPerfis, retiradasPj, titularDo } from '../core/pf'
 import { BotaoOlho, Engrenagem, SeletorPerfil } from '../componentes/Perfil'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
@@ -103,6 +103,8 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const dasn = avisoDasn(banco)
   const dasnEntregue = (p: { titulo: string; data: string }) => p.titulo.startsWith('DASN') && !!declaracaoDo(banco, Number(p.data.slice(0, 4)) - 1).entregueEm
   const [backupFalhou, setBackupFalhou] = useState(false)
+  const retiradas = retiradasPj(banco, ano)
+  const nomes = nomesPerfis(titularDo(banco))
 
   async function fazerBackup() {
     try {
@@ -193,6 +195,16 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
               <span><span className="sensivel">{brl(valorPendente)}</span> ainda fora do total</span>
             </span>
             <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
+          </button>
+        )}
+
+        {retiradas.length > 0 && (
+          <button className="passagem" onClick={() => mudarPerfil('pf')}>
+            <span className="passagem-icone" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h14" /><path d="m13 6 6 6-6 6" /></svg></span>
+            <span>
+              <b><span className="sensivel">{brl(retiradas.reduce((s, r) => s + r.valor, 0))}</span> foram para {nomes.pf}</b>
+              <span>{retiradas.length} Pix para você em {ano}. Saem do lucro da empresa e entram como renda no {nomes.pf}. Toque para abrir.</span>
+            </span>
           </button>
         )}
 

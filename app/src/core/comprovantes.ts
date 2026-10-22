@@ -22,7 +22,7 @@ export interface ItemNota {
 export interface Comprovante {
   id: string
   tipo: TipoComprovante
-  perfil: Exclude<Perfil, 'tudo'>
+  perfil: Perfil
   loja: string
   cnpj?: string
   data: string // AAAA-MM-DD; '' quando só se sabe o mês

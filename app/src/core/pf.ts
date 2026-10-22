@@ -10,7 +10,7 @@ import { chaveDescricao, type Banco, type Registro } from './banco'
 import { despesa, ehDas } from './saidas'
 import { pagador } from './formato'
 
-export type Perfil = 'pj' | 'pf' | 'tudo'
+export type Perfil = 'pj' | 'pf'
 export type ContaPf = 'conta' | 'cartao'
 
 export const CATEGORIAS_PF = [
@@ -178,23 +178,6 @@ export function resumoPf(banco: Banco, ano: number, mes?: number): ResumoPf {
 /** Pagar a fatura na conta só move dinheiro para o cartão; o gasto já está nas compras. */
 export const ehPagamentoFatura = (r: RegistroPf) =>
   r.conta === 'conta' && r.tipo === 'saida' && /pagamento de fatura|fatura (do )?cart[aã]o|nu pagamentos/i.test(r.descricao)
-
-export interface ResumoTudo {
-  pj: { entradas: number; despesas: number; retiradas: number; sobra: number }
-  pf: ResumoPf
-  sobra: number
-}
-
-/** Os dois perfis somados. A retirada sai da PJ e entra na PF: aparece uma vez, como passagem. */
-export function resumoTudo(banco: Banco, ano: number, mes?: number): ResumoTudo {
-  const doPj = banco.movimentacoes.filter((r) => doPeriodo(r.data, ano, mes))
-  const entradas = doPj.filter((r) => r.tipo === 'entrada').reduce((s, r) => s + r.valor, 0)
-  const retiradas = retiradasPj(banco, ano, mes).reduce((s, r) => s + r.valor, 0)
-  const despesas = doPj.filter((r) => r.tipo === 'saida').reduce((s, r) => s + r.valor, 0) - retiradas
-  const pf = resumoPf(banco, ano, mes)
-  const sobraPj = entradas - despesas - retiradas
-  return { pj: { entradas, despesas, retiradas, sobra: sobraPj }, pf, sobra: sobraPj + pf.sobra }
-}
 
 export interface GrupoPf {
   chave: string
