@@ -3,12 +3,17 @@ import type { TelaProps } from '../App'
 import BarrasRastro from '../componentes/BarrasRastro'
 import { PerguntaAbertura } from '../componentes/CampoAbertura'
 import { brl, LIMITE_ANUAL, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
-import { MESES } from '../core/formato'
+import { dataCurta, MESES, pagador } from '../core/formato'
+import { iniciais, proximosPrazos, quando } from '../core/agenda'
+import { entradas } from '../core/banco'
+import Icone from '../componentes/Icone'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
+
+const dataCurtaHoje = () => dataCurta(new Date().toLocaleDateString('sv-SE'))
 
 const CURTO = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 
@@ -86,6 +91,10 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const nPendentes = pendentes(banco, ano)
   const limite = limiteDoAno(banco, ano)
   const diasBackup = backupAtrasado(banco)
+  const filaPendente = entradas(banco, ano).filter((r) => r.faturamento === null || (r.faturamento && r.categoria === null))
+  const valorPendente = filaPendente.reduce((soma, r) => soma + r.valor, 0)
+  const pagadores = [...new Set(filaPendente.map((r) => iniciais(pagador(r.descricao).nome)))].slice(0, 4)
+  const prazos = proximosPrazos()
   const [backupFalhou, setBackupFalhou] = useState(false)
 
   async function fazerBackup() {
@@ -147,9 +156,17 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
         )}
 
         {nPendentes > 0 && (
-          <button className="ticket-pendente" onClick={() => ir('revisar')}>
-            <b>{nPendentes} {nPendentes === 1 ? 'entrada para revisar' : 'entradas para revisar'}</b>
-            <span>Fora do total até você decidir · Revisar agora</span>
+          <button className="ticket" onClick={() => ir('revisar')} aria-label={`${nPendentes} Pix esperando revisão, ${brl(valorPendente)} ainda fora do total. Abrir revisão.`}>
+            <span className="ticket-rostos" aria-hidden="true">
+              {pagadores.map((p, i) => <span key={p + i} data-i={i}>{p}</span>)}
+            </span>
+            <span className="ticket-corte" aria-hidden="true" />
+            <span className="ticket-texto">
+              <span className="rotulo">{nPendentes} {nPendentes === 1 ? 'pendente' : 'pendentes'}</span>
+              <b>Pix esperando você</b>
+              <span>{brl(valorPendente)} ainda fora do total</span>
+            </span>
+            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
           </button>
         )}
 
@@ -200,6 +217,24 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             )}
           </section>
         )}
+
+        <section aria-labelledby="prazos-titulo">
+          <h2 id="prazos-titulo">Próximos prazos</h2>
+          <ol className="prazos">
+            <li data-hoje="true">
+              <span className="marco" aria-hidden="true" />
+              <b className="mm-num">{dataCurtaHoje()}</b>
+              <span>Hoje</span>
+            </li>
+            {prazos.map((p) => (
+              <li key={p.titulo}>
+                <span className="marco" aria-hidden="true" />
+                <b className="mm-num">{dataCurta(p.data)}</b>
+                <span>{p.titulo}, {quando(p.dias)}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
     </main>
   )

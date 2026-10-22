@@ -10,8 +10,10 @@ import Importar from './telas/Importar'
 import Revisar from './telas/Revisar'
 import Declaracao from './telas/Declaracao'
 import Ajustes from './telas/Ajustes'
+import Extratos from './telas/Extratos'
+import Icone from './componentes/Icone'
 
-export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'ajustes'
+export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes'
 
 export interface TelaProps {
   banco: Banco
@@ -109,20 +111,23 @@ export default function App() {
       {aba === 'revisar' && <Revisar {...props} />}
       {aba === 'importar' && <Importar {...props} />}
       {aba === 'declaracao' && <Declaracao {...props} />}
+      {aba === 'extratos' && <Extratos {...props} />}
       {aba === 'ajustes' && <Ajustes {...props} />}
 
       {/* Ajustes é uma tela de dentro do Início, com botão de voltar: sem a barra de abas. */}
       {aba !== 'ajustes' && (
         <nav className="abas" aria-label="Seções">
-          <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}>Início</button>
+          <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}><Icone nome="inicio" />Início</button>
           <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>
-            Revisar{nPendentes > 0 && <span className="contador">{nPendentes}</span>}
+            <Icone nome="revisar" />Revisar
+            {nPendentes > 0 && <span className="contador" aria-label={`${nPendentes} pendentes`}>{nPendentes}</span>}
           </button>
           <button className="importar" aria-current={aba === 'importar'} onClick={() => setAba('importar')}>
-            <span aria-hidden="true">+</span>
+            <Icone nome="importar" tamanho={26} />
             <span className="so-leitor">Importar extrato</span>
           </button>
-          <button aria-current={aba === 'declaracao'} onClick={() => setAba('declaracao')}>Declaração</button>
+          <button aria-current={aba === 'declaracao'} onClick={() => setAba('declaracao')}><Icone nome="declaracao" />Declaração</button>
+          <button aria-current={aba === 'extratos'} onClick={() => setAba('extratos')}><Icone nome="extratos" />Extratos</button>
         </nav>
       )}
     </div>
