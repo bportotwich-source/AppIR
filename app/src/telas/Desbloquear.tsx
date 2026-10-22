@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { conferirPin, criarPin, digitalAbreCofre, entrarComDigital, ler } from '../core/trava'
+import { conferirPin, criarPin, digitalAbreCofre, digitosDoPin, DIGITOS_PIN, entrarComDigital, ler } from '../core/trava'
 
 // Tela de PIN do design (Meu MEI · Telas › Desbloquear). Serve para abrir o
-// app e para criar um PIN novo (digitar e confirmar).
+// app e para criar um PIN novo (digitar e confirmar). Trocar o PIN pede o
+// atual antes, para quem pegar o celular destravado não trocar.
 
 type Modo = 'entrar' | 'criar'
 
@@ -24,8 +25,11 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
   const [ajuda, setAjuda] = useState(false)
   const [conferindo, setConferindo] = useState(false)
   const [agora, setAgora] = useState(Date.now())
+  const [pedindoAtual, setPedindoAtual] = useState(() => modo === 'criar' && ler() !== null)
+  const conferindoPin = modo === 'entrar' || pedindoAtual
+  const digitos = conferindoPin ? digitosDoPin() : DIGITOS_PIN
   const temDigital = modo === 'entrar' && digitalAbreCofre(ler())
-  const bloqueadaAte = modo === 'entrar' ? (ler()?.bloqueadaAte ?? 0) : 0
+  const bloqueadaAte = conferindoPin ? (ler()?.bloqueadaAte ?? 0) : 0
   const bloqueada = bloqueadaAte > agora
   const tentouDigital = useRef(false)
 
@@ -59,7 +63,7 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
   async function completo(valor: string) {
     setConferindo(true)
     try {
-      if (modo === 'criar') {
+      if (modo === 'criar' && !pedindoAtual) {
         if (primeiro === null) {
           setPrimeiro(valor)
           setPin('')
@@ -77,6 +81,11 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
         return
       }
       const r = await conferirPin(valor)
+      if (r.ok && pedindoAtual) {
+        setPedindoAtual(false)
+        setPin('')
+        return
+      }
       if (r.ok) return liberar()
       setPin('')
       setTreme((n) => n + 1)
@@ -92,17 +101,17 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
   }
 
   function digitar(d: string) {
-    if (ok || conferindo || bloqueada || pin.length >= 4) return
+    if (ok || conferindo || bloqueada || pin.length >= digitos) return
     const valor = pin + d
     setPin(valor)
     setErro('')
-    if (valor.length === 4) window.setTimeout(() => completo(valor), 150)
+    if (valor.length === digitos) window.setTimeout(() => completo(valor), 150)
   }
 
   const subtitulo = ok
     ? modo === 'criar' ? 'PIN criado' : 'Bem-vindo de volta'
     : modo === 'criar'
-      ? primeiro === null ? 'Escolha um PIN de 4 dígitos' : 'Digite o PIN de novo para confirmar'
+      ? pedindoAtual ? 'Digite o PIN atual' : primeiro === null ? `Escolha um PIN de ${digitos} dígitos` : 'Digite o PIN de novo para confirmar'
       : 'Digite seu PIN para abrir'
   const mensagem = bloqueada
     ? `Muitas tentativas. Tente de novo em ${Math.ceil((bloqueadaAte - agora) / 60_000)} min.`
@@ -128,8 +137,8 @@ export default function Desbloquear({ modo, aoTerminar, aoCancelar, aoApagarTudo
           {ok ? (
             <svg className="mm-rise" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2dd4bf" /><path className="mm-draw" d="M12 20.5 L18 26 L28.5 14.5" fill="none" stroke="#0c2a27" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ ['--mm-len' as string]: 30 }} /></svg>
           ) : (
-            <div key={treme} role="img" aria-label={`${pin.length} de 4 dígitos`} className={treme ? 'treme' : undefined}>
-              {[0, 1, 2, 3].map((i) => (
+            <div key={treme} role="img" aria-label={`${pin.length} de ${digitos} dígitos`} className={treme ? 'treme' : undefined}>
+              {Array.from({ length: digitos }, (_, i) => (
                 <span key={i} data-cheio={i < pin.length} data-erro={!!erro && !!treme} />
               ))}
             </div>

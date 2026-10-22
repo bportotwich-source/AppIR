@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { conferirPin, criarPin, ESPERA_MS, ler, MAX_TENTATIVAS, removerTrava } from './trava'
+import { conferirPin, criarPin, digitosDoPin, ESPERA_MS, ler, MAX_TENTATIVAS, removerTrava } from './trava'
 
 const memoria = new Map<string, string>()
 globalThis.localStorage = {
@@ -31,5 +31,12 @@ describe('trava', () => {
   it('sem PIN, fica aberto', async () => {
     removerTrava()
     expect(await conferirPin('9999')).toEqual({ ok: true })
+  })
+
+  it('lembra quantos dígitos o PIN tem (os antigos são de 4)', async () => {
+    await criarPin('123456')
+    expect(digitosDoPin()).toBe(6)
+    expect(await conferirPin('123456')).toEqual({ ok: true })
+    expect(digitosDoPin({ ...ler()!, digitos: undefined })).toBe(4)
   })
 })

@@ -4,18 +4,21 @@ import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
+import FolhaBackup from './FolhaBackup'
 
 export function LembretesAparelho({ banco, mudar, dadosProtegidos, instalar, comDados }: Pick<TelaProps, 'banco' | 'mudar' | 'dadosProtegidos' | 'instalar'> & { comDados: boolean }) {
   const [backupFalhou, setBackupFalhou] = useState(false)
+  const [pedindoSenha, setPedindoSenha] = useState(false)
   const diasBackup = backupAtrasado(banco)
 
-  async function fazerBackup() {
+  async function fazerBackup(senha: string) {
     try {
-      const novo = await enviarBackup(banco)
+      const novo = await enviarBackup(banco, senha)
       if (novo) mudar(novo)
     } catch {
       setBackupFalhou(true)
     }
+    setPedindoSenha(false)
   }
 
   return (
@@ -24,10 +27,11 @@ export function LembretesAparelho({ banco, mudar, dadosProtegidos, instalar, com
         <section className="lembrete" aria-labelledby="backup-titulo">
           <b id="backup-titulo">{diasBackup === Infinity ? 'Você ainda não fez backup' : `Último backup há ${diasBackup} dias`}</b>
           <span>Se o celular quebrar ou o navegador limpar os dados, os extratos e as marcações somem. Guarde uma cópia no Drive, no WhatsApp ou no e-mail.</span>
-          <button className="principal" onClick={fazerBackup}>Fazer backup agora</button>
+          <button className="principal" onClick={() => setPedindoSenha(true)}>Fazer backup agora</button>
           {backupFalhou && <span role="alert">Não deu para gerar o backup. Tente pela tela Ajustes.</span>}
         </section>
       )}
+      {pedindoSenha && <FolhaBackup abrir={false} fechar={() => setPedindoSenha(false)} confirmar={fazerBackup} />}
 
       {comDados && dadosEmRisco(dadosProtegidos) && (
         <section className="lembrete" aria-labelledby="instalar-titulo">

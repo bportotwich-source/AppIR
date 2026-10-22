@@ -4,7 +4,7 @@ import { brl } from '../core/relatorio'
 import { dataCurta, lerValor } from '../core/formato'
 import {
   apagarComprovante, categorizarCompra, compraLigada, comprasPossiveis, comprimirImagem, comprovantes, formatarChave, formatarCnpj,
-  guardarComprovante, lerDanfe, mascararDoc, novoId, type Comprovante,
+  guardarComprovante, lerDanfe, mascararDoc, novoId, urlSefaz, type Comprovante,
 } from '../core/comprovantes'
 import { nomesPerfis, titularDo } from '../core/pf'
 import { extrairTexto } from '../core/parser'
@@ -152,7 +152,7 @@ export default function ComprovanteTela({ banco, mudar, ir, param, perfil }: Tel
         <section aria-labelledby="chave-t">
           <h2 id="chave-t">Chave de acesso</h2>
           <p className="chave-acesso mm-num">{formatarChave(c.chave)}</p>
-          {c.url && <a className="link" href={c.url} target="_blank" rel="noreferrer">Ver na SEFAZ</a>}
+          {urlSefaz(c.url) && <a className="link" href={urlSefaz(c.url)} target="_blank" rel="noreferrer">Ver na SEFAZ</a>}
         </section>
       )}
 

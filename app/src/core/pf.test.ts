@@ -4,7 +4,7 @@ import { bancoDoArquivo, parseCsv } from './arquivos'
 import { marcarSaida, irpfDoAno } from './saidas'
 import { totaisAno } from './relatorio'
 import { categorizarPf, ehDoTitular, transferenciasProprias, gruposSemCategoria, importarPf, maioresGastos, mesesPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
-import { comprasPossiveis, guardarComprovante, lerChave, lerDanfe, lerQrNfce, mascararDoc, type Comprovante } from './comprovantes'
+import { comprasPossiveis, guardarComprovante, lerChave, lerDanfe, lerQrNfce, mascararDoc, urlSefaz, type Comprovante } from './comprovantes'
 import { irpfPfDoAno, reciboCompleto } from './irpfPf'
 import { chaveDescricao } from './banco'
 
@@ -158,6 +158,13 @@ describe('comprovantes', () => {
     const offline = lerQrNfce(`http://nfce.sefaz.pr.gov.br/nfce/qrcode?p=${CHAVE}|2|1|19|312.48|6a6b|1|ABCDEF`)
     expect(offline).toMatchObject({ dia: '2026-10-19', valor: 312.48 })
     expect(lerQrNfce('https://exemplo.com')).toBeNull()
+  })
+
+  it('só guarda link de consulta de site do governo', () => {
+    expect(lerQrNfce(`https://golpe.com/qrcode?p=${CHAVE}|2|1|1|ABCDEF0123`)).toMatchObject({ url: '' })
+    expect(urlSefaz('https://nfce.fazenda.sp.gov.br.golpe.com/x')).toBe('')
+    expect(urlSefaz('javascript:alert(1)')).toBe('')
+    expect(urlSefaz('http://nfce.sefaz.pr.gov.br/nfce/qrcode?p=1')).toBe('http://nfce.sefaz.pr.gov.br/nfce/qrcode?p=1')
   })
 
   it('lê loja, total e itens do PDF da nota', () => {

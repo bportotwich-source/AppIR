@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import type { TelaProps } from '../App'
-import { enviarBackup, lerBackup } from '../core/store'
+import { BackupComSenha, enviarBackup, lerBackup } from '../core/store'
 import { CampoAbertura } from '../componentes/CampoAbertura'
 import { brl, LIMITE_ANUAL, limiteAnual } from '../core/relatorio'
 import { instalado } from '../core/armazenamento'
 import { dataCurta, lerValor } from '../core/formato'
-import { cadastrarDigital, desligarCofre, digitalDisponivel, ler as lerTrava, ligarCofre, prepararDigitalNoCofre, removerDigital, removerTrava } from '../core/trava'
-import FolhaCofre from '../componentes/FolhaCofre'
+import { cadastrarDigital, conferirPin, desligarCofre, digitalDisponivel, ler as lerTrava, ligarCofre, prepararDigitalNoCofre, removerDigital, removerTrava } from '../core/trava'
+import FolhaCofre, { type AcaoCofre } from '../componentes/FolhaCofre'
+import FolhaBackup from '../componentes/FolhaBackup'
 import { nomesPerfis, separarRetiradasDoTitular } from '../core/pf'
 
 export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }: TelaProps) {
   const [trava, setTrava] = useState(lerTrava)
   const [podeDigital, setPodeDigital] = useState(false)
   const [avisoTrava, setAvisoTrava] = useState('')
-  const [folhaCofre, setFolhaCofre] = useState<'ligar' | 'desligar' | null>(null)
+  const [folhaCofre, setFolhaCofre] = useState<AcaoCofre | null>(null)
+  // Fazer backup (escolher senha) ou restaurar um arquivo com senha.
+  const [folhaBackup, setFolhaBackup] = useState<{ arquivo?: File } | null>(null)
   useEffect(() => {
     digitalDisponivel().then(setPodeDigital)
   }, [])
@@ -32,39 +35,51 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
     }
   }
 
+  // Mudar a proteção pede o PIN, contando as tentativas como na tela de abrir.
+  async function exigirPin(pin: string) {
+    const r = await conferirPin(pin)
+    if (!r.ok) throw new Error(r.bloqueadaAte ? 'Muitas tentativas. Espere 5 minutos.' : 'PIN incorreto.')
+  }
+
   async function cofre(pin: string) {
+    await exigirPin(pin)
     if (folhaCofre === 'ligar') {
       const { digital } = await ligarCofre(pin, banco)
       setAvisoTrava(trava?.digital && !digital
         ? 'Dados criptografados. Este aparelho não consegue abrir dados criptografados com a digital, então o app vai pedir o PIN.'
         : 'Dados criptografados neste celular.')
     } else {
-      await desligarCofre(banco)
+      if (trava?.cofre) await desligarCofre(banco)
+      if (folhaCofre === 'tirarPin') removerTrava()
       setAvisoTrava('')
     }
     setTrava(lerTrava())
     setFolhaCofre(null)
   }
 
-  async function desligarPin() {
-    if (trava?.cofre) await desligarCofre(banco)
-    removerTrava()
-    setTrava(null)
-    setAvisoTrava('')
+  async function backup(senha: string) {
+    if (folhaBackup?.arquivo) {
+      const novo = await lerBackup(folhaBackup.arquivo, senha)
+      setFolhaBackup(null)
+      substituir(novo)
+      return
+    }
+    const novo = await enviarBackup(banco, senha)
+    setFolhaBackup(null)
+    if (novo) mudar(novo)
   }
 
-  async function baixarBackup() {
-    const novo = await enviarBackup(banco)
-    if (novo) mudar(novo)
+  function substituir(novo: typeof banco) {
+    if (confirm(`Substituir os dados deste celular por ${novo.movimentacoes.length} movimentações do backup?`)) mudar(novo)
   }
 
   async function restaurar(arquivo: File | undefined) {
     if (!arquivo) return
     try {
-      const novo = await lerBackup(arquivo)
-      if (confirm(`Substituir os dados deste celular por ${novo.movimentacoes.length} movimentações do backup?`)) mudar(novo)
+      substituir(await lerBackup(arquivo))
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Backup inválido.')
+      if (e instanceof BackupComSenha) setFolhaBackup({ arquivo })
+      else alert(e instanceof Error ? e.message : 'Backup inválido.')
     }
   }
 
@@ -151,7 +166,7 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
           {trava ? (
             <>
               <button onClick={criarPin}>Trocar PIN</button>
-              <button onClick={desligarPin}>Desligar PIN</button>
+              <button onClick={() => setFolhaCofre('tirarPin')}>Desligar PIN</button>
             </>
           ) : (
             <button onClick={criarPin}>Proteger com PIN</button>
@@ -170,19 +185,20 @@ export default function Ajustes({ banco, mudar, ir, criarPin, dadosProtegidos }:
           {instalado() || dadosProtegidos
             ? 'O navegador foi avisado para não apagá-los.'
             : 'Instale o app na tela de início para o navegador não apagá-los.'}{' '}
-          {banco.ultimoBackup ? `Último backup em ${dataCurta(banco.ultimoBackup.slice(0, 10))}.` : 'Você ainda não fez backup.'}
-          {trava?.cofre && ' O arquivo de backup sai sem criptografia: guarde num lugar só seu.'}
+          {banco.ultimoBackup ? `Último backup em ${dataCurta(banco.ultimoBackup.slice(0, 10))}.` : 'Você ainda não fez backup.'}{' '}
+          O arquivo sai protegido por uma senha que você escolhe.
         </p>
         <div className="botoes">
-          <button onClick={baixarBackup}>Fazer backup</button>
+          <button onClick={() => setFolhaBackup({})}>Fazer backup</button>
           <label className="botao">
-            <input type="file" accept="application/json" onChange={(e) => restaurar(e.target.files?.[0])} />
+            <input type="file" accept="application/json" onChange={(e) => { restaurar(e.target.files?.[0]); e.target.value = '' }} />
             Restaurar backup
           </label>
         </div>
       </section>
 
-      {folhaCofre && <FolhaCofre ligar={folhaCofre === 'ligar'} fechar={() => setFolhaCofre(null)} confirmar={cofre} />}
+      {folhaCofre && <FolhaCofre acao={folhaCofre} comCofre={!!trava?.cofre} fechar={() => setFolhaCofre(null)} confirmar={cofre} />}
+      {folhaBackup && <FolhaBackup abrir={!!folhaBackup.arquivo} fechar={() => setFolhaBackup(null)} confirmar={backup} />}
     </main>
   )
 }
