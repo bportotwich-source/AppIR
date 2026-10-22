@@ -3,7 +3,7 @@ import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
 import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
-import { dasDoAno, irpfDoAno, PRESUNCAO } from '../core/saidas'
+import { dasDoAno, irpfDoAno, irpfPorMes, PRESUNCAO } from '../core/saidas'
 
 const DIA_MS = 86_400_000
 
@@ -54,6 +54,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
   }
 
   const renda = irpfDoAno(banco, ano)
+  const rendaMeses = irpfPorMes(banco, ano).map((r, i) => ({ ...r, mes: i + 1 })).filter((r) => r.receita > 0 || r.despesas > 0)
   const dasAbertos = dasDoAno(banco, ano).filter((m) => m.estado === 'atrasado').map((m) => MESES[m.mes - 1])
   const juntar = (l: string[]) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} e ${l[l.length - 1]}` : l[0])
 
@@ -170,6 +171,27 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
             renda.despesas + renda.retiradas > 0 && <button className="link" onClick={() => ir('saidas')}>Ver as saídas separadas</button>
           )}
         </div>
+        {rendaMeses.length > 0 && (
+          <details className="irpf-meses">
+            <summary>Ver mês a mês</summary>
+            <table>
+              <caption className="so-leitor">Imposto de Renda mês a mês, só para acompanhar</caption>
+              <thead>
+                <tr><th scope="col">Mês</th><th scope="col">Isento</th><th scope="col">Tributável</th></tr>
+              </thead>
+              <tbody>
+                {rendaMeses.map((r) => (
+                  <tr key={r.mes}>
+                    <th scope="row">{MESES[r.mes - 1][0].toUpperCase() + MESES[r.mes - 1].slice(1, 3)}</th>
+                    <td className="mm-num">{brl(r.isenta)}</td>
+                    <td className="mm-num" data-tributavel={r.tributavel > 0}>{brl(r.tributavel)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p>Só para acompanhar. A declaração usa a conta do ano, e a soma dos meses pode ser diferente dela: um mês com mais despesa que receita não desconta dos outros.</p>
+          </details>
+        )}
         <p className="nota-ir">
           A parte isenta vai em Rendimentos Isentos, como lucro de titular de microempresa do Simples Nacional. A tributável vai em Rendimentos Tributáveis Recebidos de PJ, com o CNPJ do MEI. É uma estimativa: confira com um contador antes de declarar.
         </p>
