@@ -1,0 +1,47 @@
+name: APK
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap sync android
+      - run: ./gradlew assembleRelease --no-daemon
+        working-directory: app/android
+      - run: cp android/app/build/outputs/apk/release/app-release.apk meu-mei.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meu-mei-apk
+          path: app/meu-mei.apk
+      # No main, o APK fica num link fixo para baixar direto no celular:
+      # https://github.com/<repo>/releases/download/apk/meu-mei.apk
+      - if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view apk >/dev/null 2>&1 || gh release create apk --title "Meu MEI para Android" --notes "APK mais recente, gerado a cada mudança no main."
+          gh release upload apk meu-mei.apk --clobber
