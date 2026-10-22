@@ -136,6 +136,39 @@ export function marcar(
   return { ...banco, movimentacoes, regras }
 }
 
+/** Corrige uma entrada já marcada. Com `todas`, aplica a todas as entradas
+ * do mesmo pagador, de qualquer ano, e lembra para as próximas. */
+export function corrigirEntrada(
+  banco: Banco,
+  id: string,
+  faturamento: boolean | null,
+  categoria: Categoria | null,
+  todas: boolean,
+): Banco {
+  const alvo = banco.movimentacoes.find((r) => r.id === id)
+  if (!alvo) return banco
+  const chave = chaveDescricao(alvo.descricao)
+  const cat = faturamento ? categoria : null
+  const movimentacoes = banco.movimentacoes.map((r) =>
+    r.id === id || (todas && r.tipo === 'entrada' && chaveDescricao(r.descricao) === chave)
+      ? { ...r, faturamento, categoria: cat }
+      : r,
+  )
+  const regras = { ...banco.regras }
+  if (todas) {
+    if (faturamento === null) delete regras[chave]
+    else regras[chave] = { faturamento, categoria: cat }
+  }
+  return { ...banco, movimentacoes, regras }
+}
+
+/** Esquece o pagador lembrado. As entradas já marcadas ficam como estão. */
+export function esquecerRegra(banco: Banco, chave: string): Banco {
+  const regras = { ...banco.regras }
+  delete regras[chave]
+  return { ...banco, regras }
+}
+
 export function entradas(banco: Banco, ano: number, mes?: number): Registro[] {
   const prefixo = mes ? `${ano}-${String(mes).padStart(2, '0')}-` : `${ano}-`
   return banco.movimentacoes

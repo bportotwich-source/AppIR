@@ -135,6 +135,33 @@
       "title": "Desfazer DAS marcado",
       "is_interactive": true,
       "radius": 36
+    },
+    "Movimentacoes.dc.html": {
+      "x": 0,
+      "y": 2760,
+      "w": 390,
+      "h": 1023,
+      "title": "Movimentações do ano",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "CorrigirMovimentacao.dc.html": {
+      "x": 470,
+      "y": 2760,
+      "w": 390,
+      "h": 844,
+      "title": "Corrigir movimentação",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "Pagadores.dc.html": {
+      "x": 940,
+      "y": 2760,
+      "w": 390,
+      "h": 844,
+      "title": "Pagadores lembrados",
+      "is_interactive": true,
+      "radius": 36
     }
   },
   "order": [
@@ -151,7 +178,10 @@
     "DasIr.dc.html",
     "Saidas.dc.html",
     "FolhaDas.dc.html",
-    "FolhaDasDesfazer.dc.html"
+    "FolhaDasDesfazer.dc.html",
+    "Movimentacoes.dc.html",
+    "CorrigirMovimentacao.dc.html",
+    "Pagadores.dc.html"
   ],
   "notes": {
     "titulo": {
@@ -167,6 +197,13 @@
       "text": "Alternativas ao medidor",
       "kind": "title1",
       "maxW": 860
+    },
+    "melhorias": {
+      "x": 0,
+      "y": 2460,
+      "text": "Correções, declaração e relatório",
+      "kind": "title1",
+      "maxW": 2270
     }
   },
   "designSystems": [

@@ -58,6 +58,8 @@ export default function Revisar({ banco, ano, mudar, ir }: TelaProps) {
         </span>
         <span className="chave-trilho" aria-hidden="true"><span /></span>
       </button>
+
+      <button className="link" onClick={() => ir('movimentacoes')}>Marcou algo errado? Ver todas as movimentações</button>
     </main>
   )
 }

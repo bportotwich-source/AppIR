@@ -114,7 +114,10 @@ export default function Importar({ banco, ano, mudar, ir, historico }: TelaProps
       )}
 
       <section id="historico" ref={refHistorico} aria-labelledby="hist-t" className="historico">
-        <h2 id="hist-t">Extratos importados</h2>
+        <div className="titulo-linha">
+          <h2 id="hist-t">Extratos importados</h2>
+          {meses.length > 0 && <button className="link" onClick={() => ir('movimentacoes')}>Ver movimentações</button>}
+        </div>
         {meses.length === 0 ? (
           <p className="apoio">Nenhum extrato de {ano} ainda.</p>
         ) : (

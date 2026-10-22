@@ -334,3 +334,43 @@ button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: f
 .folha-acoes .principal { width: 100%; }
 button.principal.perigo { background: var(--danger); }
 .folha-cancelar { min-height: 48px; border: 0; background: none; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
+
+/* Movimentações: lista do ano com busca, filtro e correção. */
+.revisar > button.link, .titulo-linha button.link { min-height: 44px; font-weight: 600; text-decoration: none; }
+.movs { gap: 18px; }
+.movs-abas { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 14px; background: #eef1f0; }
+.movs-abas button { min-height: 44px; border: 0; border-radius: 10px; background: none; font-weight: 600; font-size: 14px; color: var(--ink-muted); cursor: pointer; }
+.movs-abas button[aria-selected="true"] { background: #ffffff; color: var(--ink); box-shadow: 0 1px 3px rgba(12,42,39,.18); }
+.movs-filtros { display: flex; flex-direction: column; gap: 10px; }
+.movs-filtros .graficos { margin: 0; }
+.movs-busca { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 12px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); color: var(--ink-muted); }
+.movs-busca:focus-within { box-shadow: 0 0 0 2px var(--brand); }
+.movs-busca input { flex: 1; min-width: 0; min-height: 44px; border: 0; background: none; outline: none; font-size: 16px; color: var(--ink); }
+.movs-resumo { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.movs-mes h2 { margin: 0 0 8px; font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.movs-mes ul { list-style: none; margin: 0; padding: 0; border-radius: 18px; background: #ffffff; box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+.movs-mes li + li { border-top: 1px solid var(--line); }
+.movs-mes li:not(.pagador) > button { width: 100%; min-height: 64px; padding: 10px 16px; border: 0; background: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; cursor: pointer; color: var(--ink); }
+.movs-mes li:not(.pagador) > button:active { background: var(--surface); }
+.movs-nome { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.movs-nome b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.movs-nome > span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.movs-valor { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex: none; }
+.movs-valor b { font-size: 14px; }
+.movs-valor b[data-tipo="saida"] { color: var(--ink-muted); }
+.movs-marca { align-self: flex-start; padding: 2px 8px; border-radius: 999px; font-size: 12px; line-height: 16px; font-weight: 600; background: #eef1f0; color: var(--ink-muted); }
+.movs-valor .movs-marca { align-self: flex-end; }
+.movs-marca[data-marca="servicos"] { background: #e6f4f1; color: #0f766e; }
+.movs-marca[data-marca="comercio"] { background: #eef0fe; color: #4338ca; }
+.movs-marca[data-marca="revisar"], .movs-marca[data-marca="separar"] { background: #fffbeb; color: #92400e; }
+.movs-marca[data-marca="despesa"], .movs-marca[data-marca="das"] { background: #e6f4f1; color: #0f766e; }
+.movs-mes li.pagador { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 10px 8px 10px 16px; }
+.movs-mes li.pagador .movs-nome { gap: 6px; }
+.esquecer { min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--danger); font-weight: 600; cursor: pointer; flex: none; }
+.folha-opcoes { margin: 0 0 14px; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px; }
+.folha-opcoes label { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.folha-opcoes label[data-marcada="true"] { box-shadow: 0 0 0 2px var(--brand); background: var(--brand-tint); }
+.folha-opcoes input { width: 20px; height: 20px; margin: 0; accent-color: var(--brand); flex: none; }
+.folha-opcoes label > span { display: flex; flex-direction: column; }
+.folha-opcoes label > span span { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.folha form { max-height: 92vh; overflow-y: auto; }

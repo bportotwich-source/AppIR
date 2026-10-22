@@ -32,6 +32,25 @@ export function marcarSaida(banco: Banco, chave: string, ehDespesa: boolean): Ba
   }
 }
 
+/** Corrige uma saída. Com `todas`, vale para todas do mesmo destino e para as próximas. */
+export function corrigirSaida(banco: Banco, id: string, ehDespesa: boolean | null, todas: boolean): Banco {
+  const alvo = banco.movimentacoes.find((r) => r.id === id)
+  if (!alvo || ehDas(alvo)) return banco
+  const chave = chaveDescricao(alvo.descricao)
+  if (todas && ehDespesa !== null) return marcarSaida(banco, chave, ehDespesa)
+  return {
+    ...banco,
+    movimentacoes: banco.movimentacoes.map((r) => (r.id === id ? { ...r, despesa: ehDespesa } : r)),
+  }
+}
+
+/** Esquece o destino lembrado. As saídas já separadas ficam como estão. */
+export function esquecerRegraSaida(banco: Banco, chave: string): Banco {
+  const regrasSaida = { ...banco.regrasSaida }
+  delete regrasSaida[chave]
+  return { ...banco, regrasSaida }
+}
+
 export interface GrupoSaida {
   chave: string
   nome: string

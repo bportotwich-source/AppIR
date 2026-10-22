@@ -22,3 +22,6 @@ export function pagador(descricao: string): { nome: string; operacao: string } {
     .trim()
   return { nome: resto || descricao, operacao: m ? m[0].trim() : 'Entrada' }
 }
+
+/** "1.234,56" ou "80,9" vira número; texto sem número vira 0. */
+export const lerValor = (texto: string) => Number(texto.replace(/[^\d,.]/g, '').replace(/\.(?=\d{3})/g, '').replace(',', '.')) || 0

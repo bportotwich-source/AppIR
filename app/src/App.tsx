@@ -11,9 +11,10 @@ import Revisar from './telas/Revisar'
 import Declaracao from './telas/Declaracao'
 import Ajustes from './telas/Ajustes'
 import Saidas from './telas/Saidas'
+import Movimentacoes from './telas/Movimentacoes'
 import Icone from './componentes/Icone'
 
-export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes' | 'saidas'
+export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes' | 'saidas' | 'movimentacoes' | 'pagadores'
 
 export interface TelaProps {
   banco: Banco
@@ -101,7 +102,7 @@ export default function App() {
   }
   const anos = [...new Set([new Date().getFullYear(), ...anosDisponiveis(banco)])].sort((a, b) => b - a)
   const props: TelaProps = {
-    banco, ano, mudar, ir: setAba, criarPin: () => setCriandoPin(true), dadosProtegidos,
+    banco, ano, mudar, ir: (nova) => { setAba(nova); window.scrollTo(0, 0) }, criarPin: () => setCriandoPin(true), dadosProtegidos,
     instalar: pedido ? () => void pedido.prompt().then(() => setPedido(null)) : null,
   }
   const nPendentes = pendentes(banco, ano)
@@ -115,9 +116,11 @@ export default function App() {
       {aba === 'extratos' && <Importar {...props} historico />}
       {aba === 'ajustes' && <Ajustes {...props} />}
       {aba === 'saidas' && <Saidas {...props} />}
+      {aba === 'movimentacoes' && <Movimentacoes {...props} />}
+      {aba === 'pagadores' && <Movimentacoes {...props} pagadores />}
 
-      {/* Ajustes e Saídas são telas de dentro de outras, com botão de voltar: sem a barra de abas. */}
-      {aba !== 'ajustes' && aba !== 'saidas' && (
+      {/* Telas de dentro de outras, com botão de voltar: sem a barra de abas. */}
+      {!['ajustes', 'saidas', 'movimentacoes', 'pagadores'].includes(aba) && (
         <nav className="abas" aria-label="Seções">
           <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}><Icone nome="inicio" />Início</button>
           <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>
