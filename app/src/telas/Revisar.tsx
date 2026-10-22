@@ -19,6 +19,14 @@ export default function Revisar({ banco, ano, mudar }: TelaProps) {
       <h1>Revisar entradas</h1>
       <p className="apoio">Pix de pagadores que o app ainda não conhece</p>
 
+      <label className="chave">
+        <input type="checkbox" checked={lembrar} onChange={(e) => setLembrar(e.target.checked)} />
+        <span>
+          <b>Lembrar para o mesmo pagador</b>
+          <span>Próximos Pix dele já entram classificados</span>
+        </span>
+      </label>
+
       <ReviewDeck
         entries={fila.map((r) => {
           const p = pagador(r.descricao)
@@ -36,14 +44,6 @@ export default function Revisar({ banco, ano, mudar }: TelaProps) {
         doneTitle="Tudo revisado"
         doneText="Os totais já incluem as entradas que você marcou."
       />
-
-      <label className="chave">
-        <input type="checkbox" checked={lembrar} onChange={(e) => setLembrar(e.target.checked)} />
-        <span>
-          <b>Lembrar para o mesmo pagador</b>
-          <span>Próximos Pix dele já entram classificados</span>
-        </span>
-      </label>
     </main>
   )
 }

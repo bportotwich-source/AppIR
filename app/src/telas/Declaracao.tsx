@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
-import { alerta, brl, pendentes, total, totaisAno } from '../core/relatorio'
+import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
 
 export default function Declaracao({ banco, ano, ir }: TelaProps) {
   const [empregado, setEmpregado] = useState(false)
@@ -10,7 +10,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
   const nPendentes = pendentes(banco, ano)
   const meses = new Set(banco.movimentacoes.filter((r) => r.data.startsWith(`${ano}-`)).map((r) => Number(r.data.slice(5, 7))))
   const faltam = Array.from({ length: 12 }, (_, i) => i + 1).filter((m) => !meses.has(m))
-  const limite = alerta(total(t))
+  const limite = alerta(total(t), limiteDoAno(banco, ano))
 
   const texto =
     `DASN-SIMEI ${ano}\n` +
@@ -53,7 +53,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
         <ul className="checagem">
           <li data-ok={limite.nivel === 'ok' || limite.nivel === 'atencao' || limite.nivel === 'perigo'}>{limite.mensagem}</li>
           <li data-ok={nPendentes === 0}>
-            {nPendentes === 0 ? 'Todas as entradas revisadas' : <button className="link" onClick={() => ir('revisar')}>{nPendentes} entradas sem revisão · Revisar agora</button>}
+            {nPendentes === 0 ? 'Todas as entradas revisadas' : <button className="link" onClick={() => ir('revisar')}>{nPendentes} {nPendentes === 1 ? 'entrada sem revisão' : 'entradas sem revisão'} · Revisar agora</button>}
           </li>
           <li data-ok={faltam.length === 0}>
             {faltam.length === 0 ? 'Extratos dos 12 meses importados' : `Faltam extratos de ${faltam.map((m) => MESES[m - 1]).join(', ')}`}

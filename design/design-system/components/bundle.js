@@ -89,7 +89,7 @@
     }
     [warnAt, dangerAt].forEach(function (m, k) {
       var a = A0 + SW * m;
-      var m0 = polar(cx, cy, r - 9, a), m1 = polar(cx, cy, r + 9, a), lp = polar(cx, cy, r - 38, a);
+      var m0 = polar(cx, cy, r - 9, a), m1 = polar(cx, cy, r + 9, a), lp = polar(cx, cy, r + 21, a);
       kids.push(h('line', { key: 'm' + k, x1: m0[0], y1: m0[1], x2: m1[0], y2: m1[1], stroke: t.ground, strokeWidth: 3 }));
       kids.push(h('text', { key: 'l' + k, x: lp[0], y: lp[1] + 4, textAnchor: 'middle', fontSize: 10, fontWeight: 600, fill: t.muted, fontFamily: 'Instrument Sans, system-ui, sans-serif' }, Math.round(m * 100) + '%'));
     });
@@ -441,6 +441,8 @@
     kids.push(h('circle', { key: 'dot', cx: X(sel), cy: Y(selVal), r: 6, fill: lineCol, stroke: t.ground, strokeWidth: 3 }));
     kids.push(h('rect', {
       key: 'hit', x: 0, y: 0, width: W, height: H, fill: 'transparent', tabIndex: 0, style: { cursor: 'crosshair', touchAction: 'none' },
+      role: 'slider', 'aria-valuemin': 1, 'aria-valuemax': 12, 'aria-valuenow': sel,
+      'aria-valuetext': MESES[sel - 1] + ': R$ ' + fmt(selVal, 0) + (selProj ? ', projeção' : ''),
       'aria-label': 'Faturamento acumulado. Use as setas para ver cada mês.',
       onPointerMove: pick, onPointerDown: pick, onPointerLeave: function () { setScrub(null); },
       onKeyDown: function (e) {
@@ -463,7 +465,7 @@
       h('span', { 'aria-live': 'polite', style: { fontSize: 13, lineHeight: '18px', color: t.muted, minHeight: 18 } },
         (selProj ? 'Projeção até ' : 'Até ') + MESES[sel - 1].toLowerCase() + ': ' + 'R$ ' + fmt(selVal, 0) + (selProj ? ' no ritmo atual' : '')
       ),
-      h('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', role: 'img', 'aria-label': 'Acumulado de R$ ' + fmt(total, 0) + ' até ' + MESES[last - 1] + '; projeção de R$ ' + fmt(proj, 0) + ' em dezembro; limite R$ ' + fmt(limit, 0), style: { display: 'block', overflow: 'visible' } }, kids),
+      h('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', role: 'group', 'aria-label': 'Acumulado de R$ ' + fmt(total, 0) + ' até ' + MESES[last - 1] + '; projeção de R$ ' + fmt(proj, 0) + ' em dezembro; limite R$ ' + fmt(limit, 0), style: { display: 'block', overflow: 'visible' } }, kids),
       h('div', { style: { display: 'flex', gap: 16, fontSize: 12, lineHeight: '16px', color: t.muted, flexWrap: 'wrap' } },
         h('span', { style: { display: 'flex', alignItems: 'center', gap: 6 } }, h('i', { 'aria-hidden': 'true', style: { width: 14, height: 3, borderRadius: 2, background: lineCol } }), 'Acumulado'),
         h('span', { style: { display: 'flex', alignItems: 'center', gap: 6 } }, h('i', { 'aria-hidden': 'true', style: { width: 14, height: 0, borderTop: '2px dashed ' + lineCol } }), 'Projeção: R$ ' + fmt(proj, 0)),
@@ -535,7 +537,7 @@
           h('span', { style: { fontSize: 14, color: t.muted } }, 'de R$ ' + fmt(limit, 0))
         )
       ),
-      h('svg', { viewBox: '0 0 ' + W + ' ' + (TY + TH + 22), width: '100%', role: 'img', 'aria-label': 'Usado R$ ' + fmt(total, 0) + ', projeção R$ ' + fmt(proj, 0) + ', limite R$ ' + fmt(limit, 0), style: { display: 'block', overflow: 'visible' } },
+      h('svg', { viewBox: '0 0 ' + W + ' ' + (TY + TH + 22), width: '100%', role: 'group', 'aria-label': 'Usado R$ ' + fmt(total, 0) + ', projeção R$ ' + fmt(proj, 0) + ', limite R$ ' + fmt(limit, 0), style: { display: 'block', overflow: 'visible' } },
         h('defs', null,
           h('clipPath', { id: uid + 'c' }, h('rect', { x: 0, y: TY, width: W, height: TH, rx: 10 })),
           h('pattern', { id: uid + 'p', width: 7, height: 7, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' },

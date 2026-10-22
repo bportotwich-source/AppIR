@@ -1,11 +1,19 @@
 import { useState } from 'react'
 import type { TelaProps } from '../App'
 import BarrasRastro from '../componentes/BarrasRastro'
-import { LIMITE_ANUAL, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
-import { MESES } from '../core/formato'
+import { PerguntaAbertura } from '../componentes/CampoAbertura'
+import { brl, LIMITE_ANUAL, limiteDoAno, pendentes, projecaoAno, total, totaisAno, totaisPorMes } from '../core/relatorio'
+import { dataCurta, MESES, pagador } from '../core/formato'
+import { iniciais, proximosPrazos, quando } from '../core/agenda'
+import { entradas } from '../core/banco'
+import Icone from '../componentes/Icone'
+import { dadosEmRisco, ehIphone } from '../core/armazenamento'
+import { backupAtrasado, enviarBackup } from '../core/store'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
+
+const dataCurtaHoje = () => dataCurta(new Date().toLocaleDateString('sv-SE'))
 
 const CURTO = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 
@@ -70,7 +78,7 @@ interface Props extends TelaProps {
   mudarAno: (ano: number) => void
 }
 
-export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
+export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosProtegidos, instalar }: Props) {
   const { LimitGauge, AccumulatedChart, LimitTrack, SplitBar, MonthChart } = window.MeuMEI
   const [visao, setVisao] = useEscolha<Visao>('meu-mei:visao', VISOES)
   const [grafico, setGrafico] = useEscolha<Grafico>('meu-mei:grafico', GRAFICOS)
@@ -81,6 +89,22 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
   const projecao = projecaoAno(banco, ano)
   const dadosMeses = meses.map((m, i) => ({ m: CURTO[i], s: m.servicos, c: m.comercio }))
   const nPendentes = pendentes(banco, ano)
+  const limite = limiteDoAno(banco, ano)
+  const diasBackup = backupAtrasado(banco)
+  const filaPendente = entradas(banco, ano).filter((r) => r.faturamento === null || (r.faturamento && r.categoria === null))
+  const valorPendente = filaPendente.reduce((soma, r) => soma + r.valor, 0)
+  const pagadores = [...new Set(filaPendente.map((r) => iniciais(pagador(r.descricao).nome)))].slice(0, 4)
+  const prazos = proximosPrazos()
+  const [backupFalhou, setBackupFalhou] = useState(false)
+
+  async function fazerBackup() {
+    try {
+      const novo = await enviarBackup(banco)
+      if (novo) mudar(novo)
+    } catch {
+      setBackupFalhou(true)
+    }
+  }
 
   return (
     <main>
@@ -88,26 +112,35 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         <div className="faixa-topo">
           <span className="marca">Meu MEI</span>
           <label className="so-leitor" htmlFor="ano">Ano</label>
-          <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
-            {anos.map((a) => <option key={a}>{a}</option>)}
-          </select>
+          <div className="faixa-acoes">
+            <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
+              {anos.map((a) => <option key={a}>{a}</option>)}
+            </select>
+            <button className="engrenagem" aria-label="Ajustes" onClick={() => ir('ajustes')}>
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+          </div>
         </div>
         <p className="faixa-nota">
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
+          {limite !== LIMITE_ANUAL && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
         </p>
         <h1>Seu ano até aqui</h1>
         <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
-          {visao === 'arco' && <LimitGauge value={total(t)} limit={LIMITE_ANUAL} tone="dark" size={280} />}
-          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
-          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={LIMITE_ANUAL} tone="dark" />}
+          {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={280} />}
+          {visao === 'curva' && <AccumulatedChart data={dadosMeses} limit={limite} tone="dark" />}
+          {visao === 'barra' && <LimitTrack data={dadosMeses} limit={limite} tone="dark" />}
         </div>
         {/* Curva e Barra já mostram a projeção. */}
         {visao === 'arco' && projecao !== null && (
           <p className="projecao">
             No ritmo atual, {ano} fecha perto de <b>{reais(projecao)}</b>.{' '}
-            {projecao <= LIMITE_ANUAL
-              ? `Fica dentro do limite, com folga de ${reais(LIMITE_ANUAL - projecao)}.`
+            {projecao <= limite
+              ? `Fica dentro do limite, com folga de ${reais(limite - projecao)}.`
               : 'Passa do limite: vale falar com um contador.'}
           </p>
         )}
@@ -123,10 +156,44 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
         )}
 
         {nPendentes > 0 && (
-          <button className="ticket-pendente" onClick={() => ir('revisar')}>
-            <b>{nPendentes} {nPendentes === 1 ? 'entrada para revisar' : 'entradas para revisar'}</b>
-            <span>Fora do total até você decidir · Revisar agora</span>
+          <button className="ticket" onClick={() => ir('revisar')} aria-label={`${nPendentes} Pix esperando revisão, ${brl(valorPendente)} ainda fora do total. Abrir revisão.`}>
+            <span className="ticket-rostos" aria-hidden="true">
+              {pagadores.map((p, i) => <span key={p + i} data-i={i}>{p}</span>)}
+            </span>
+            <span className="ticket-corte" aria-hidden="true" />
+            <span className="ticket-texto">
+              <span className="rotulo">{nPendentes} {nPendentes === 1 ? 'pendente' : 'pendentes'}</span>
+              <b>Pix esperando você</b>
+              <span>{brl(valorPendente)} ainda fora do total</span>
+            </span>
+            <span className="ticket-seta" aria-hidden="true"><Icone nome="seta" tamanho={18} /></span>
           </button>
+        )}
+
+        {comExtrato && banco.abertura === undefined && <PerguntaAbertura valor={banco.abertura} mudar={(abertura) => mudar({ ...banco, abertura })} />}
+
+        {diasBackup !== null && (
+          <section className="lembrete" aria-labelledby="backup-titulo">
+            <b id="backup-titulo">{diasBackup === Infinity ? 'Você ainda não fez backup' : `Último backup há ${diasBackup} dias`}</b>
+            <span>Se o celular quebrar ou o navegador limpar os dados, os extratos e as marcações somem. Guarde uma cópia no Drive, no WhatsApp ou no e-mail.</span>
+            <button className="principal" onClick={fazerBackup}>Fazer backup agora</button>
+            {backupFalhou && <span role="alert">Não deu para gerar o backup. Tente pela tela Ajustes.</span>}
+          </section>
+        )}
+
+        {comExtrato && dadosEmRisco(dadosProtegidos) && (
+          <section className="lembrete" aria-labelledby="instalar-titulo">
+            <b id="instalar-titulo">Instale o app na tela de início</b>
+            {ehIphone() ? (
+              <span>No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. Aberto pelo navegador, o iPhone pode apagar os dados depois de alguns dias sem uso.</span>
+            ) : (
+              <span>
+                Assim o navegador não apaga seus dados quando faltar espaço no celular.
+                {!instalar && ' No Chrome, abra o menu ⋮ e toque em Instalar app.'}
+              </span>
+            )}
+            {instalar && <button className="principal" onClick={instalar}>Instalar app</button>}
+          </section>
         )}
 
         {comExtrato && (
@@ -150,6 +217,24 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno }: Props) {
             )}
           </section>
         )}
+
+        <section aria-labelledby="prazos-titulo">
+          <h2 id="prazos-titulo">Próximos prazos</h2>
+          <ol className="prazos">
+            <li data-hoje="true">
+              <span className="marco" aria-hidden="true" />
+              <b className="mm-num">{dataCurtaHoje()}</b>
+              <span>Hoje</span>
+            </li>
+            {prazos.map((p) => (
+              <li key={p.titulo}>
+                <span className="marco" aria-hidden="true" />
+                <b className="mm-num">{dataCurta(p.data)}</b>
+                <span>{p.titulo}, {quando(p.dias)}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
     </main>
   )

@@ -37,14 +37,15 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #2dd
 <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#2dd4bf"/><rect x="8" y="17" width="4" height="8" rx="2" fill="#0c2a27"/><rect x="14" y="12" width="4" height="13" rx="2" fill="#0c2a27"/><rect x="20" y="7" width="4" height="18" rx="2" fill="#0c2a27"/></svg>
 <span style="font-weight: 600; font-size: 17px">Meu MEI</span>
 </div>
-<div style="position: relative">
+<div style="position: relative; display: flex; align-items: center">
 <label for="ano" class="so-leitor">Ano</label>
 <select id="ano" style="appearance: none; -webkit-appearance: none; min-height: 40px; padding: 0 34px 0 16px; border-radius: 999px; border: 1px solid rgba(236,241,239,0.24); background: rgba(236,241,239,0.08); color: #ecf1ef; font: inherit; font-weight: 600; cursor: pointer">
 <option>2026</option>
 <option>2025</option>
 </select>
-<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ecf1ef" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 14px; top: 13px; pointer-events: none"><path d="m6 9 6 6 6-6"/></svg>
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ecf1ef" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 62px; top: 13px; pointer-events: none"><path d="m6 9 6 6 6-6"/></svg>
 </div>
+<a href="Ajustes.dc.html" aria-label="Ajustes" style="margin-left: 8px; width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(236,241,239,0.24); background: rgba(236,241,239,0.08); color: #ecf1ef; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
 </div>
 
 <div style="position: relative; margin-top: 18px">
@@ -94,7 +95,7 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #2dd
 
 <section aria-labelledby="mes-t" style="display: flex; flex-direction: column; gap: 12px">
 <h2 id="mes-t" style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Mês a mês</h2>
-<x-import component-from-global-scope="MeuMEI.MonthBars" data="{{meses}}" selected="{{mesSel}}"></x-import>
+<x-import component-from-global-scope="MeuMEI.MonthChart" variant="calor" data="{{meses}}" selected="{{mesSel}}"></x-import>
 </section>
 
 <section aria-labelledby="prazo-t" style="display: flex; flex-direction: column; gap: 16px">

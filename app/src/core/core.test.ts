@@ -3,7 +3,9 @@ import { parseLinhas, valorBr } from './parser'
 import { bancoVazio, chaveDescricao, entradas, importar, marcar } from './banco'
 import { dataCurta, pagador } from './formato'
 import { parseCsv, parseOfx } from './arquivos'
-import { alerta, limiteProporcional, pendentes, projecaoAno, totaisAno, totaisPorMes } from './relatorio'
+import { alerta, limiteDoAno, limiteProporcional, pendentes, projecaoAno, textoLimite, totaisAno, totaisPorMes } from './relatorio'
+import { backupAtrasado } from './store'
+import { extratosDoAno, iniciais, proximosPrazos } from './agenda'
 
 // Mesmo layout de um extrato real do Nubank PJ (out/2026, texto como o pdf.js
 // extrai), com nomes e valores trocados.
@@ -213,5 +215,90 @@ CHARSET:1252
     expect(parseCsv('Data;Descrição;Valor\n21/10/2026;Pix recebido;1.433,48')).toEqual([
       { data: '2026-10-21', descricao: 'Pix recebido', valor: 1433.48, tipo: 'entrada' },
     ])
+  })
+})
+
+describe('ano de abertura', () => {
+  const banco = (abertura?: string | null) => ({ ...bancoVazio(), abertura })
+
+  it('usa o limite proporcional só no ano em que o MEI abriu', () => {
+    expect(limiteDoAno(banco('2026-10'), 2026)).toBe(20_250)
+    expect(limiteDoAno(banco('2026-10'), 2027)).toBe(81_000)
+    expect(limiteDoAno(banco(null), 2026)).toBe(81_000)
+    expect(limiteDoAno(banco(), 2026)).toBe(81_000)
+  })
+
+  it('alerta contra o limite proporcional', () => {
+    expect(alerta(19_000, 20_250).nivel).toBe('perigo')
+    expect(alerta(30_000, 20_250).mensagem).toContain('R$ 20.250,00')
+  })
+
+  it('explica o limite do ano', () => {
+    expect(textoLimite('2026-10', 2026)).toBe('Aberto em outubro de 2026. Limite de 2026: R$ 20.250,00 (3 meses × R$ 6.750,00).')
+    expect(textoLimite('2026-12', 2026)).toContain('(1 mês ×')
+    expect(textoLimite(null, 2026)).toBe('Limite de 2026: R$ 81.000,00, o ano inteiro.')
+    expect(textoLimite('2024-03', 2026)).toBe('Limite de 2026: R$ 81.000,00, o ano inteiro.')
+    expect(textoLimite(undefined, 2026)).toBe('')
+  })
+})
+
+describe('lembrete de backup', () => {
+  const mov = importar(bancoVazio(), [{ data: '2026-10-03', descricao: 'Pix', valor: 10, tipo: 'entrada' }]).banco
+  const agora = new Date('2026-10-22T12:00:00Z')
+
+  it('não lembra sem dados', () => {
+    expect(backupAtrasado(bancoVazio(), agora)).toBeNull()
+  })
+
+  it('lembra quem nunca fez backup', () => {
+    expect(backupAtrasado(mov, agora)).toBe(Infinity)
+  })
+
+  it('lembra só com mudanças desde o backup e depois de 14 dias', () => {
+    const feito = { ...mov, ultimoBackup: '2026-10-01T12:00:00Z' }
+    expect(backupAtrasado({ ...feito, alteradoEm: '2026-09-30T00:00:00Z' }, agora)).toBeNull()
+    expect(backupAtrasado({ ...feito, alteradoEm: '2026-10-20T00:00:00Z' }, agora)).toBe(21)
+    expect(backupAtrasado({ ...feito, ultimoBackup: '2026-10-15T12:00:00Z', alteradoEm: '2026-10-20T00:00:00Z' }, agora)).toBeNull()
+  })
+})
+
+describe('projeção no ano de abertura', () => {
+  it('conta a média só a partir do mês em que o MEI abriu', () => {
+    const movs = ['08', '09', '10'].map((m) => ({ data: `2026-${m}-05`, descricao: 'Pix', valor: 3_000, tipo: 'entrada' as const }))
+    const b = importar(bancoVazio(), movs).banco
+    const marcado = b.movimentacoes.reduce((acc, r) => marcar(acc, r.id, true, 'servicos'), b)
+    expect(projecaoAno(marcado, 2026)).toBe(10_800) // 9.000 em 10 meses desde jan, × 12
+    expect(projecaoAno({ ...marcado, abertura: '2026-08' }, 2026)).toBe(15_000) // 3.000 × 5 meses
+  })
+})
+
+describe('prazos e extratos', () => {
+  it('mostra o próximo DAS e a próxima DASN', () => {
+    expect(proximosPrazos(new Date(2026, 9, 22))).toEqual([
+      { data: '2026-11-20', titulo: 'DAS de outubro', dias: 29 },
+      { data: '2027-05-31', titulo: 'DASN-SIMEI 2026', dias: 221 },
+    ])
+    expect(proximosPrazos(new Date(2026, 0, 20))[0]).toEqual({ data: '2026-01-20', titulo: 'DAS de dezembro', dias: 0 })
+    expect(proximosPrazos(new Date(2026, 2, 1))[1]).toEqual({ data: '2026-05-31', titulo: 'DASN-SIMEI 2025', dias: 91 })
+  })
+
+  it('resume os extratos por mês', () => {
+    const b = importar(bancoVazio(), [
+      { data: '2026-09-03', descricao: 'Pix A', valor: 100, tipo: 'entrada' },
+      { data: '2026-10-03', descricao: 'Pix B', valor: 200, tipo: 'entrada' },
+      { data: '2026-10-05', descricao: 'Tarifa', valor: 5, tipo: 'saida' },
+    ], 'x.ofx', '2026-10-21T10:00:00Z').banco
+    const marcado = marcar(b, b.movimentacoes[1].id, true, 'servicos')
+    expect(extratosDoAno(marcado, 2026)).toEqual([
+      { mes: 10, nome: 'outubro', importadoEm: '2026-10-21T10:00:00Z', movimentacoes: 2, faturado: 200 },
+      { mes: 9, nome: 'setembro', importadoEm: '2026-10-21T10:00:00Z', movimentacoes: 1, faturado: 0 },
+    ])
+  })
+
+  it('tira as iniciais do pagador', () => {
+    expect(iniciais('MARIA SOUZA')).toBe('MS')
+    expect(iniciais('Delta Eventos Ltda')).toBe('DE')
+    expect(iniciais('João')).toBe('J')
+    expect(iniciais('')).toBe('?')
   })
 })
