@@ -12,6 +12,9 @@ export interface Registro extends Movimentacao {
   id: string
   faturamento: boolean | null // null = não revisado
   categoria: Categoria | null
+  // Só saídas: true = despesa da empresa; false = retirada ou gasto pessoal;
+  // null ou ausente = ainda não separada (ver despesa() em saidas.ts).
+  despesa?: boolean | null
   arquivo: string
   importadoEm: string
 }
@@ -25,6 +28,8 @@ export interface Banco {
   versao: 1
   movimentacoes: Registro[]
   regras: Record<string, Regra> // por descrição normalizada
+  regrasSaida?: Record<string, boolean> // por descrição normalizada: é despesa?
+  dasPago?: Record<string, boolean> // "AAAA-MM" da competência: marcado à mão
   // Mês de abertura do MEI ("AAAA-MM"). null = aberto antes do ano atual;
   // ausente = a pessoa ainda não respondeu.
   abertura?: string | null
@@ -88,12 +93,14 @@ export function importar(
     if (existentes.has(id)) continue
     existentes.add(id)
 
-    const regra = m.tipo === 'entrada' ? banco.regras[chaveDescricao(m.descricao)] : undefined
+    const chave = chaveDescricao(m.descricao)
+    const regra = m.tipo === 'entrada' ? banco.regras[chave] : undefined
     novos.push({
       ...m,
       id,
       faturamento: regra ? regra.faturamento : m.tipo === 'saida' ? false : null,
       categoria: regra ? regra.categoria : null,
+      ...(m.tipo === 'saida' && { despesa: banco.regrasSaida?.[chave] ?? null }),
       arquivo,
       importadoEm: agora,
     })

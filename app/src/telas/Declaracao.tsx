@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { TelaProps } from '../App'
 import { MESES } from '../core/formato'
 import { alerta, brl, limiteDoAno, pendentes, total, totaisAno } from '../core/relatorio'
-import { Cabecalho, Recibo } from '../componentes/Pecas'
+import { Cabecalho, Pontilhado, Recibo } from '../componentes/Pecas'
+import { dasDoAno, irpfDoAno, PRESUNCAO } from '../core/saidas'
 
 const DIA_MS = 86_400_000
 
@@ -51,6 +52,10 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
       // sem área de transferência: o botão continua como estava
     }
   }
+
+  const renda = irpfDoAno(banco, ano)
+  const dasAbertos = dasDoAno(banco, ano).filter((m) => m.estado === 'atrasado').map((m) => MESES[m.mes - 1])
+  const juntar = (l: string[]) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} e ${l[l.length - 1]}` : l[0])
 
   const listaFaltam = faltam.map((m) => MESES[m - 1])
   const faltamTexto = listaFaltam.length > 1 ? `${listaFaltam.slice(0, -1).join(', ')} e ${listaFaltam[listaFaltam.length - 1]}` : listaFaltam[0]
@@ -125,11 +130,49 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
           <Passo ok={nPendentes === 0} titulo={nPendentes === 0 ? 'Todas as entradas revisadas' : `${nPendentes} ${nPendentes === 1 ? 'entrada sem revisão' : 'entradas sem revisão'}`}>
             {nPendentes === 0 ? <span className="passo-sub">Pronto</span> : <button className="link passo-link" onClick={() => ir('revisar')}>Falta · Revisar agora</button>}
           </Passo>
+          <Passo ok={dasAbertos.length === 0} titulo={dasAbertos.length === 0 ? 'DAS em dia' : `DAS de ${juntar(dasAbertos)} em aberto`}>
+            <span className="passo-sub">{dasAbertos.length === 0 ? 'Pronto · conferido nos extratos' : 'Falta · pague no PGMEI ou marque no Início se pagou por outra conta'}</span>
+          </Passo>
           <Passo ok={faltam.length === 0} titulo={faltam.length === 0 ? 'Extratos dos 12 meses' : `Extratos de ${faltamTexto}`}>
             <span className="passo-sub">{faltam.length === 0 ? 'Pronto' : 'Falta · chegam por e-mail no começo de cada mês'}</span>
           </Passo>
         </ol>
         <p className="nota-ir">A DASN-SIMEI não substitui o seu Imposto de Renda de pessoa física. O app só prepara os números; a entrega é sua.</p>
+      </section>
+
+      <section aria-labelledby="irpf-t" className="irpf">
+        <div>
+          <h2 id="irpf-t">Imposto de Renda de pessoa física</h2>
+          <p className="apoio">Quanto do lucro do MEI você declara como isento e quanto como tributável.</p>
+        </div>
+        <div className="irpf-cartao">
+          <dl>
+            <Pontilhado rotulo={`Serviços × ${PRESUNCAO.servicos * 100}%`} valor={brl(t.servicos * PRESUNCAO.servicos)} cor="var(--ink-muted)" />
+            <Pontilhado rotulo={`Comércio × ${PRESUNCAO.comercio * 100}%`} valor={brl(t.comercio * PRESUNCAO.comercio)} cor="var(--ink-muted)" />
+            <Pontilhado rotulo="Parte isenta" valor={brl(renda.isenta)} cor="var(--brand)" forte />
+          </dl>
+          <div className="tracejado" aria-hidden="true" />
+          <dl>
+            <Pontilhado rotulo="Receita bruta" valor={brl(renda.receita)} cor="var(--ink-muted)" />
+            <Pontilhado rotulo={renda.das > 0 ? 'Despesas, com o DAS' : 'Despesas'} valor={'− ' + brl(renda.despesas)} cor="var(--ink-muted)" />
+            <Pontilhado rotulo="Lucro da empresa" valor={brl(renda.lucro)} />
+            <Pontilhado rotulo="Parte tributável" valor={brl(renda.tributavel)} cor={renda.tributavel > 0 ? '#92400e' : undefined} forte />
+          </dl>
+          {renda.semSeparar > 0 ? (
+            <div className="irpf-aviso">
+              <span>{renda.semSeparar} {renda.semSeparar === 1 ? 'saída ainda não foi separada' : 'saídas ainda não foram separadas'}. Até lá, só as já separadas contam como despesa.</span>
+              <button className="principal com-seta" onClick={() => ir('saidas')}>
+                Separar saídas
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+              </button>
+            </div>
+          ) : (
+            renda.despesas + renda.retiradas > 0 && <button className="link" onClick={() => ir('saidas')}>Ver as saídas separadas</button>
+          )}
+        </div>
+        <p className="nota-ir">
+          A parte isenta vai em Rendimentos Isentos, como lucro de titular de microempresa do Simples Nacional. A tributável vai em Rendimentos Tributáveis Recebidos de PJ, com o CNPJ do MEI. É uma estimativa: confira com um contador antes de declarar.
+        </p>
       </section>
     </main>
   )

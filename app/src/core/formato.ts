@@ -9,9 +9,9 @@ export const MESES = [
 /** "2026-10-03" vira "03 out". */
 export const dataCurta = (iso: string) => `${iso.slice(8, 10)} ${CURTO[Number(iso.slice(5, 7)) - 1]}`
 
-const PREFIXOS = /^(transfer[êe]ncia recebida( pelo pix)?|pix recebido|dep[óo]sito( recebido)?|ted recebida)\s*/i
+const PREFIXOS = /^(transfer[êe]ncia (recebida|enviada)( pelo pix)?|pix (recebido|enviado)|dep[óo]sito( recebido)?|ted (recebida|enviada)|pagamento de boleto( efetuado)?|compra no d[ée]bito|pagamento de fatura)\s*/i
 
-/** Separa quem pagou do tipo de operação, para mostrar o nome em destaque. */
+/** Separa quem pagou (ou recebeu, nas saídas) do tipo de operação, para mostrar o nome em destaque. */
 export function pagador(descricao: string): { nome: string; operacao: string } {
   const m = PREFIXOS.exec(descricao)
   const resto = descricao

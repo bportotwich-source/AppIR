@@ -10,9 +10,10 @@ import Importar from './telas/Importar'
 import Revisar from './telas/Revisar'
 import Declaracao from './telas/Declaracao'
 import Ajustes from './telas/Ajustes'
+import Saidas from './telas/Saidas'
 import Icone from './componentes/Icone'
 
-export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes'
+export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'extratos' | 'ajustes' | 'saidas'
 
 export interface TelaProps {
   banco: Banco
@@ -92,7 +93,8 @@ export default function App() {
 
   const mudar = (novo: Banco) => {
     // A data de alteração diz se o último backup ficou velho.
-    const alterou = novo.movimentacoes !== banco.movimentacoes || novo.regras !== banco.regras
+    const alterou = novo.movimentacoes !== banco.movimentacoes || novo.regras !== banco.regras ||
+      novo.regrasSaida !== banco.regrasSaida || novo.dasPago !== banco.dasPago
     if (alterou) novo = { ...novo, alteradoEm: new Date().toISOString() }
     setBanco(novo)
     void salvar(novo)
@@ -112,9 +114,10 @@ export default function App() {
       {aba === 'declaracao' && <Declaracao {...props} />}
       {aba === 'extratos' && <Importar {...props} historico />}
       {aba === 'ajustes' && <Ajustes {...props} />}
+      {aba === 'saidas' && <Saidas {...props} />}
 
-      {/* Ajustes é uma tela de dentro do Início, com botão de voltar: sem a barra de abas. */}
-      {aba !== 'ajustes' && (
+      {/* Ajustes e Saídas são telas de dentro de outras, com botão de voltar: sem a barra de abas. */}
+      {aba !== 'ajustes' && aba !== 'saidas' && (
         <nav className="abas" aria-label="Seções">
           <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}><Icone nome="inicio" />Início</button>
           <button aria-current={aba === 'revisar'} onClick={() => setAba('revisar')}>

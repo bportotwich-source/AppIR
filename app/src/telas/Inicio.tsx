@@ -7,6 +7,7 @@ import { dataCurta, MESES, pagador } from '../core/formato'
 import { iniciais, proximosPrazos, quando } from '../core/agenda'
 import { entradas } from '../core/banco'
 import Icone from '../componentes/Icone'
+import LinhaDas from '../componentes/LinhaDas'
 import { dadosEmRisco, ehIphone } from '../core/armazenamento'
 import { backupAtrasado, enviarBackup } from '../core/store'
 
@@ -230,6 +231,8 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
             )}
           </section>
         )}
+
+        {comExtrato && <LinhaDas banco={banco} ano={ano} mudar={mudar} />}
 
         <section aria-labelledby="prazos-titulo">
           <h2 id="prazos-titulo">Próximos prazos</h2>

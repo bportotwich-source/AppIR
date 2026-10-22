@@ -3,10 +3,10 @@
 import type { ReactNode } from 'react'
 
 /** Cabeçalho com botão redondo de voltar, como em Revisar e Declaração. */
-export function Cabecalho({ titulo, sub, voltar, empilhado }: { titulo: string; sub?: string; voltar: () => void; empilhado?: boolean }) {
+export function Cabecalho({ titulo, sub, voltar, empilhado, rotuloVoltar = 'Voltar para o início' }: { titulo: string; sub?: string; voltar: () => void; empilhado?: boolean; rotuloVoltar?: string }) {
   return (
     <header className={'cabecalho' + (empilhado ? ' empilhado' : '')}>
-      <button className="voltar-redondo" aria-label="Voltar para o início" onClick={voltar}>
+      <button className="voltar-redondo" aria-label={rotuloVoltar} onClick={voltar}>
         <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
       </button>
       <div>
