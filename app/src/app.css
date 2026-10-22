@@ -312,3 +312,25 @@ button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: f
 .irpf-meses td[data-tributavel="true"] { color: #92400e; }
 .irpf-meses td[data-tributavel="false"] { color: var(--ink-muted); }
 .irpf-meses p { margin: 6px 18px 16px; font-size: 12px; line-height: 17px; color: var(--ink-muted); }
+
+/* Folha do DAS: sobe do rodapé no lugar do prompt do navegador. */
+.folha { width: 100%; max-width: 480px; margin: auto auto 0; padding: 0; border: 0; border-radius: 20px 20px 0 0; background: var(--surface-raised); color: var(--ink); box-shadow: 0 -12px 40px rgba(12, 42, 39, .18); }
+.folha::backdrop { background: rgba(12, 42, 39, .45); }
+.folha[open] { animation: folha-sobe .22s cubic-bezier(.2, .8, .2, 1); }
+.folha[open]::backdrop { animation: folha-fundo .22s ease-out; }
+@keyframes folha-sobe { from { transform: translateY(100%); } }
+@keyframes folha-fundo { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .folha[open], .folha[open]::backdrop { animation: none; } }
+.folha form { display: flex; flex-direction: column; padding: 10px 20px calc(20px + env(safe-area-inset-bottom)); }
+.folha-alca { align-self: center; width: 40px; height: 4px; border-radius: 999px; background: var(--line); margin-bottom: 18px; }
+.folha-etiqueta { margin: 0 0 6px; font-family: var(--mono); font-size: 11px; line-height: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
+.folha h2 { margin: 0 0 6px; }
+.folha-texto { margin: 0 0 18px; color: var(--ink-muted); }
+.folha-valor { display: flex; align-items: baseline; gap: 8px; padding: 10px 16px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); font-family: var(--mono); font-size: 18px; color: var(--ink-muted); }
+.folha-valor:focus-within { border-color: var(--brand); background: var(--surface-raised); }
+.folha-valor input { flex: 1; min-width: 0; border: 0; padding: 0; background: none; font-family: var(--mono); font-size: 32px; line-height: 44px; font-weight: 600; color: var(--ink); outline: none; }
+.folha-dica { margin: 8px 0 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.folha-acoes { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
+.folha-acoes .principal { width: 100%; }
+button.principal.perigo { background: var(--danger); }
+.folha-cancelar { min-height: 48px; border: 0; background: none; font-weight: 600; color: var(--ink-muted); cursor: pointer; }

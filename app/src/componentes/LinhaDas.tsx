@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import type { Banco } from '../core/banco'
 import { MESES } from '../core/formato'
 import { brl } from '../core/relatorio'
+import FolhaDas from './FolhaDas'
 import { dasDoAno, marcarDas, ultimoDas, type MesDas } from '../core/saidas'
 
 const LETRA = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
@@ -30,6 +32,7 @@ const juntar = (l: string[]) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} e 
 
 /** Os 12 DAS do ano: pago, em aberto, a vencer ou sem extrato para conferir. */
 export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: number; mudar: (b: Banco) => void }) {
+  const [aberto, setAberto] = useState<MesDas | null>(null)
   const meses = dasDoAno(banco, ano)
   const devidos = meses.filter((m) => m.estado !== 'antes' && m.estado !== 'a-vencer')
   const pagos = devidos.filter((m) => m.estado === 'pago')
@@ -37,22 +40,8 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
   const semExtrato = meses.filter((m) => m.estado === 'sem-extrato').length
 
   function alternar(m: MesDas) {
-    const nome = MESES[m.mes - 1]
     if (m.estado === 'antes' || m.estado === 'a-vencer') return
-    if (m.estado === 'pago') {
-      const pergunta = m.manual ? `Desfazer a marcação do DAS de ${nome}?` : `O pagamento de ${dataBr(m.pagoEm!)} não é o DAS de ${nome}?`
-      if (confirm(pergunta)) mudar(marcarDas(banco, ano, m.mes, m.manual ? null : false))
-    } else {
-      // Pergunta o valor para somar nas despesas do Imposto de Renda.
-      const sugestao = ultimoDas(banco)
-      const resposta = prompt(
-        `DAS de ${nome} pago por outra conta ou débito automático. Quanto foi pago? Deixe em branco se não souber.`,
-        sugestao ? sugestao.toFixed(2).replace('.', ',') : '',
-      )
-      if (resposta === null) return
-      const valor = Number(resposta.replace(/[^\d,.]/g, '').replace(/\.(?=\d{3})/g, '').replace(',', '.'))
-      mudar(marcarDas(banco, ano, m.mes, valor > 0 ? valor : true))
-    }
+    setAberto(m)
   }
 
   return (
@@ -102,6 +91,14 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
           {semExtrato > 0 ? 'Para conferir um mês com ?, importe o extrato do mês seguinte. ' : ''}
           O DAS vence todo dia 20 e é achado sozinho no extrato.
         </p>
+      )}
+      {aberto && (
+        <FolhaDas
+          mes={aberto}
+          sugestao={ultimoDas(banco)}
+          fechar={() => setAberto(null)}
+          confirmar={(pago) => { mudar(marcarDas(banco, ano, aberto.mes, pago)); setAberto(null) }}
+        />
       )}
     </section>
   )

@@ -117,6 +117,24 @@
       "title": "Saídas do ano",
       "is_interactive": true,
       "radius": 36
+    },
+    "FolhaDas.dc.html": {
+      "x": 1880,
+      "y": 1560,
+      "w": 390,
+      "h": 844,
+      "title": "Confirmar DAS pago",
+      "is_interactive": true,
+      "radius": 36
+    },
+    "FolhaDasDesfazer.dc.html": {
+      "x": 2350,
+      "y": 1560,
+      "w": 390,
+      "h": 844,
+      "title": "Desfazer DAS marcado",
+      "is_interactive": true,
+      "radius": 36
     }
   },
   "order": [
@@ -131,7 +149,9 @@
     "InicioFaixa.dc.html",
     "Graficos.dc.html",
     "DasIr.dc.html",
-    "Saidas.dc.html"
+    "Saidas.dc.html",
+    "FolhaDas.dc.html",
+    "FolhaDasDesfazer.dc.html"
   ],
   "notes": {
     "titulo": {
