@@ -19,6 +19,13 @@ function descrever(m: MesDas): string {
   }
 }
 
+const LEGENDA: [MesDas['estado'], string, string][] = [
+  ['pago', '✓', 'pago'],
+  ['atrasado', '!', 'em aberto'],
+  ['sem-extrato', '?', 'falta o extrato para conferir'],
+  ['a-vencer', '', 'a vencer'],
+]
+
 const juntar = (l: string[]) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} e ${l[l.length - 1]}` : l[0])
 
 /** Os 12 DAS do ano: pago, em aberto, a vencer ou sem extrato para conferir. */
@@ -44,7 +51,12 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
     <section aria-labelledby="das-t" className="das">
       <div className="titulo-linha">
         <h2 id="das-t">DAS do ano</h2>
-        {devidos.length > 0 && <span>{pagos.length} de {devidos.length} pagos</span>}
+        {devidos.length > 0 && (
+          <span>
+            {[`${pagos.length} ${pagos.length === 1 ? 'pago' : 'pagos'}`, abertos.length > 0 && `${abertos.length} em aberto`, semExtrato > 0 && `${semExtrato} sem extrato`]
+              .filter(Boolean).join(' · ')}
+          </span>
+        )}
       </div>
       <ol className="das-meses">
         {meses.map((m) => (
@@ -66,6 +78,11 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
           </li>
         ))}
       </ol>
+      <ul className="das-legenda" aria-hidden="true">
+        {LEGENDA.filter(([e]) => meses.some((m) => m.estado === e)).map(([e, marca, texto]) => (
+          <li key={e} data-estado={e}><span className="das-marca">{marca}</span>{texto}</li>
+        ))}
+      </ul>
       {abertos.length > 0 ? (
         <p className="das-nota" data-tom="perigo">
           DAS de {juntar(abertos)} sem pagamento no extrato. Pague com juros no{' '}
@@ -74,7 +91,7 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
       ) : (
         <p className="das-nota">
           {pagos.length === devidos.length && devidos.length > 0 ? 'Tudo pago até agora. ' : ''}
-          {semExtrato > 0 ? `${semExtrato} ${semExtrato === 1 ? 'mês' : 'meses'} sem extrato para conferir. ` : ''}
+          {semExtrato > 0 ? 'Para conferir um mês com ?, importe o extrato do mês seguinte. ' : ''}
           O DAS vence todo dia 20 e é achado sozinho no extrato.
         </p>
       )}
