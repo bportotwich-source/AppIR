@@ -117,6 +117,17 @@ describe('mais de um banco na PF', () => {
     expect(r.porBanco.map((x) => [x.id, x.gastos])).toEqual([['nubank', 0], ['santander', 462.48]])
   })
 
+  it('Pix para o próprio nome sem a outra ponta importada também não é gasto', () => {
+    let b: Banco = { ...pj(), titular: 'Bruno Silva Porto' }
+    b = importarPf(b, [
+      { data: '2026-01-19', descricao: 'PIX ENVIADO Bruno Silva Porto', valor: 400, tipo: 'saida' },
+      { data: '2026-01-26', descricao: 'PIX ENVIADO Thiago Klisman Barbosa', valor: 105, tipo: 'saida' },
+    ], 'conta', 's.pdf', { banco: 'santander' }).banco
+    const r = resumoPf(b, 2026, 1)
+    expect(r.gastos).toBe(105)
+    expect(r.entreContas).toBe(400)
+  })
+
   it('sem o nome do titular, Pix para outra pessoa no outro banco não vira transferência', () => {
     let b = importarPf(pj(), [{ ...nubankPix, descricao: 'Transferência enviada pelo Pix MARIA LIMA' }], 'conta').banco
     b = importarPf(b, [{ data: '2026-10-12', descricao: 'PIX RECEBIDO JOSE ALVES', valor: 400, tipo: 'entrada' }], 'conta', '', { banco: 'santander' }).banco

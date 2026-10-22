@@ -158,8 +158,8 @@ export function paresPjPf(banco: Banco): Map<string, string> {
 
 const TRANSF_PROPRIA = /mesma titularidade|transf\w*\.? (entre contas|propria)|conta propria/i
 
-/** Pix entre contas do titular em bancos diferentes: a saída de um e a entrada do
- * outro, mesmo valor, até 2 dias. Devolve os ids das duas pontas. */
+/** Pix entre contas do titular: a saída de um banco e a entrada do outro (mesmo
+ * valor, até 2 dias) e qualquer Pix para ou do próprio nome. Devolve os ids. */
 export function transferenciasProprias(banco: Banco): Set<string> {
   const titular = titularDo(banco)
   const pares = paresPjPf(banco)
@@ -174,6 +174,12 @@ export function transferenciasProprias(banco: Banco): Set<string> {
       internas.add(s.id)
       internas.add(e.id)
     }
+  }
+  // Pix para o próprio nome sem a outra ponta importada (outra conta, a PJ, um
+  // banco que não está no app) também não é gasto nem entrada. A entrada que é
+  // retirada da PJ fica de fora: ela conta como retirada.
+  for (const r of movs) {
+    if (!internas.has(r.id) && !pares.has(r.id) && doTitular(r)) internas.add(r.id)
   }
   return internas
 }
