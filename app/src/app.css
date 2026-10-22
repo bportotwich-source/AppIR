@@ -422,3 +422,4 @@ button.principal.perigo { background: var(--danger); }
   .rel-papel { box-shadow: none; padding: 0; font-size: 12pt; line-height: 1.4; }
   .rel-papel h2 { font-size: 14pt; }
 }
+.campo-limite { margin-top: 18px; }
