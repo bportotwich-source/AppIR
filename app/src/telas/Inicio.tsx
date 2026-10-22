@@ -8,11 +8,10 @@ import { iniciais, proximosPrazos, quando } from '../core/agenda'
 import { entradas } from '../core/banco'
 import Icone from '../componentes/Icone'
 import LinhaDas from '../componentes/LinhaDas'
-import { dadosEmRisco, ehIphone } from '../core/armazenamento'
-import { backupAtrasado, enviarBackup } from '../core/store'
+import { LembretesAparelho } from '../componentes/Lembretes'
 import { avisoDasn, declaracaoDo } from '../core/declaracao'
 import { nomesPerfis, retiradasPj, titularDo } from '../core/pf'
-import { BotaoOlho, Engrenagem, SeletorPerfil } from '../componentes/Perfil'
+import { TopoInicio } from '../componentes/Perfil'
 
 // Projeção é estimativa: arredonda para centenas e mostra sem centavos.
 const reais = (v: number) => 'R$ ' + (Math.round(v / 100) * 100).toLocaleString('pt-BR')
@@ -95,25 +94,14 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
   const nPendentes = pendentes(banco, ano)
   const limite = limiteDoAno(banco, ano)
   const anual = limiteAnual(banco)
-  const diasBackup = backupAtrasado(banco)
   const filaPendente = entradas(banco, ano).filter((r) => r.faturamento === null || (r.faturamento && r.categoria === null))
   const valorPendente = filaPendente.reduce((soma, r) => soma + r.valor, 0)
   const pagadores = [...new Set(filaPendente.map((r) => iniciais(pagador(r.descricao).nome)))].slice(0, 4)
   const prazos = proximosPrazos()
   const dasn = avisoDasn(banco)
   const dasnEntregue = (p: { titulo: string; data: string }) => p.titulo.startsWith('DASN') && !!declaracaoDo(banco, Number(p.data.slice(0, 4)) - 1).entregueEm
-  const [backupFalhou, setBackupFalhou] = useState(false)
   const retiradas = retiradasPj(banco, ano)
   const nomes = nomesPerfis(titularDo(banco))
-
-  async function fazerBackup() {
-    try {
-      const novo = await enviarBackup(banco)
-      if (novo) mudar(novo)
-    } catch {
-      setBackupFalhou(true)
-    }
-  }
 
   return (
     <main>
@@ -121,26 +109,18 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
         <svg className="faixa-circulos" aria-hidden="true" width="390" height="560" viewBox="0 0 390 560">
           {[150, 200, 250, 300].map((r, i) => <circle key={r} cx="195" cy="300" r={r} fill="none" stroke="#2dd4bf" strokeOpacity={[0.08, 0.06, 0.045, 0.03][i]} />)}
         </svg>
-        <div className="faixa-topo">
-          <span className="marca">
-            <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#2dd4bf" /><rect x="8" y="17" width="4" height="8" rx="2" fill="#0c2a27" /><rect x="14" y="12" width="4" height="13" rx="2" fill="#0c2a27" /><rect x="20" y="7" width="4" height="18" rx="2" fill="#0c2a27" /></svg>
-            Meu MEI
-          </span>
+        <TopoInicio perfil={perfil} mudarPerfil={mudarPerfil} titular={titularDo(banco)} oculto={oculto} alternarOlho={alternarOlho} abrirAjustes={() => ir('ajustes')} />
+        <div className="faixa-linha">
+          <h1>Seu ano até aqui</h1>
           <label className="so-leitor" htmlFor="ano">Ano</label>
-          <div className="faixa-acoes">
-            <BotaoOlho oculto={oculto} alternar={alternarOlho} />
-            <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
-              {anos.map((a) => <option key={a}>{a}</option>)}
-            </select>
-            <Engrenagem abrir={() => ir('ajustes')} />
-          </div>
+          <select id="ano" value={ano} onChange={(e) => mudarAno(Number(e.target.value))}>
+            {anos.map((a) => <option key={a}>{a}</option>)}
+          </select>
         </div>
-        <SeletorPerfil perfil={perfil} mudar={mudarPerfil} titular={titularDo(banco)} />
         <p className="faixa-nota">
           {comExtrato ? `Atualizado com o extrato de ${MESES[ultimoMes - 1]}` : 'Nenhum extrato importado ainda'}
           {limite !== anual && ` · Limite de ${ano}: ${brl(limite)} (ano de abertura)`}
         </p>
-        <h1>Seu ano até aqui</h1>
         <Seletor className="visoes" rotulo="Forma do limite" opcoes={VISOES} valor={visao} mudar={setVisao} />
         <div className="medidor">
           {visao === 'arco' && <LimitGauge value={total(t)} limit={limite} tone="dark" size={300} />}
@@ -224,30 +204,7 @@ export default function Inicio({ banco, ano, ir, anos, mudarAno, mudar, dadosPro
           </section>
         )}
 
-        {diasBackup !== null && (
-          <section className="lembrete" aria-labelledby="backup-titulo">
-            <b id="backup-titulo">{diasBackup === Infinity ? 'Você ainda não fez backup' : `Último backup há ${diasBackup} dias`}</b>
-            <span>Se o celular quebrar ou o navegador limpar os dados, os extratos e as marcações somem. Guarde uma cópia no Drive, no WhatsApp ou no e-mail.</span>
-            <button className="principal" onClick={fazerBackup}>Fazer backup agora</button>
-            {backupFalhou && <span role="alert">Não deu para gerar o backup. Tente pela tela Ajustes.</span>}
-          </section>
-        )}
-
-        {comExtrato && dadosEmRisco(dadosProtegidos) && (
-          <section className="lembrete" aria-labelledby="instalar-titulo">
-            <b id="instalar-titulo">Instale o app na tela de início</b>
-            {ehIphone() ? (
-              <span>No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. Aberto pelo navegador, o iPhone pode apagar os dados depois de alguns dias sem uso.</span>
-            ) : (
-              <span>
-                Assim o navegador não apaga seus dados quando faltar espaço no celular.
-                {!instalar && ' No Chrome, abra o menu ⋮ e toque em Instalar app.'}
-              </span>
-            )}
-            {instalar && <button className="principal" onClick={instalar}>Instalar app</button>}
-          </section>
-        )}
-
+        <LembretesAparelho banco={banco} mudar={mudar} dadosProtegidos={dadosProtegidos} instalar={instalar} comDados={comExtrato} />
 
         {comExtrato && (
           <section>

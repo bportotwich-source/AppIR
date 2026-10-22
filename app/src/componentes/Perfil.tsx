@@ -16,7 +16,7 @@ export function SeletorPerfil({ perfil, mudar, titular }: { perfil: Perfil; muda
       <span className="perfis-pilha" aria-hidden="true">
         {(['pj', 'pf'] as const).map((p) => <span key={p} className="perfil-bola" data-perfil={p} data-frente={p === perfil}>{p.toUpperCase()}</span>)}
       </span>
-      <span className="perfis-nome"><b>{nomes[perfil]}</b><span>Toque para ir ao {nomes[outro]}</span></span>
+      <span className="perfis-nome"><b>{nomes[perfil]}</b><span>Toque para trocar</span></span>
     </button>
   )
 }
@@ -63,6 +63,19 @@ export function Categorias({ valor, mudar, rotulo, opcoes = CATEGORIAS_PF }: { v
           <i aria-hidden="true" style={{ background: c.cor }} />{c.nome}
         </button>
       ))}
+    </div>
+  )
+}
+
+/** Topo dos dois Inícios: o perfil à esquerda e só o olho e os ajustes à direita. */
+export function TopoInicio(p: { perfil: Perfil; mudarPerfil: (p: Perfil) => void; titular?: string; oculto: boolean; alternarOlho: () => void; abrirAjustes: () => void }) {
+  return (
+    <div className="faixa-topo">
+      <SeletorPerfil perfil={p.perfil} mudar={p.mudarPerfil} titular={p.titular} />
+      <div className="faixa-acoes">
+        <BotaoOlho oculto={p.oculto} alternar={p.alternarOlho} />
+        <Engrenagem abrir={p.abrirAjustes} />
+      </div>
     </div>
   )
 }

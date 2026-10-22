@@ -3,7 +3,7 @@ import { bancoVazio, importar, type Banco } from './banco'
 import { bancoDoArquivo, parseCsv } from './arquivos'
 import { marcarSaida, irpfDoAno } from './saidas'
 import { totaisAno } from './relatorio'
-import { categorizarPf, ehDoTitular, transferenciasProprias, gruposSemCategoria, importarPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
+import { categorizarPf, ehDoTitular, transferenciasProprias, gruposSemCategoria, importarPf, maioresGastos, mesesPf, paresPjPf, resumoPf, separarRetiradasDoTitular } from './pf'
 import { comprasPossiveis, guardarComprovante, lerChave, lerDanfe, lerQrNfce, mascararDoc, type Comprovante } from './comprovantes'
 import { irpfPfDoAno, reciboCompleto } from './irpfPf'
 import { chaveDescricao } from './banco'
@@ -209,5 +209,26 @@ describe('IRPF da pessoa física', () => {
     const r = irpfPfDoAno(b, 2026)
     expect(r.farmacia).toBe(89.9)
     expect(r.totalSaude).toBe(0)
+  })
+})
+
+describe('Início PF', () => {
+  const compras = [
+    { data: '2026-09-03', descricao: 'Compra no débito MERCADO BOM', valor: 200, tipo: 'saida' as const },
+    { data: '2026-10-03', descricao: 'Compra no débito MERCADO BOM', valor: 120, tipo: 'saida' as const },
+    { data: '2026-10-17', descricao: 'Compra no débito MERCADO BOM', valor: 80, tipo: 'saida' as const },
+    { data: '2026-10-09', descricao: 'Compra no débito POSTO SHELL', valor: 150, tipo: 'saida' as const },
+    { data: '2026-10-21', descricao: 'Pagamento de fatura', valor: 900, tipo: 'saida' as const },
+  ]
+  const b = importarPf(bancoVazio(), compras, 'conta').banco
+
+  it('maiores gastos somam o mesmo destino e deixam a fatura de fora', () => {
+    const g = maioresGastos(b, 2026, 10)
+    expect(g.map((x) => [x.quantas, x.valor])).toEqual([[2, 200], [1, 150]])
+  })
+
+  it('mês a mês traz os últimos meses até o escolhido', () => {
+    const h = mesesPf(b, '2026-10', 3)
+    expect(h.map((x) => [x.mes, x.gastos])).toEqual([['2026-08', 0], ['2026-09', 200], ['2026-10', 350]])
   })
 })

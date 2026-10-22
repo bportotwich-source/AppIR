@@ -217,6 +217,49 @@ export function resumoPf(banco: Banco, ano: number, mes?: number): ResumoPf {
   }
 }
 
+/** Gastos do período: saídas da conta e do cartão, sem fatura nem transferência entre contas suas. */
+function gastosDoPeriodo(banco: Banco, ano: number, mes?: number): RegistroPf[] {
+  const internas = transferenciasProprias(banco)
+  return carteiraPf(banco).movimentacoes.filter((r) => r.tipo === 'saida' && !ehPagamentoFatura(r) && !internas.has(r.id) && doPeriodo(r.data, ano, mes))
+}
+
+export interface MaiorGasto {
+  nome: string
+  quantas: number
+  valor: number
+  categoria: string | null
+}
+
+/** Destinos que mais levaram dinheiro no mês, somando as compras repetidas. */
+export function maioresGastos(banco: Banco, ano: number, mes: number, quantos = 5): MaiorGasto[] {
+  const grupos = new Map<string, MaiorGasto>()
+  for (const r of gastosDoPeriodo(banco, ano, mes)) {
+    const chave = chaveDescricao(r.descricao)
+    const g = grupos.get(chave)
+    if (g) {
+      g.quantas++
+      g.valor += r.valor
+    } else grupos.set(chave, { nome: pagador(r.descricao).nome, quantas: 1, valor: r.valor, categoria: r.categoria })
+  }
+  return [...grupos.values()].sort((a, b) => b.valor - a.valor).slice(0, quantos)
+}
+
+export interface MesPf {
+  mes: string // AAAA-MM
+  entradas: number
+  gastos: number
+}
+
+/** Os últimos `quantos` meses até `ate` (AAAA-MM), do mais antigo ao mais novo. */
+export function mesesPf(banco: Banco, ate: string, quantos = 6): MesPf[] {
+  const [a, m] = ate.split('-').map(Number)
+  return Array.from({ length: quantos }, (_, i) => {
+    const d = new Date(a, m - quantos + i, 1)
+    const r = resumoPf(banco, d.getFullYear(), d.getMonth() + 1)
+    return { mes: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, entradas: r.entradas, gastos: r.gastos }
+  })
+}
+
 /** Pagar a fatura na conta só move dinheiro para o cartão; o gasto já está nas compras. */
 export const ehPagamentoFatura = (r: RegistroPf) =>
   r.conta === 'conta' && r.tipo === 'saida' && /pagamento de fatura|pagto\.? (de )?fatura|fatura (do )?cart[aã]o|pagamento (de )?cart[aã]o|nu pagamentos/i.test(r.descricao)
