@@ -87,6 +87,10 @@ export function importarPf(
 ): { banco: Banco; novas: number; repetidas: number; semCategoria: number } {
   const pf = carteiraPf(banco)
   const existentes = new Set(pf.movimentacoes.map((r) => r.id))
+  // O texto do OFX e do CSV é mais fiel que o do PDF: importar um deles depois
+  // de um PDF do mesmo mês corrige a descrição (e o nome) do que veio do PDF.
+  const melhores = new Map<string, string>()
+  const ehPdf = (nome: string) => /\.pdf$/i.test(nome)
   const vistos = new Map<string, number>()
   const novos: RegistroPf[] = []
   for (const m of movs) {
@@ -95,13 +99,22 @@ export function importarPf(
     const n = (vistos.get(base) ?? 0) + 1
     vistos.set(base, n)
     const id = `${base}|${n}`
-    if (existentes.has(id)) continue
+    if (existentes.has(id)) {
+      if (arquivo && !ehPdf(arquivo)) melhores.set(id, m.descricao)
+      continue
+    }
     existentes.add(id)
     const categoria = m.tipo === 'saida' ? pf.regras[chaveDescricao(m.descricao)] ?? sugerirCategoria(m.descricao) : null
     novos.push({ ...m, id, conta, banco: bancoPf, categoria, arquivo, importadoEm: agora })
   }
+  const antigas = pf.movimentacoes.map((r) => {
+    const descricao = melhores.get(r.id)
+    if (!descricao || !ehPdf(r.arquivo) || descricao === r.descricao) return r
+    const categoria = r.tipo === 'saida' && r.categoria === null ? pf.regras[chaveDescricao(descricao)] ?? sugerirCategoria(descricao) : r.categoria
+    return { ...r, descricao, categoria, arquivo }
+  })
   return {
-    banco: { ...banco, pf: { ...pf, movimentacoes: [...pf.movimentacoes, ...novos] } },
+    banco: { ...banco, pf: { ...pf, movimentacoes: [...antigas, ...novos] } },
     novas: novos.length,
     repetidas: movs.length - novos.length,
     semCategoria: novos.filter((r) => r.tipo === 'saida' && r.categoria === null).length,
@@ -248,7 +261,20 @@ export function maioresGastos(banco: Banco, ano: number, mes: number, quantos = 
       g.valor += r.valor
     } else grupos.set(chave, { nome: pagador(r.descricao).nome, quantas: 1, valor: r.valor, categoria: r.categoria })
   }
-  return [...grupos.values()].sort((a, b) => b.valor - a.valor).slice(0, quantos)
+  // O Santander corta o nome em 25 letras: "Fulano de Tal Sobrenome Co" é o mesmo
+  // "Fulano de Tal Sobrenome Completo" do Nubank. Junta no nome mais longo.
+  const lista = [...grupos.values()].sort((a, b) => b.nome.length - a.nome.length)
+  const juntos: MaiorGasto[] = []
+  for (const g of lista) {
+    const curto = semAcento(g.nome).toLowerCase()
+    const longo = curto.length >= 20 && juntos.find((j) => semAcento(j.nome).toLowerCase().startsWith(curto))
+    if (longo) {
+      longo.quantas += g.quantas
+      longo.valor += g.valor
+      longo.categoria ??= g.categoria
+    } else juntos.push({ ...g })
+  }
+  return juntos.sort((a, b) => b.valor - a.valor).slice(0, quantos)
 }
 
 export interface MesPf {
@@ -269,7 +295,11 @@ export function mesesPf(banco: Banco, ate: string, quantos = 6): MesPf[] {
 
 /** Pagar a fatura na conta só move dinheiro para o cartão; o gasto já está nas compras. */
 export const ehPagamentoFatura = (r: RegistroPf) =>
-  r.conta === 'conta' && r.tipo === 'saida' && /pagamento de fatura|pagto\.? (de )?fatura|fatura (do )?cart[aã]o|pagamento (de )?cart[aã]o|nu pagamentos/i.test(r.descricao)
+  r.conta === 'conta' && r.tipo === 'saida' && (
+    /pagamento de fatura|pagto\.? (de )?fatura|fatura (do )?cart[aã]o|pagamento (de )?cart[aã]o/i.test(r.descricao) ||
+    // Boleto do cartão Nubank pago de outro banco. Pix para alguém com conta no
+    // Nubank também cita "NU PAGAMENTOS" e é gasto de verdade.
+    (/nu pagamentos/i.test(r.descricao) && !/transfer[eê]ncia|\bpix\b/i.test(r.descricao)))
 
 export interface GrupoPf {
   chave: string
