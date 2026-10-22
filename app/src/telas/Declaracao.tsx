@@ -53,7 +53,7 @@ export default function Declaracao({ banco, ano, ir }: TelaProps) {
         <ul className="checagem">
           <li data-ok={limite.nivel === 'ok' || limite.nivel === 'atencao' || limite.nivel === 'perigo'}>{limite.mensagem}</li>
           <li data-ok={nPendentes === 0}>
-            {nPendentes === 0 ? 'Todas as entradas revisadas' : <button className="link" onClick={() => ir('revisar')}>{nPendentes} entradas sem revisão · Revisar agora</button>}
+            {nPendentes === 0 ? 'Todas as entradas revisadas' : <button className="link" onClick={() => ir('revisar')}>{nPendentes} {nPendentes === 1 ? 'entrada sem revisão' : 'entradas sem revisão'} · Revisar agora</button>}
           </li>
           <li data-ok={faltam.length === 0}>
             {faltam.length === 0 ? 'Extratos dos 12 meses importados' : `Faltam extratos de ${faltam.map((m) => MESES[m - 1]).join(', ')}`}

@@ -68,7 +68,7 @@ button.link { background: none; border: 0; padding: 0; color: var(--brand); text
 .checagem li { padding: 12px 14px; border-radius: 12px; background: var(--surface-raised); border: 1px solid var(--line); }
 .checagem li[data-ok="false"] { background: var(--warning-surface); color: var(--warning); border-color: transparent; }
 
-.chave { display: flex; gap: 12px; align-items: center; margin-top: 20px; cursor: pointer; }
+.chave { display: flex; gap: 12px; align-items: center; margin: 16px 0 20px; cursor: pointer; }
 .chave input { width: 22px; height: 22px; accent-color: var(--brand); }
 .chave span span { display: block; color: var(--ink-muted); font-size: 14px; }
 
@@ -82,12 +82,14 @@ button.link { background: none; border: 0; padding: 0; color: var(--brand); text
 .abas .importar[aria-current="true"] { background: var(--brand); color: var(--on-brand); }
 .contador { margin-left: 4px; padding: 0 6px; border-radius: 999px; background: var(--warning-surface); color: var(--warning); font-size: 12px; }
 .graficos { display: flex; gap: 6px; overflow-x: auto; margin: -4px 0 14px; padding-bottom: 2px; scrollbar-width: none; }
+/* Esmaece a borda direita para mostrar que a fileira rola. */
+.graficos { mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); padding-right: 24px; }
 .graficos button { flex: none; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-raised); color: var(--ink-muted); font-size: 13px; font-weight: 600; cursor: pointer; }
 .graficos button[aria-checked="true"] { background: var(--brand-tint); border-color: var(--brand); color: var(--brand); }
 .rastro-topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 12px; }
 .rastro-topo > div:first-child { flex: none; display: flex; flex-direction: column; gap: 2px; }
 .rastro-mes { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; text-align: right; font-size: 13px; line-height: 18px; }
-.rastro-mes span { color: var(--servicos); }
+.rastro-mes span { color: var(--brand); }
 .rastro-mes span[data-acima="true"] { color: var(--warning); }
 .rastro svg:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: 8px; }
 .rastro-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-muted); }
@@ -131,3 +133,7 @@ button.link { background: none; border: 0; padding: 0; color: var(--brand); text
 .lembrete-linha input, .campo input { flex: 1; min-width: 0; min-height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 button.principal:disabled { opacity: .45; cursor: default; }
 .campo { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
+
+.faixa-acoes { display: flex; gap: 8px; align-items: center; }
+.engrenagem { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; border: 1px solid rgba(236,241,239,.24); background: rgba(236,241,239,.08); color: #ecf1ef; cursor: pointer; }
+.voltar { align-self: flex-start; min-height: 44px; margin: -12px 0 -16px; padding: 0; border: 0; background: none; color: var(--brand); font-weight: 600; cursor: pointer; }

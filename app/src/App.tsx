@@ -9,8 +9,9 @@ import Inicio from './telas/Inicio'
 import Importar from './telas/Importar'
 import Revisar from './telas/Revisar'
 import Declaracao from './telas/Declaracao'
+import Ajustes from './telas/Ajustes'
 
-export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao'
+export type Aba = 'inicio' | 'revisar' | 'importar' | 'declaracao' | 'ajustes'
 
 export interface TelaProps {
   banco: Banco
@@ -108,6 +109,7 @@ export default function App() {
       {aba === 'revisar' && <Revisar {...props} />}
       {aba === 'importar' && <Importar {...props} />}
       {aba === 'declaracao' && <Declaracao {...props} />}
+      {aba === 'ajustes' && <Ajustes {...props} />}
 
       <nav className="abas" aria-label="Seções">
         <button aria-current={aba === 'inicio'} onClick={() => setAba('inicio')}>Início</button>
