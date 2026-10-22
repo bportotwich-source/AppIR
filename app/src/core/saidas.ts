@@ -108,18 +108,25 @@ export function dasDoAno(banco: Banco, ano: number, hoje = new Date()): MesDas[]
     const p = pagos.get(comp)
     if (banco.abertura && comp < banco.abertura) return { mes, estado: 'antes', vence }
     if (manual === true) return { mes, estado: 'pago', vence, manual: true }
+    if (typeof manual === 'number') return { mes, estado: 'pago', vence, manual: true, valor: manual }
     if (p && manual !== false) return { mes, estado: 'pago', vence, pagoEm: p.data, valor: p.valor }
     if (hojeIso <= vence) return { mes, estado: 'a-vencer', vence }
     return { mes, estado: comExtrato.has(vence.slice(0, 7)) ? 'atrasado' : 'sem-extrato', vence }
   })
 }
 
-/** Marca à mão (pago por outra conta) ou desfaz a marcação. */
-export function marcarDas(banco: Banco, ano: number, mes: number, pago: boolean | null): Banco {
+/** Marca à mão (pago por outra conta, com o valor se souber) ou desfaz a marcação. */
+export function marcarDas(banco: Banco, ano: number, mes: number, pago: boolean | number | null): Banco {
   const dasPago = { ...banco.dasPago }
   if (pago === null) delete dasPago[ym(ano, mes)]
   else dasPago[ym(ano, mes)] = pago
   return { ...banco, dasPago }
+}
+
+/** Valor do último DAS achado no extrato, para sugerir na marcação à mão. */
+export function ultimoDas(banco: Banco): number | null {
+  const ultimo = banco.movimentacoes.filter(ehDas).sort((a, b) => b.data.localeCompare(a.data))[0]
+  return ultimo ? ultimo.valor : null
 }
 
 // ---------- Imposto de Renda ----------
@@ -155,6 +162,13 @@ export function irpfDoAno(banco: Banco, ano: number): Irpf {
     else if (d === false) retiradas += r.valor
     else semSeparar++
     if (ehDas(r)) das += r.valor
+  }
+  // DAS pago fora do extrato e marcado à mão com o valor.
+  for (const [comp, v] of Object.entries(banco.dasPago ?? {})) {
+    if (comp.startsWith(`${ano}-`) && typeof v === 'number') {
+      das += v
+      despesas += v
+    }
   }
   const lucro = Math.max(0, receita - despesas)
   return { receita, isenta, despesas, das, retiradas, lucro, tributavel: Math.max(0, lucro - isenta), semSeparar }

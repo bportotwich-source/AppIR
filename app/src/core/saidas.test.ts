@@ -38,6 +38,12 @@ describe('DAS do ano', () => {
     expect(dasDoAno(b, 2026, new Date('2026-10-22T12:00:00'))[8]).toMatchObject({ estado: 'pago', manual: true })
     expect(estados(marcarDas(b, 2026, 9, null), '2026-10-22')[8]).toBe('atrasado')
   })
+
+  it('DAS marcado à mão com valor entra nas despesas do ano', () => {
+    const b = marcarDas(marcarDas(importar(bancoVazio(), [das('2026-10-20', 86.05)]).banco, 2026, 8, 86.05), 2025, 12, 80)
+    expect(dasDoAno(b, 2026, new Date('2026-10-22T12:00:00'))[7]).toMatchObject({ estado: 'pago', manual: true, valor: 86.05 })
+    expect(irpfDoAno(b, 2026)).toMatchObject({ das: 172.1, despesas: 172.1 })
+  })
 })
 
 describe('saídas e lucro isento', () => {
