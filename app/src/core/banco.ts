@@ -29,7 +29,9 @@ export interface Banco {
   movimentacoes: Registro[]
   regras: Record<string, Regra> // por descrição normalizada
   regrasSaida?: Record<string, boolean> // por descrição normalizada: é despesa?
-  dasPago?: Record<string, boolean> // "AAAA-MM" da competência: marcado à mão
+  // DAS marcado à mão, por "AAAA-MM" da competência: número = pago com esse
+  // valor; true = pago sem valor informado; false = o pagamento achado não é dele.
+  dasPago?: Record<string, boolean | number>
   // Mês de abertura do MEI ("AAAA-MM"). null = aberto antes do ano atual;
   // ausente = a pessoa ainda não respondeu.
   abertura?: string | null

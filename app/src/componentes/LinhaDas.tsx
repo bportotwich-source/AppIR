@@ -1,7 +1,7 @@
 import type { Banco } from '../core/banco'
 import { MESES } from '../core/formato'
 import { brl } from '../core/relatorio'
-import { dasDoAno, marcarDas, type MesDas } from '../core/saidas'
+import { dasDoAno, marcarDas, ultimoDas, type MesDas } from '../core/saidas'
 
 const LETRA = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 const PGMEI = 'https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao'
@@ -11,7 +11,7 @@ const dataBr = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`
 function descrever(m: MesDas): string {
   const nome = MESES[m.mes - 1]
   switch (m.estado) {
-    case 'pago': return m.manual ? `${nome}: marcado como pago` : `${nome}: pago em ${dataBr(m.pagoEm!)}, ${brl(m.valor!)}`
+    case 'pago': return m.manual ? `${nome}: marcado como pago${m.valor ? `, ${brl(m.valor)}` : ''}` : `${nome}: pago em ${dataBr(m.pagoEm!)}, ${brl(m.valor!)}`
     case 'atrasado': return `${nome}: em aberto, venceu em ${dataBr(m.vence)}`
     case 'sem-extrato': return `${nome}: falta o extrato de ${MESES[Number(m.vence.slice(5, 7)) - 1]} para conferir`
     case 'a-vencer': return `${nome}: vence em ${dataBr(m.vence)}`
@@ -42,8 +42,16 @@ export default function LinhaDas({ banco, ano, mudar }: { banco: Banco; ano: num
     if (m.estado === 'pago') {
       const pergunta = m.manual ? `Desfazer a marcação do DAS de ${nome}?` : `O pagamento de ${dataBr(m.pagoEm!)} não é o DAS de ${nome}?`
       if (confirm(pergunta)) mudar(marcarDas(banco, ano, m.mes, m.manual ? null : false))
-    } else if (confirm(`Marcar o DAS de ${nome} como pago? Use quando pagou por outra conta ou o extrato não mostra.`)) {
-      mudar(marcarDas(banco, ano, m.mes, true))
+    } else {
+      // Pergunta o valor para somar nas despesas do Imposto de Renda.
+      const sugestao = ultimoDas(banco)
+      const resposta = prompt(
+        `DAS de ${nome} pago por outra conta ou débito automático. Quanto foi pago? Deixe em branco se não souber.`,
+        sugestao ? sugestao.toFixed(2).replace('.', ',') : '',
+      )
+      if (resposta === null) return
+      const valor = Number(resposta.replace(/[^\d,.]/g, '').replace(/\.(?=\d{3})/g, '').replace(',', '.'))
+      mudar(marcarDas(banco, ano, m.mes, valor > 0 ? valor : true))
     }
   }
 
