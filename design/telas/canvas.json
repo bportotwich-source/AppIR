@@ -23,8 +23,8 @@
       "x": 0,
       "y": 0,
       "w": 390,
-      "h": 1500,
-      "title": "Início · Empresa (PJ)",
+      "h": 2380,
+      "title": "Início · Bruno PJ",
       "is_interactive": true,
       "radius": 36
     },
@@ -84,7 +84,7 @@
     },
     "Ajustes.dc.html": {
       "x": 0,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 1241,
       "title": "Ajustes",
@@ -93,7 +93,7 @@
     },
     "Avisos.dc.html": {
       "x": 470,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 860,
       "title": "Início · cartões de aviso",
@@ -102,7 +102,7 @@
     },
     "DasIr.dc.html": {
       "x": 940,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 1100,
       "title": "Início e Declaração · DAS e Imposto de Renda",
@@ -111,7 +111,7 @@
     },
     "Saidas.dc.html": {
       "x": 1410,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 1000,
       "title": "Saídas do ano",
@@ -120,7 +120,7 @@
     },
     "FolhaDas.dc.html": {
       "x": 1880,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 844,
       "title": "Confirmar DAS pago",
@@ -129,7 +129,7 @@
     },
     "FolhaDasDesfazer.dc.html": {
       "x": 2350,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 844,
       "title": "Desfazer DAS marcado",
@@ -138,7 +138,7 @@
     },
     "Movimentacoes.dc.html": {
       "x": 0,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 1023,
       "title": "Movimentações do ano",
@@ -147,7 +147,7 @@
     },
     "CorrigirMovimentacao.dc.html": {
       "x": 470,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 844,
       "title": "Corrigir movimentação",
@@ -156,7 +156,7 @@
     },
     "Pagadores.dc.html": {
       "x": 940,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 844,
       "title": "Pagadores lembrados",
@@ -165,7 +165,7 @@
     },
     "EntregaDasn.dc.html": {
       "x": 1410,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 844,
       "title": "Marcar DASN entregue",
@@ -174,7 +174,7 @@
     },
     "RelatorioMensal.dc.html": {
       "x": 1880,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 1804,
       "title": "Relatório mensal das receitas",
@@ -183,7 +183,7 @@
     },
     "AvisoDasn.dc.html": {
       "x": 2350,
-      "y": 3260,
+      "y": 3860,
       "w": 390,
       "h": 1142,
       "title": "Início · aviso da DASN",
@@ -192,7 +192,7 @@
     },
     "CriptografarDados.dc.html": {
       "x": 3450,
-      "y": 1860,
+      "y": 2460,
       "w": 390,
       "h": 844,
       "title": "Criptografar os dados",
@@ -201,7 +201,7 @@
     },
     "Mapa.dc.html": {
       "x": -470,
-      "y": 5400,
+      "y": 6000,
       "w": 1840,
       "h": 1080,
       "title": "Mapa do app · PF + PJ",
@@ -210,16 +210,16 @@
     },
     "PfInicio.dc.html": {
       "x": -470,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
-      "h": 1640,
-      "title": "Início · Pessoal (PF)",
+      "h": 1858,
+      "title": "Início · Bruno PF",
       "is_interactive": true,
       "radius": 36
     },
     "Adicionar.dc.html": {
       "x": 470,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 844,
       "title": "Botão + · Adicionar",
@@ -228,7 +228,7 @@
     },
     "PfRevisar.dc.html": {
       "x": 940,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1180,
       "title": "Revisar · gastos pessoais",
@@ -237,7 +237,7 @@
     },
     "Comprovantes.dc.html": {
       "x": 1410,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1180,
       "title": "Notas · Comprovantes",
@@ -246,7 +246,7 @@
     },
     "LerNota.dc.html": {
       "x": 1880,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 844,
       "title": "Ler nota · câmera",
@@ -255,7 +255,7 @@
     },
     "Comprovante.dc.html": {
       "x": 2350,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1640,
       "title": "Comprovante lido",
@@ -264,7 +264,7 @@
     },
     "Irpf.dc.html": {
       "x": 2820,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1500,
       "title": "Declaração · IRPF",
@@ -273,7 +273,7 @@
     },
     "ReciboSaude.dc.html": {
       "x": 3290,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1240,
       "title": "Recibo de saúde",
@@ -282,7 +282,7 @@
     },
     "Privacidade.dc.html": {
       "x": 3760,
-      "y": 6720,
+      "y": 7320,
       "w": 390,
       "h": 1160,
       "title": "Ajustes · Privacidade",
@@ -340,21 +340,21 @@
     },
     "melhorias": {
       "x": 0,
-      "y": 2960,
+      "y": 3560,
       "text": "Correções, declaração e relatório",
       "kind": "title1",
       "maxW": 2270
     },
     "pfpj": {
       "x": -470,
-      "y": 5100,
+      "y": 5700,
       "text": "PF + PJ · mapa",
       "kind": "title1",
       "maxW": 1840
     },
     "pfpjtelas": {
       "x": -470,
-      "y": 6420,
+      "y": 7020,
       "text": "PF + PJ · telas novas",
       "kind": "title1",
       "maxW": 4600
