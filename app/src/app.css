@@ -8,6 +8,10 @@
   --sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
   color-scheme: light;
+  /* Margens das barras do sistema: env() no navegador; no APK o Capacitor
+     zera o env() e manda os valores em --safe-area-inset-*. */
+  --topo-sistema: max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px));
+  --base-sistema: max(env(safe-area-inset-bottom, 0px), var(--safe-area-inset-bottom, 0px));
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--surface); color: var(--ink); font: 15px/22px var(--sans); }
@@ -18,7 +22,7 @@ button, select, input { font: inherit; color: inherit; }
 svg, svg * { -webkit-tap-highlight-color: transparent; }
 .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.app { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 110px; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-top: var(--topo-sistema); padding-bottom: calc(110px + var(--base-sistema)); }
 h1 { margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; }
 h2 { margin: 0 0 14px; font-size: 20px; line-height: 26px; font-weight: 600; }
 .apoio { margin: 6px 0 0; color: var(--ink-muted); font-size: 14px; line-height: 21px; }
@@ -66,7 +70,7 @@ button.link { background: none; border: 0; padding: 0; color: var(--brand); text
 .aviso { padding: 12px 14px; border-radius: 12px; }
 .aviso.perigo { color: var(--danger); background: #fef2f2; }
 
-.abas { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); width: min(440px, calc(100% - 32px)); box-sizing: border-box; height: 68px; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; padding-bottom: env(safe-area-inset-bottom); border-radius: 26px; background: rgba(255,255,255,.95); box-shadow: 0 12px 32px rgba(12,42,39,.18), 0 0 0 1px rgba(12,42,39,.06); }
+.abas { position: fixed; left: 50%; bottom: calc(16px + var(--base-sistema)); transform: translateX(-50%); width: min(440px, calc(100% - 32px)); box-sizing: border-box; height: 68px; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; border-radius: 26px; background: rgba(255,255,255,.95); box-shadow: 0 12px 32px rgba(12,42,39,.18), 0 0 0 1px rgba(12,42,39,.06); }
 .abas button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 56px; min-height: 52px; padding: 0; border: 0; background: none; font-size: 11px; line-height: 14px; font-weight: 600; color: var(--ink-muted); cursor: pointer; }
 .abas button[aria-current="true"] { color: var(--brand); font-weight: 700; }
 .abas .importar { width: 60px; min-width: 60px; height: 60px; min-height: 60px; margin-top: -34px; border-radius: 999px; background: var(--brand); color: var(--on-brand); box-shadow: 0 10px 20px rgba(15,118,110,.4), 0 0 0 6px var(--surface); }
@@ -321,7 +325,7 @@ button.com-seta { width: 100%; min-height: 52px; border-radius: 16px; display: f
 @keyframes folha-sobe { from { transform: translateY(100%); } }
 @keyframes folha-fundo { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .folha[open], .folha[open]::backdrop { animation: none; } }
-.folha form { display: flex; flex-direction: column; padding: 10px 20px calc(20px + env(safe-area-inset-bottom)); }
+.folha form { display: flex; flex-direction: column; padding: 10px 20px calc(20px + var(--base-sistema)); }
 .folha-alca { align-self: center; width: 40px; height: 4px; border-radius: 999px; background: var(--line); margin-bottom: 18px; }
 .folha-etiqueta { margin: 0 0 6px; font-family: var(--mono); font-size: 11px; line-height: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
 .folha h2 { margin: 0 0 6px; }
@@ -616,6 +620,9 @@ a.link { color: var(--brand); font-weight: 600; }
 .resumo-linhas b { font-family: var(--mono); font-weight: 500; color: #ffffff; white-space: nowrap; }
 .resumo-linhas b[data-negativo="true"] { color: #fecaca; }
 .resumo .pont { border-color: rgba(236,241,239,.2); }
+.resumo .barra-uso { background: rgba(236,241,239,.14); }
+.resumo .barra-uso span { background: #2dd4bf; }
+.resumo .barra-uso[data-alerta] span { background: #fbbf24; }
 
 /* Linha com pontilhado entre o nome e o valor, como num recibo. */
 .linha-ponto { display: flex; align-items: baseline; gap: 8px; }
